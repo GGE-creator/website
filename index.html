@@ -1768,13 +1768,13 @@ body::after {
         <h4>Connect</h4>
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener">X / Twitter<br><span class="link-sub">Raw & unfiltered thoughts</span></a>
-        <a href="/cdn-cgi/l/email-protection#4a2d23253c2b242423642f3c2f382e3f23240a2d272b232664292527">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
+        <a href="#" class="email-link" data-u="giovanni.everduin" data-d="gmail.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
       <div class="footer-col">
         <h4>Speaking & Advisory</h4>
-        <a href="/cdn-cgi/l/email-protection#73141a1c05121d1d1a5d1605160117061a1d33141e121a1f5d101c1e4c000611191610074e38160a1d1c07165641433a1d02061a010a">Keynote Inquiries</a>
-        <a href="/cdn-cgi/l/email-protection#7116181e07101f1f185f140714031504181f31161c10181d5f121e1c4e0204131b1412054c30150718021e0308544341544347544341331e100315544341231e1d1402">Advisory & Board Roles</a>
-        <a href="/cdn-cgi/l/email-protection#85e2eceaf3e4ebebecabe0f3e0f7e1f0ecebc5e2e8e4ece9abe6eae8baf6f0e7efe0e6f1b8d6f1e4f7f1f0f5a0b7b5c8e0ebf1eaf7ecebe2">Startup Mentoring</a>
+        <a href="#" class="email-link" data-u="giovanni.everduin" data-d="gmail.com" data-s="Keynote Inquiry">Keynote Inquiries</a>
+        <a href="#" class="email-link" data-u="giovanni.everduin" data-d="gmail.com" data-s="Advisory & Board Roles">Advisory & Board Roles</a>
+        <a href="#" class="email-link" data-u="giovanni.everduin" data-d="gmail.com" data-s="Startup Mentoring">Startup Mentoring</a>
       </div>
     </div>
 
@@ -1783,13 +1783,13 @@ body::after {
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X / Twitter">𝕏</a>
-        <a href="/cdn-cgi/l/email-protection#d6b1bfb9a0b7b8b8bff8b3a0b3a4b2a3bfb896b1bbb7bfbaf8b5b9bb" title="Email">@</a>
+        <a href="#" class="email-link" data-u="giovanni.everduin" data-d="gmail.com" title="Email">@</a>
       </div>
     </div>
   </div>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // Hamburger menu
 function toggleMenu() {
   document.getElementById('hamburger').classList.toggle('active');
@@ -1826,4 +1826,29 @@ function setMode(mode) {
 }
 
 function toggleMode() {
-  const c
+  const current = document.body.getAttribute('data-mode');
+  setMode(current === 'pro' ? 'perso' : 'pro');
+}
+
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Hydrate email links (prevents Cloudflare email obfuscation)
+document.querySelectorAll('.email-link').forEach(a => {
+  const u = a.dataset.u;
+  const d = a.dataset.d;
+  const s = a.dataset.s;
+  const addr = u + '@' + d;
+  a.href = 'mail' + 'to:' + addr + (s ? '?subject=' + encodeURIComponent(s) : '');
+});
+</script>
+</body>
+</html>
