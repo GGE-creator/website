@@ -79,10 +79,6 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hero-bg{position:absolute;inset:0;background-size:cover;background-position:center;transition:opacity .7s var(--ease);z-index:0;opacity:.7}
 .hero-bg::after{content:'';position:absolute;inset:0;background:var(--hero-overlay);transition:background .7s var(--ease)}
 .hero .container{position:relative;z-index:1}
-.hero-inner{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
-.hero-text{display:flex;flex-direction:column}
-.hero-portrait{display:flex;justify-content:center;align-items:flex-end}
-.hero-portrait img{max-height:75vh;width:auto;max-width:100%;object-fit:contain;filter:drop-shadow(0 8px 40px rgba(0,0,0,.25));transition:opacity .7s var(--ease)}
 .hero-pre{font-family:var(--font-mono);font-size:.8rem;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:24px}
 .hero h1{font-family:var(--font-display);font-size:clamp(2.8rem,6vw,5rem);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:28px}
 .hero-sub{font-size:1.1rem;color:var(--text2);max-width:560px;line-height:1.7;margin-bottom:32px;transition:color .7s var(--ease)}
@@ -92,13 +88,6 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .scroll-hint span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
 .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--text2),transparent);animation:scrollPulse 2s infinite}
 @keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
-@media(max-width:900px){
-  .hero-inner{grid-template-columns:1fr;text-align:center}
-  .hero-portrait{order:-1;justify-content:center}
-  .hero-portrait img{max-height:50vh}
-  .hero-tags{justify-content:center}
-  .hero-sub{margin-left:auto;margin-right:auto}
-}
 
 /* SECTIONS */
 section{padding:100px 0;transition:background .7s var(--ease)}
@@ -285,25 +274,17 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="hero-bg hero-bg-pro" style="background-image:url('./images/blazer.jpeg')"></div>
   <div class="hero-bg hero-bg-perso" style="background-image:url('./images/hoodie.jpeg')"></div>
   <div class="container">
-    <div class="hero-inner">
-      <div class="hero-text">
-        <div class="hero-pre content-pro">Strategy · Innovation · Ventures</div>
-        <div class="hero-pre content-perso">Crypto · Culture · Collecting</div>
-        <h1 class="content-pro">Building the <span class="highlight">future</span><br>of banking since<br>before it was cool</h1>
-        <h1 class="content-perso">A <span class="highlight">DeFi maxi</span><br>in a banker's<br>suit</h1>
-        <p class="hero-sub content-pro">Chief Strategy &amp; Innovation Officer and Co-founder of CBIx. Harvard Business School alum with 20+ years turning bold ideas into working products across fintech, AI, and digital transformation.</p>
-        <p class="hero-sub content-perso">NFT collector, hip-hop head, and art enthusiast navigating multiple identities across web3 communities, Bitcoin Ordinals, and the occasional shisha session. There's always more to the book than the cover.</p>
-        <div class="hero-tags content-pro">
-          <span class="tag">Fintech</span><span class="tag">Banking Innovation</span><span class="tag">AI &amp; Web3</span><span class="tag">Digital Assets</span><span class="tag">Tokenization</span><span class="tag">Startup Mentor</span>
-        </div>
-        <div class="hero-tags content-perso">
-          <span class="tag">Bitcoin Ordinals</span><span class="tag">NFT Collector</span><span class="tag">Hip-Hop</span><span class="tag">Digital Art</span><span class="tag">Film Producer</span><span class="tag">Web3 Degen</span>
-        </div>
-      </div>
-      <div class="hero-portrait">
-        <img class="content-pro" src="./images/portrait-pro.png" alt="Giovanni Everduin">
-        <img class="content-perso" src="./images/portrait-perso.png" alt="Gio">
-      </div>
+    <div class="hero-pre content-pro">Strategy · Innovation · Ventures</div>
+    <div class="hero-pre content-perso">Crypto · Culture · Collecting</div>
+    <h1 class="content-pro">Building the <span class="highlight">future</span><br>of banking since<br>before it was cool</h1>
+    <h1 class="content-perso">A <span class="highlight">DeFi maxi</span><br>in a banker's<br>suit</h1>
+    <p class="hero-sub content-pro">Chief Strategy &amp; Innovation Officer and Co-founder of CBIx. Harvard Business School alum with 20+ years turning bold ideas into working products across fintech, AI, and digital transformation.</p>
+    <p class="hero-sub content-perso">NFT collector, hip-hop head, and art enthusiast navigating multiple identities across web3 communities, Bitcoin Ordinals, and the occasional shisha session. There's always more to the book than the cover.</p>
+    <div class="hero-tags content-pro">
+      <span class="tag">Fintech</span><span class="tag">Banking Innovation</span><span class="tag">AI &amp; Web3</span><span class="tag">Digital Assets</span><span class="tag">Tokenization</span><span class="tag">Startup Mentor</span>
+    </div>
+    <div class="hero-tags content-perso">
+      <span class="tag">Bitcoin Ordinals</span><span class="tag">NFT Collector</span><span class="tag">Hip-Hop</span><span class="tag">Digital Art</span><span class="tag">Film Producer</span><span class="tag">Web3 Degen</span>
     </div>
   </div>
   <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
@@ -451,66 +432,54 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <!-- Row 1 -->
       <div class="gallery-item">
         <img src="./images/NFT/Apostles%20by%20No%20Legs.jpeg" alt="Apostles by No Legs">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Apostles</span><span class="gallery-item-artist">No Legs</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Azuki.jpeg" alt="Azuki">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Azuki</span><span class="gallery-item-artist">Azuki Collection</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/BagHeads%20by%20Pfffle.jpeg" alt="BagHeads by Pfffle">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">BagHeads</span><span class="gallery-item-artist">Pfffle</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Bored%20Ape%20Yacht%20Club.jpeg" alt="Bored Ape Yacht Club">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Bored Ape Yacht Club</span><span class="gallery-item-artist">BAYC</span></div>
       </div>
 
       <!-- Row 2 -->
       <div class="gallery-item">
         <img src="./images/NFT/Braincells%20by%20Scrog.jpeg" alt="Braincells by Scrog">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Braincells</span><span class="gallery-item-artist">Scrog</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Doodles.jpeg" alt="Doodles">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Doodles</span><span class="gallery-item-artist">Burnt Toast</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Hats.jpeg" alt="Hats">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Hats</span><span class="gallery-item-artist">Hats Collection</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/NodeMonkes.jpeg" alt="NodeMonkes">
-        <span class="gallery-item-chain">BTC Ordinals</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">NodeMonkes</span><span class="gallery-item-artist">NodeMonkes Collection</span></div>
       </div>
 
       <!-- Row 3 -->
       <div class="gallery-item">
         <img src="./images/NFT/OMB%202.jpeg" alt="OMB 2">
-        <span class="gallery-item-chain">BTC Ordinals</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Ordinal Maxi Biz</span><span class="gallery-item-artist">OMB Collection</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Scripture%20by%20No%20Legs.jpeg" alt="Scripture by No Legs">
-        <span class="gallery-item-chain">Ethereum</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Scripture</span><span class="gallery-item-artist">No Legs</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Solana Monkey Business">
-        <span class="gallery-item-chain">Solana</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Solana Monkey Business</span><span class="gallery-item-artist">SMB Collection</span></div>
       </div>
       <div class="gallery-item">
         <img src="./images/NFT/Zero%20Monke%20Biz%20by%20Tony%20Tafuro.jpeg" alt="Zero Monke Biz by Tony Tafuro">
-        <span class="gallery-item-chain">BTC Ordinals</span>
         <div class="gallery-item-overlay"><span class="gallery-item-title">Zero Monke Biz</span><span class="gallery-item-artist">Tony Tafuro</span></div>
       </div>
     </div>
@@ -518,15 +487,10 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </section>
 
 <!-- IN THE MEDIA -->
-<section id="media">
+<section id="media" class="content-pro">
   <div class="container">
     <div class="section-label reveal">In The Media</div>
-    <div class="content-pro">
-      <div class="section-title reveal">Featured in the <span class="highlight">press</span></div>
-    </div>
-    <div class="content-perso">
-      <div class="section-title reveal">Making <span class="highlight">noise</span> out there</div>
-    </div>
+    <div class="section-title reveal">Featured in the <span class="highlight">press</span></div>
     <div class="media-grid reveal">
 
       <div class="media-card">
