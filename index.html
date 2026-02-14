@@ -91,8 +91,8 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hero-portrait-wrap{display:flex;justify-content:center;align-items:center;position:relative}
 .hero-portrait-container{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.12)}
 body[data-mode="perso"] .hero-portrait-container{box-shadow:0 8px 40px rgba(0,0,0,.4)}
-.hero-portrait-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.35}
-.hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.75}
+.hero-portrait-bg{display:none}
+.hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.4}
 
 .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5}
 .scroll-hint span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
