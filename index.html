@@ -188,8 +188,8 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);box-shadow:var(--card-shadow);display:flex;flex-direction:column;border-top:3px solid var(--accent)}
 .media-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.media-card-img{width:100%;height:160px;background:var(--surface2);overflow:hidden}
-.media-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
+.media-card-img{width:100%;height:160px;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.media-card-img img{width:100%;height:100%;object-fit:contain;padding:32px;transition:transform .4s var(--ease)}
 .media-card:hover .media-card-img img{transform:scale(1.05)}
 .media-card-body{padding:18px;flex:1;display:flex;flex-direction:column}
 .media-card-source{font-family:var(--font-mono);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
@@ -519,7 +519,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
     <div class="media-grid reveal">
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-luxuryplaybook.jpeg" alt="The Luxury Playbook"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=theluxuryplaybook.com&sz=128" alt="The Luxury Playbook"></div>
         <div class="media-card-body">
           <div class="media-card-source">The Luxury Playbook<span class="media-card-type">Interview</span></div>
           <div class="media-card-title">The Strategist Propelling Innovation at Commercial Bank International</div>
@@ -530,7 +530,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       </div>
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-entrepreneur.jpeg" alt="Entrepreneur ME"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=entrepreneur.com&sz=128" alt="Entrepreneur ME"></div>
         <div class="media-card-body">
           <div class="media-card-source">Entrepreneur Middle East · Oct 2025<span class="media-card-type">Feature</span></div>
           <div class="media-card-title">The UAE's New Hub for AI, FinTech, Web3, and Disruptive Ventures</div>
@@ -541,7 +541,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       </div>
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-couchonomics.jpeg" alt="Couchonomics Podcast"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=apple.com&sz=128" alt="Couchonomics Podcast"></div>
         <div class="media-card-body">
           <div class="media-card-source">Couchonomics with Arjun<span class="media-card-type">Podcast</span></div>
           <div class="media-card-title">What Innovation Actually Looks Like Inside a Regulated Bank</div>
@@ -552,7 +552,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       </div>
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-digitalheroes.jpeg" alt="Chief Digital Heroes"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=podbean.com&sz=128" alt="Chief Digital Heroes"></div>
         <div class="media-card-body">
           <div class="media-card-source">Chief Digital Heroes in Banking<span class="media-card-type">Podcast</span></div>
           <div class="media-card-title">Balancing Compliance and Creativity in Financial Innovation</div>
@@ -563,7 +563,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       </div>
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-hbs.jpeg" alt="Harvard Business School"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="Harvard Business School"></div>
         <div class="media-card-body">
           <div class="media-card-source">Harvard Business School · 2015<span class="media-card-type">Case Study</span></div>
           <div class="media-card-title">Tanfeeth: Bringing Service Excellence to the GCC</div>
@@ -574,7 +574,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       </div>
 
       <div class="media-card">
-        <div class="media-card-img"><img src="./images/media-azertag.jpeg" alt="AZERTAC Interview"></div>
+        <div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=azertag.az&sz=128" alt="AZERTAC Interview"></div>
         <div class="media-card-body">
           <div class="media-card-source">AZERTAC (Azerbaijan State News Agency)<span class="media-card-type">Interview</span></div>
           <div class="media-card-title">Azerbaijan as a Regional Hub for Fintech and Blockchain</div>
