@@ -38,8 +38,6 @@ img{max-width:100%;display:block}
 .highlight{color:var(--accent)}
 
 body[data-mode="pro"] .content-perso,body[data-mode="perso"] .content-pro{display:none!important}
-body[data-mode="pro"] .hero-bg-perso,body[data-mode="perso"] .hero-bg-pro{opacity:0!important;pointer-events:none}
-body[data-mode="pro"] .hero-bg-pro,body[data-mode="perso"] .hero-bg-perso{opacity:1!important}
 body[data-mode="pro"] .photo-perso,body[data-mode="perso"] .photo-pro{display:none}
 body[data-mode="pro"] .motto-bg-perso,body[data-mode="perso"] .motto-bg-pro{opacity:0!important}
 body[data-mode="pro"] .motto-bg-pro,body[data-mode="perso"] .motto-bg-perso{opacity:1!important}
@@ -89,9 +87,13 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hero-tags{display:flex;flex-wrap:wrap;gap:10px}
 .tag{font-size:.75rem;font-weight:600;padding:8px 16px;border-radius:20px;background:var(--accent-glow);border:1px solid var(--accent-border);color:var(--accent);letter-spacing:.5px}
 
-/* Hero portrait image */
+/* Hero portrait — background faded 40%, face faded 10% via layered approach */
 .hero-portrait-wrap{display:flex;justify-content:center;align-items:center;position:relative}
-.hero-portrait{width:100%;max-width:440px;aspect-ratio:3/4;object-fit:cover;object-position:center top;border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.12)}
+.hero-portrait{width:100%;max-width:440px;aspect-ratio:3/4;object-fit:cover;object-position:center top;border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.12);
+  /* CSS mask: sharp center for face (90% opacity), faded edges (60% opacity) */
+  -webkit-mask-image:radial-gradient(ellipse 65% 50% at 50% 35%, rgba(0,0,0,.9) 30%, rgba(0,0,0,.6) 100%);
+  mask-image:radial-gradient(ellipse 65% 50% at 50% 35%, rgba(0,0,0,.9) 30%, rgba(0,0,0,.6) 100%);
+}
 body[data-mode="perso"] .hero-portrait{box-shadow:0 8px 40px rgba(0,0,0,.4)}
 
 .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5}
@@ -107,7 +109,10 @@ body[data-mode="perso"] .hero-portrait{box-shadow:0 8px 40px rgba(0,0,0,.4)}
   .hero-sub{margin-left:auto;margin-right:auto}
   .hero-tags{justify-content:center}
   .hero-portrait-wrap{order:-1}
-  .hero-portrait{max-width:320px;aspect-ratio:1;object-position:center top;border-radius:50%}
+  .hero-portrait{max-width:320px;aspect-ratio:1;object-position:center top;border-radius:50%;
+    -webkit-mask-image:radial-gradient(ellipse 70% 65% at 50% 40%, rgba(0,0,0,.9) 40%, rgba(0,0,0,.6) 100%);
+    mask-image:radial-gradient(ellipse 70% 65% at 50% 40%, rgba(0,0,0,.9) 40%, rgba(0,0,0,.6) 100%);
+  }
 }
 @media(max-width:600px){
   .hero{padding:100px 0 60px}
@@ -129,20 +134,19 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .stat-number{font-family:var(--font-display);font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:4px}
 .stat-label{font-size:.8rem;color:var(--text2);transition:color .7s var(--ease)}
 
-/* LOGO CAROUSEL */
-.logos-section{padding:40px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;transition:border-color .7s var(--ease)}
-.logos-label{text-align:center;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;color:var(--text3);margin-bottom:24px}
+/* LOGO CAROUSEL — 25% bigger, no header, better visibility */
+.logos-section{padding:50px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;transition:border-color .7s var(--ease)}
 .logos-track-wrapper{overflow:hidden;position:relative}
 .logos-track-wrapper::before,.logos-track-wrapper::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;transition:background .7s var(--ease)}
 .logos-track-wrapper::before{left:0;background:linear-gradient(to right,var(--bg),transparent)}
 .logos-track-wrapper::after{right:0;background:linear-gradient(to left,var(--bg),transparent)}
-.logos-track{display:flex;gap:48px;animation:marquee 30s linear infinite;width:max-content}
+.logos-track{display:flex;gap:56px;animation:marquee 30s linear infinite;width:max-content;align-items:center}
 .logos-track:hover{animation-play-state:paused}
-.logo-item{display:flex;align-items:center;gap:10px;flex-shrink:0;opacity:.45;transition:opacity .3s}
+.logo-item{display:flex;align-items:center;gap:14px;flex-shrink:0;opacity:.7;transition:opacity .3s}
 .logo-item:hover{opacity:1}
-.logo-item img{width:56px;height:56px;border-radius:10px}
-.logo-text{font-size:1rem;font-weight:500;color:var(--text2);white-space:nowrap}
-.logo-text-sm{font-size:.85rem}
+.logo-item img{width:70px;height:70px;border-radius:12px;object-fit:contain;background:var(--surface);padding:4px}
+.logo-text{font-size:1.25rem;font-weight:500;color:var(--text2);white-space:nowrap}
+.logo-text-sm{font-size:1.05rem}
 @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
 /* TIMELINE */
@@ -181,34 +185,25 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .gallery-placeholder{aspect-ratio:1;border-radius:var(--radius);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:.8rem;text-align:center;padding:20px;transition:border-color .3s}
 .gallery-placeholder:hover{border-color:var(--accent)}
 
-/* IN THE MEDIA */
+/* IN THE MEDIA — with thumbnail images */
 #media{padding:80px 0 60px}
 #media .section-title{margin-bottom:28px}
 .media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.media-card{display:flex;flex-direction:column;border-top:3px solid var(--accent)}
-.media-card-img{display:none}
-.media-card-body{padding:18px;flex:1;display:flex;flex-direction:column}
-.media-card-title{font-size:.92rem;margin-bottom:6px}
-.media-card-source{margin-bottom:6px}
-.media-card-text{font-size:.82rem;line-height:1.6;margin-bottom:8px}
-.media-card-text.truncated{-webkit-line-clamp:3}
-.media-card-link{margin-top:auto}
-.media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);box-shadow:var(--card-shadow)}
+.media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);box-shadow:var(--card-shadow);display:flex;flex-direction:column;border-top:3px solid var(--accent)}
 .media-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.media-card-img{width:100%;height:180px;background:var(--surface2);overflow:hidden}
+.media-card-img{width:100%;height:160px;background:var(--surface2);overflow:hidden}
 .media-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
 .media-card:hover .media-card-img img{transform:scale(1.05)}
-.media-card-body{padding:20px}
-.media-card-source{font-family:var(--font-mono);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-.media-card-title{font-family:var(--font-display);font-weight:700;font-size:1rem;line-height:1.4;margin-bottom:8px}
-.media-card-excerpt{font-size:.85rem;color:var(--text2);line-height:1.6;margin-bottom:12px}
-.media-card-link{font-size:.8rem;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px}
-.media-card-link:hover{text-decoration:underline}
-.media-card-text{font-size:.88rem;color:var(--text2);line-height:1.7;margin-bottom:12px;white-space:pre-line}
+.media-card-body{padding:18px;flex:1;display:flex;flex-direction:column}
+.media-card-source{font-family:var(--font-mono);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.media-card-title{font-family:var(--font-display);font-weight:700;font-size:.92rem;line-height:1.4;margin-bottom:6px}
+.media-card-text{font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:8px;white-space:pre-line}
 .media-card-text.truncated{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .media-card-text.expanded{-webkit-line-clamp:unset;display:block}
 .media-read-more{background:none;border:none;color:var(--accent);font-size:.78rem;font-weight:600;cursor:pointer;padding:0;margin-bottom:12px}
 .media-read-more:hover{text-decoration:underline}
+.media-card-link{font-size:.8rem;color:var(--accent);font-weight:600;display:inline-flex;align-items:center;gap:4px;margin-top:auto}
+.media-card-link:hover{text-decoration:underline}
 .media-card-type{display:inline-block;font-size:.6rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 8px;border-radius:4px;background:var(--accent-glow);color:var(--accent);border:1px solid var(--accent-border);margin-left:8px;vertical-align:middle}
 
 /* FEED */
@@ -221,7 +216,10 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .feed-author-info{display:flex;flex-direction:column}
 .feed-author{font-weight:600;font-size:.9rem}
 .feed-handle{font-size:.75rem;color:var(--text3)}
-.feed-platform-icon{margin-left:auto;font-size:1.2rem;font-weight:700;color:var(--text3)}
+.feed-platform-icon{margin-left:auto;display:flex;align-items:center}
+.feed-platform-icon img{width:20px;height:20px;opacity:.5;transition:opacity .2s}
+.feed-platform-icon img.dark-invert{filter:none}
+body[data-mode="perso"] .feed-platform-icon img.dark-invert{filter:invert(1);opacity:.4}
 .feed-body{font-size:.9rem;line-height:1.7;color:var(--text2);margin-bottom:12px;white-space:pre-line}
 .feed-body.truncated{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .feed-body.expanded{-webkit-line-clamp:unset;display:block}
@@ -278,6 +276,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </style>
 </head>
 <body data-mode="pro">
+
+<!-- SVG ICONS (hidden) -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <symbol id="icon-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
+  <symbol id="icon-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+</svg>
 
 <!-- NAV -->
 <nav>
@@ -371,14 +375,13 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   </div>
 </section>
 
-<!-- LOGO CAROUSEL -->
+<!-- LOGO CAROUSEL — no header, 25% bigger -->
 <section class="logos-section">
-  <div class="logos-label">Worked with &amp; trusted by</div>
   <div class="logos-track-wrapper">
     <div class="logos-track">
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=64" alt="Accenture"><span class="logo-text">Accenture</span></div>
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=emiratesnbd.com&sz=64" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=64" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=128" alt="Accenture"><span class="logo-text">Accenture</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=emiratesnbd.com&sz=128" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
       <div class="logo-item"><img src="./images/logo-sui.jpeg" alt="Sui"><span class="logo-text">Sui Foundation</span></div>
       <div class="logo-item"><img src="./images/logo-plume.png" alt="Plume"><span class="logo-text">Plume</span></div>
       <div class="logo-item"><img src="./images/logo-cbi.jpeg" alt="CBI"><span class="logo-text">Commercial Bank International</span></div>
@@ -386,9 +389,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="logo-item"><img src="./images/logo-zypl.jpeg" alt="Zypl"><span class="logo-text">Zypl.ai</span></div>
       <div class="logo-item"><img src="./images/logo-tumar.jpeg" alt="Tumar"><span class="logo-text">Tumar Fund</span></div>
       <div class="logo-item"><img src="./images/logo-un.jpeg" alt="UN"><span class="logo-text">United Nations</span></div>
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=64" alt="Accenture"><span class="logo-text">Accenture</span></div>
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=emiratesnbd.com&sz=64" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
-      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=64" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=128" alt="Accenture"><span class="logo-text">Accenture</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=emiratesnbd.com&sz=128" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
       <div class="logo-item"><img src="./images/logo-sui.jpeg" alt="Sui"><span class="logo-text">Sui Foundation</span></div>
       <div class="logo-item"><img src="./images/logo-plume.png" alt="Plume"><span class="logo-text">Plume</span></div>
       <div class="logo-item"><img src="./images/logo-cbi.jpeg" alt="CBI"><span class="logo-text">Commercial Bank International</span></div>
@@ -435,11 +438,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="photo-banner-text content-perso">Multiple identities. One person. Always more to the story.</div>
 </div>
 
-<!-- WHAT I DO -->
+<!-- WHAT I DO — no nav label, section label only -->
 <section id="skills">
   <div class="container">
-    <div class="section-label reveal">What I Do</div>
     <div class="content-perso">
+      <div class="section-label reveal">What I Do</div>
       <div class="section-title reveal">Where <span class="highlight">passion</span> meets rabbit holes</div>
       <div class="skills-grid reveal">
         <div class="skill-card"><div class="skill-icon">₿</div><h3>Bitcoin &amp; Ordinals</h3><p>Deep in the BTC maxi world with a separate PFP and identity. Collecting Ordinals and debating blocksize on Spaces at 2AM.</p></div>
@@ -505,7 +508,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="container">
     <div class="section-label reveal">In The Media</div>
     <div class="content-pro">
-      <div class="section-title reveal">Featured in the <span class="highlight">press</span></div>
+      <div class="section-title reveal">In the <span class="highlight">media</span></div>
     </div>
     <div class="content-perso">
       <div class="section-title reveal">Making <span class="highlight">noise</span> out there</div>
@@ -601,7 +604,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="section-title reveal">Latest from the <span class="highlight">boardroom</span></div>
       <div class="feed-grid">
         <div class="feed-card reveal">
-          <div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon">in</span></div>
+          <div class="feed-card-header">
+            <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div>
+            <div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div>
+            <span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span>
+          </div>
           <div class="feed-body truncated">The future of banking in the Middle East isn't about catching up — it's about leapfrogging. At CBIx, we're proving that a 100-year-old institution can out-innovate fintechs when you give builders real autonomy inside the machine.
 
 Here's what most people get wrong about corporate innovation: they treat it like R&amp;D. But innovation isn't a department. It's an operating system. We embedded it into credit, payments, and onboarding simultaneously — and the results speak for themselves.
@@ -612,7 +619,11 @@ Three things I've learned building inside a legacy bank that every fintech found
           <a href="https://www.linkedin.com/in/geverduin/" target="_blank" class="feed-link">View on LinkedIn →</a>
         </div>
         <div class="feed-card reveal">
-          <div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon">in</span></div>
+          <div class="feed-card-header">
+            <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div>
+            <div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div>
+            <span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span>
+          </div>
           <div class="feed-body truncated">Just wrapped up a panel at Dubai FinTech Summit on the convergence of traditional finance and digital assets. The room was split — half skeptics, half believers. My take?
 
 The skeptics aren't wrong about the risks. The believers aren't wrong about the opportunity. The winners will be those who can hold both truths simultaneously and build accordingly.
@@ -629,13 +640,21 @@ Regulation isn't the enemy of innovation. Bad regulation is. And what I'm seeing
       <div class="section-title reveal">Latest from the <span class="highlight">timeline</span></div>
       <div class="feed-grid">
         <div class="feed-card reveal">
-          <div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon">𝕏</span></div>
+          <div class="feed-card-header">
+            <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div>
+            <div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div>
+            <span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span>
+          </div>
           <div class="feed-body">just mass-bid on 12 ordinals inscriptions during a meeting about Q2 credit card strategy. the duality of man is real and he works in banking. 🦁⚡</div>
           <div class="feed-meta"><span>♡ 342</span><span>💬 28</span><span>🔄 47</span><span style="margin-left:auto;opacity:.5">2h</span></div>
           <a href="https://x.com/geverduin" target="_blank" class="feed-link">View on 𝕏 →</a>
         </div>
         <div class="feed-card reveal">
-          <div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon">𝕏</span></div>
+          <div class="feed-card-header">
+            <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div>
+            <div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div>
+            <span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span>
+          </div>
           <div class="feed-body">unpopular opinion: the best NFT art isn't on ETH or SOL right now. it's on BTC ordinals and nobody in tradfi wants to admit they're collecting because "bitcoin is supposed to be money not art."
 
 brother, everything is art if you're paying enough. 🎨</div>
