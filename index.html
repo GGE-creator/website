@@ -89,8 +89,8 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 
 /* Hero portrait — layered: faded bg (60%) + crisp cutout (100%) */
 .hero-portrait-wrap{display:flex;justify-content:center;align-items:center;position:relative}
-.hero-portrait-container{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.12)}
-body[data-mode="perso"] .hero-portrait-container{box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.hero-portrait-container{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden}
+body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
 .hero-portrait-bg{display:none}
 .hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.4}
 
@@ -322,14 +322,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
           <span class="tag">Bitcoin Ordinals</span><span class="tag">NFT Collector</span><span class="tag">Hip-Hop</span><span class="tag">Digital Art</span><span class="tag">Film Producer</span><span class="tag">Web3 Degen</span>
         </div>
       </div>
-      <!-- Right: Portrait — faded bg + crisp cutout layered -->
+      <!-- Right: Portrait — cutout only -->
       <div class="hero-portrait-wrap">
         <div class="hero-portrait-container hero-portrait-pro">
-          <img class="hero-portrait-bg" src="./images/blazer.jpeg" alt="">
           <img class="hero-portrait-cutout" src="./images/blazer-cutout.png" alt="Giovanni Everduin">
         </div>
         <div class="hero-portrait-container hero-portrait-perso">
-          <img class="hero-portrait-bg" src="./images/hoodie.jpeg" alt="">
           <img class="hero-portrait-cutout" src="./images/hoodie-cutout.png" alt="Giovanni Everduin">
         </div>
       </div>
