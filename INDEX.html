@@ -87,14 +87,12 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hero-tags{display:flex;flex-wrap:wrap;gap:10px}
 .tag{font-size:.75rem;font-weight:600;padding:8px 16px;border-radius:20px;background:var(--accent-glow);border:1px solid var(--accent-border);color:var(--accent);letter-spacing:.5px}
 
-/* Hero portrait — background faded 40%, face faded 10% via layered approach */
+/* Hero portrait — layered: faded bg (60%) + crisp cutout (100%) */
 .hero-portrait-wrap{display:flex;justify-content:center;align-items:center;position:relative}
-.hero-portrait{width:100%;max-width:440px;aspect-ratio:3/4;object-fit:cover;object-position:center top;border-radius:var(--radius);box-shadow:0 8px 40px rgba(0,0,0,.12);
-  /* CSS mask: sharp center for face (90% opacity), faded edges (60% opacity) */
-  -webkit-mask-image:radial-gradient(ellipse 65% 50% at 50% 35%, rgba(0,0,0,.9) 30%, rgba(0,0,0,.6) 100%);
-  mask-image:radial-gradient(ellipse 65% 50% at 50% 35%, rgba(0,0,0,.9) 30%, rgba(0,0,0,.6) 100%);
-}
-body[data-mode="perso"] .hero-portrait{box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.hero-portrait-container{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.12)}
+body[data-mode="perso"] .hero-portrait-container{box-shadow:0 8px 40px rgba(0,0,0,.4)}
+.hero-portrait-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.35}
+.hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.75}
 
 .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5}
 .scroll-hint span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
@@ -109,14 +107,12 @@ body[data-mode="perso"] .hero-portrait{box-shadow:0 8px 40px rgba(0,0,0,.4)}
   .hero-sub{margin-left:auto;margin-right:auto}
   .hero-tags{justify-content:center}
   .hero-portrait-wrap{order:-1}
-  .hero-portrait{max-width:320px;aspect-ratio:1;object-position:center top;border-radius:50%;
-    -webkit-mask-image:radial-gradient(ellipse 70% 65% at 50% 40%, rgba(0,0,0,.9) 40%, rgba(0,0,0,.6) 100%);
-    mask-image:radial-gradient(ellipse 70% 65% at 50% 40%, rgba(0,0,0,.9) 40%, rgba(0,0,0,.6) 100%);
-  }
+  .hero-portrait-container{max-width:320px;aspect-ratio:1;border-radius:50%}
+  .hero-portrait-bg,.hero-portrait-cutout{object-position:center top}
 }
 @media(max-width:600px){
   .hero{padding:100px 0 60px}
-  .hero-portrait{max-width:240px}
+  .hero-portrait-container{max-width:240px}
 }
 
 /* SECTIONS */
@@ -326,10 +322,16 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
           <span class="tag">Bitcoin Ordinals</span><span class="tag">NFT Collector</span><span class="tag">Hip-Hop</span><span class="tag">Digital Art</span><span class="tag">Film Producer</span><span class="tag">Web3 Degen</span>
         </div>
       </div>
-      <!-- Right: Portrait -->
+      <!-- Right: Portrait — faded bg + crisp cutout layered -->
       <div class="hero-portrait-wrap">
-        <img class="hero-portrait hero-portrait-pro" src="./images/blazer.jpeg" alt="Giovanni Everduin">
-        <img class="hero-portrait hero-portrait-perso" src="./images/hoodie.jpeg" alt="Giovanni Everduin">
+        <div class="hero-portrait-container hero-portrait-pro">
+          <img class="hero-portrait-bg" src="./images/blazer.jpeg" alt="">
+          <img class="hero-portrait-cutout" src="./images/blazer-cutout.png" alt="Giovanni Everduin">
+        </div>
+        <div class="hero-portrait-container hero-portrait-perso">
+          <img class="hero-portrait-bg" src="./images/hoodie.jpeg" alt="">
+          <img class="hero-portrait-cutout" src="./images/hoodie-cutout.png" alt="Giovanni Everduin">
+        </div>
       </div>
     </div>
   </div>
