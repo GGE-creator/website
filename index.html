@@ -154,8 +154,9 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .timeline-desc{font-size:.9rem;color:var(--text2);line-height:1.7;max-width:580px}
 
 /* PHOTO BANNER — cinematic style matching motto section */
-.photo-banner{width:100%;min-height:62vh;overflow:hidden;position:relative}
+.photo-banner{width:100%;min-height:71vh;overflow:hidden;position:relative}
 .photo-banner img{width:100%;height:100%;object-fit:cover;object-position:center center;position:absolute;inset:0}
+.photo-banner .photo-perso{object-position:center 25%}
 .photo-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.5)}
 .photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;line-height:1.3;letter-spacing:-1px;text-align:center;padding:40px 80px}
 
@@ -266,7 +267,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   .media-grid{grid-template-columns:1fr}
   .feed-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr)}
-  .photo-banner{min-height:50vh}
+  .photo-banner{min-height:58vh}
   section{padding:64px 0}
 }
 </style>
@@ -436,8 +437,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 <div class="photo-banner">
   <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni speaking">
   <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni casual">
-  <div class="photo-banner-text content-pro">Building what's next — from the <span class="highlight">boardroom</span> to the blockchain</div>
-  <div class="photo-banner-text content-perso">Multiple identities. One person. Always <span class="highlight">more to the story</span></div>
+  <div class="photo-banner-text content-pro">Building what's next&nbsp;— from the&nbsp;<span class="highlight">boardroom</span>&nbsp;to the blockchain</div>
+  <div class="photo-banner-text content-perso">Multiple identities. One person. Always&nbsp;<span class="highlight">more to the story</span></div>
 </div>
 
 <!-- NFT GALLERY -->
