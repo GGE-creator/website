@@ -90,7 +90,7 @@ body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
 .hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.7}
 .hero-portrait-pro .hero-portrait-cutout{opacity:.7}
 
-.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5}
+.scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5;z-index:0;pointer-events:none}
 .scroll-hint span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
 .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--text2),transparent);animation:scrollPulse 2s infinite}
 @keyframes scrollPulse{0%,100%{opacity:.3}50%{opacity:1}}
@@ -106,10 +106,11 @@ body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
   .hero-portrait-bg,.hero-portrait-cutout{object-position:center top}
 }
 @media(max-width:600px){
-  .hero{padding:100px 0 60px}
+  .hero{padding:100px 0 80px}
   .hero-portrait-container{max-width:240px}
-  .hero-tags{justify-content:center}
-  .photo-banner-text{font-size:1.15rem;padding:24px 20px;line-height:1.4}
+  .hero-tags{grid-template-columns:repeat(2,1fr);max-width:100%}
+  .scroll-hint{bottom:12px}
+  .photo-banner-text{font-size:1.15rem;padding:24px 20px;line-height:1.4;flex-direction:column}
   .photo-banner-text .mobile-br{display:block}
 }
 
@@ -434,8 +435,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 <div class="photo-banner">
   <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni speaking">
   <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni casual">
-  <div class="photo-banner-text content-pro">Building what's next — from the&nbsp;<span class="highlight">boardroom</span>&nbsp;to&nbsp;the&nbsp;blockchain</div>
-  <div class="photo-banner-text content-perso">Multiple identities. One person.<span class="mobile-br"><br></span> Always&nbsp;<span class="highlight">more to the story</span></div>
+  <div class="photo-banner-text content-pro">Building what's next —<span class="mobile-br"><br></span> from the <span class="highlight">boardroom</span> to the blockchain</div>
+  <div class="photo-banner-text content-perso">Multiple identities. One person.<span class="mobile-br"><br></span> Always <span class="highlight">more to the story</span></div>
 </div>
 
 <section id="gallery" class="content-perso">
