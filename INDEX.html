@@ -110,7 +110,7 @@ body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
   .hero-portrait-container{max-width:240px}
   .hero-tags{justify-content:center}
   .photo-banner-text{font-size:1.15rem;padding:24px 20px;line-height:1.4}
-  .photo-banner-text br{display:block}
+  .photo-banner-text .mobile-br{display:block}
 }
 
 section{padding:100px 0;transition:background .7s var(--ease)}
@@ -151,7 +151,7 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .photo-banner .photo-perso{object-position:center 25%}
 .photo-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.625)}
 .photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.4rem,3.5vw,2.8rem);font-weight:700;line-height:1.3;letter-spacing:-1px;text-align:center;padding:40px 24px}
-.photo-banner-text .highlight{color:var(--accent);display:inline}
+.photo-banner-text .mobile-br{display:none}
 
 .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .skill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px 28px;transition:all .3s var(--ease);box-shadow:var(--card-shadow)}
@@ -414,7 +414,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni speaking">
   <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni casual">
   <div class="photo-banner-text content-pro">Building what's next — from the&nbsp;<span class="highlight">boardroom</span>&nbsp;to&nbsp;the&nbsp;blockchain</div>
-  <div class="photo-banner-text content-perso">Multiple identities. One person.<br>Always <span class="highlight">more to the story</span></div>
+  <div class="photo-banner-text content-perso">Multiple identities. One person.<span class="mobile-br"><br></span> Always <span class="highlight">more to the story</span></div>
 </div>
 
 <section id="gallery" class="content-perso">
