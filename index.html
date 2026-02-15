@@ -153,10 +153,11 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .timeline-company{font-size:.9rem;color:var(--text2);margin-bottom:8px}
 .timeline-desc{font-size:.9rem;color:var(--text2);line-height:1.7;max-width:580px}
 
-/* PHOTO BANNER */
-.photo-banner{width:100%;height:520px;overflow:hidden;position:relative}
-.photo-banner img{width:100%;height:100%;object-fit:cover;object-position:center 30%}
-.photo-banner-text{position:absolute;bottom:0;left:0;right:0;padding:40px 32px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent);color:#fff;font-family:var(--font-display);font-size:1.1rem;font-weight:600;letter-spacing:-.3px}
+/* PHOTO BANNER — cinematic style matching motto section */
+.photo-banner{width:100%;min-height:50vh;overflow:hidden;position:relative}
+.photo-banner img{width:100%;height:100%;object-fit:cover;object-position:center center;position:absolute;inset:0}
+.photo-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.5)}
+.photo-banner-text{position:absolute;bottom:0;left:0;right:0;padding:40px 32px;z-index:1;color:#fff;font-family:var(--font-display);font-size:1.1rem;font-weight:600;letter-spacing:-.3px}
 
 /* SKILLS */
 .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
@@ -265,7 +266,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   .media-grid{grid-template-columns:1fr}
   .feed-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr)}
-  .photo-banner{height:320px}
+  .photo-banner{min-height:40vh}
   section{padding:64px 0}
 }
 </style>
