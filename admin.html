@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Giovanni Everduin CMS</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{--accent:#FF6B2B;--bg:#0e0e0e;--surface:#161616;--surface2:#1c1c1c;--border:#2a2a2a;--text:#f0f0f0;--text2:#999;--text3:#666;--radius:10px;--font:'DM Sans',sans-serif;--mono:'Space Mono',monospace}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+
+/* LOGIN */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.login-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:48px 40px;width:100%;max-width:400px;text-align:center}
+.login-box h1{font-family:'Outfit',sans-serif;font-size:1.6rem;margin-bottom:8px}
+.login-box h1 span{color:var(--accent)}
+.login-box p{color:var(--text2);font-size:.85rem;margin-bottom:32px}
+.login-box input{width:100%;padding:12px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem;margin-bottom:16px;outline:none;font-family:var(--font)}
+.login-box input:focus{border-color:var(--accent)}
+.login-box button{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:.9rem;font-weight:600;cursor:pointer;font-family:var(--font)}
+.login-box button:hover{opacity:.9}
+.login-error{color:#e55;font-size:.8rem;margin-top:8px}
+
+/* ADMIN LAYOUT */
+.admin{display:none}
+.admin.active{display:flex;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);padding:24px 0;flex-shrink:0;position:fixed;top:0;left:0;bottom:0;overflow-y:auto}
+.sidebar-brand{padding:0 20px 24px;border-bottom:1px solid var(--border);margin-bottom:16px;font-family:'Outfit',sans-serif;font-weight:700;font-size:1rem}
+.sidebar-brand span{color:var(--accent)}
+.sidebar a{display:block;padding:10px 20px;font-size:.85rem;color:var(--text2);transition:all .15s;border-left:3px solid transparent}
+.sidebar a:hover{color:var(--text);background:var(--surface2)}
+.sidebar a.active{color:var(--accent);border-left-color:var(--accent);background:rgba(255,107,43,.06)}
+.sidebar-section{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--text3);padding:16px 20px 8px;font-weight:600}
+.sidebar-logout{position:absolute;bottom:0;left:0;right:0;padding:16px 20px;border-top:1px solid var(--border);background:var(--surface)}
+.sidebar-logout button{width:100%;padding:10px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text2);font-size:.8rem;cursor:pointer;font-family:var(--font)}
+.sidebar-logout button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* MAIN */
+.main{margin-left:240px;flex:1;padding:32px 40px;max-width:960px}
+.main h2{font-family:'Outfit',sans-serif;font-size:1.4rem;margin-bottom:8px}
+.main h2 span{color:var(--accent)}
+.main .subtitle{color:var(--text2);font-size:.85rem;margin-bottom:32px}
+
+/* FORMS */
+.field{margin-bottom:20px}
+.field label{display:block;font-size:.75rem;font-weight:600;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.field input,.field textarea,.field select{width:100%;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.88rem;outline:none;font-family:var(--font);resize:vertical}
+.field input:focus,.field textarea:focus{border-color:var(--accent)}
+.field textarea{min-height:100px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field-hint{font-size:.7rem;color:var(--text3);margin-top:4px}
+
+/* BUTTONS */
+.btn{padding:10px 20px;border:none;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.9}
+.btn-secondary{background:transparent;border:1px solid var(--border);color:var(--text2)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:transparent;border:1px solid #e55;color:#e55;font-size:.8rem;padding:6px 14px}
+.btn-danger:hover{background:#e55;color:#fff}
+.btn-sm{padding:6px 14px;font-size:.8rem}
+.btn-bar{display:flex;gap:12px;margin-top:24px}
+
+/* LIST ITEMS */
+.list-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:12px;display:flex;align-items:center;gap:16px}
+.list-item-body{flex:1;min-width:0}
+.list-item-title{font-weight:600;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.list-item-sub{font-size:.78rem;color:var(--text2)}
+.list-item-actions{display:flex;gap:8px;flex-shrink:0}
+.list-item-order{font-family:var(--mono);font-size:.75rem;color:var(--text3);width:28px;text-align:center}
+
+/* TABS */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+.modal-overlay.active{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal h3{font-family:'Outfit',sans-serif;font-size:1.1rem;margin-bottom:20px}
+.modal h3 span{color:var(--accent)}
+
+/* STATUS */
+.toast{position:fixed;bottom:24px;right:24px;padding:12px 20px;background:#1a1a1a;border:1px solid var(--accent);border-radius:8px;color:var(--text);font-size:.85rem;z-index:200;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast.error{border-color:#e55}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-wrap" id="login-screen">
+  <div class="login-box">
+    <h1>Giovanni<span>.</span> CMS</h1>
+    <p>Sign in to manage your website content</p>
+    <input type="email" id="login-email" placeholder="Email address">
+    <input type="password" id="login-password" placeholder="Password">
+    <button onclick="doLogin()">Sign In</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin" id="admin-panel">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-brand">Giovanni<span>.</span> CMS</div>
+    <div class="sidebar-section">Content</div>
+    <a href="#" class="active" data-tab="hero">Hero</a>
+    <a href="#" data-tab="about">About</a>
+    <a href="#" data-tab="stats">Stats</a>
+    <a href="#" data-tab="logos">Logos</a>
+    <a href="#" data-tab="timeline">Timeline</a>
+    <a href="#" data-tab="media">Media</a>
+    <a href="#" data-tab="gallery">Gallery</a>
+    <a href="#" data-tab="feed">Feed</a>
+    <div class="sidebar-section">Layout</div>
+    <a href="#" data-tab="banner">Photo Banner</a>
+    <a href="#" data-tab="motto">Motto</a>
+    <a href="#" data-tab="footer">Footer</a>
+    <div class="sidebar-logout"><button onclick="doLogout()">Sign Out</button></div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+
+    <!-- HERO TAB -->
+    <div class="tab-content active" id="tab-hero">
+      <h2>Hero <span>Section</span></h2>
+      <p class="subtitle">Main hero text, portraits, and tag pills</p>
+
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Formal Mode</h3>
+      <div class="field"><label>Pre-heading</label><input id="hero-pro_pre"></div>
+      <div class="field"><label>Headline (HTML)</label><textarea id="hero-pro_h1" rows="2"></textarea><div class="field-hint">Use &lt;span class="highlight"&gt; for orange text, &lt;br&gt; for line breaks</div></div>
+      <div class="field"><label>Subtitle</label><textarea id="hero-pro_sub" rows="3"></textarea></div>
+      <div class="field"><label>Portrait URL</label><input id="hero-pro_portrait_url"></div>
+
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Informal Mode</h3>
+      <div class="field"><label>Pre-heading</label><input id="hero-perso_pre"></div>
+      <div class="field"><label>Headline (HTML)</label><textarea id="hero-perso_h1" rows="2"></textarea></div>
+      <div class="field"><label>Subtitle</label><textarea id="hero-perso_sub" rows="3"></textarea></div>
+      <div class="field"><label>Portrait URL</label><input id="hero-perso_portrait_url"></div>
+
+      <div class="btn-bar"><button class="btn btn-primary" onclick="saveHero()">Save Hero</button></div>
+
+      <h3 style="margin:40px 0 16px;font-size:.9rem;color:var(--accent)">— Hero Tags</h3>
+      <div id="hero-tags-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openTagModal()">+ Add Tag</button></div>
+    </div>
+
+    <!-- ABOUT TAB -->
+    <div class="tab-content" id="tab-about">
+      <h2>About <span>Section</span></h2>
+      <p class="subtitle">Section titles and body content for both modes</p>
+
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Formal Mode</h3>
+      <div class="field"><label>Section Title (HTML)</label><textarea id="about-pro_title" rows="2"></textarea></div>
+      <div class="field"><label>Body (HTML)</label><textarea id="about-pro_body" rows="8"></textarea><div class="field-hint">Full HTML with &lt;p&gt;, &lt;strong&gt;, &lt;a&gt; tags</div></div>
+
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Informal Mode</h3>
+      <div class="field"><label>Section Title (HTML)</label><textarea id="about-perso_title" rows="2"></textarea></div>
+      <div class="field"><label>Body (HTML)</label><textarea id="about-perso_body" rows="8"></textarea></div>
+
+      <div class="btn-bar"><button class="btn btn-primary" onclick="saveSingleton('about',['pro_title','pro_body','perso_title','perso_body'])">Save About</button></div>
+    </div>
+
+    <!-- STATS TAB -->
+    <div class="tab-content" id="tab-stats">
+      <h2>Stat <span>Cards</span></h2>
+      <p class="subtitle">Number cards in the About section</p>
+      <div id="stats-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('stats')">+ Add Stat</button></div>
+    </div>
+
+    <!-- LOGOS TAB -->
+    <div class="tab-content" id="tab-logos">
+      <h2>Logo <span>Carousel</span></h2>
+      <p class="subtitle">Brand logos that scroll across the page</p>
+      <div id="logos-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('logos')">+ Add Logo</button></div>
+    </div>
+
+    <!-- TIMELINE TAB -->
+    <div class="tab-content" id="tab-timeline">
+      <h2>Experience <span>Timeline</span></h2>
+      <p class="subtitle">Career timeline for both modes</p>
+      <div id="timeline-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('timeline')">+ Add Entry</button></div>
+    </div>
+
+    <!-- MEDIA TAB -->
+    <div class="tab-content" id="tab-media">
+      <h2>In The <span>Media</span></h2>
+      <p class="subtitle">Press and podcast cards (formal mode only)</p>
+      <div id="media-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('media')">+ Add Media</button></div>
+    </div>
+
+    <!-- GALLERY TAB -->
+    <div class="tab-content" id="tab-gallery">
+      <h2>NFT <span>Gallery</span></h2>
+      <p class="subtitle">Digital art pieces (informal mode only)</p>
+      <div id="gallery-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('gallery')">+ Add Piece</button></div>
+    </div>
+
+    <!-- FEED TAB -->
+    <div class="tab-content" id="tab-feed">
+      <h2>Social <span>Feed</span></h2>
+      <p class="subtitle">Social media posts for both modes</p>
+      <div id="feed-list"></div>
+      <div class="btn-bar"><button class="btn btn-secondary btn-sm" onclick="openListModal('feed')">+ Add Post</button></div>
+    </div>
+
+    <!-- BANNER TAB -->
+    <div class="tab-content" id="tab-banner">
+      <h2>Photo <span>Banner</span></h2>
+      <p class="subtitle">Full-width photo section with overlay text</p>
+      <div class="field"><label>Formal Image URL</label><input id="photo_banner-pro_img_url"></div>
+      <div class="field"><label>Formal Overlay Text (HTML)</label><textarea id="photo_banner-pro_text" rows="2"></textarea></div>
+      <div class="field"><label>Informal Image URL</label><input id="photo_banner-perso_img_url"></div>
+      <div class="field"><label>Informal Overlay Text (HTML)</label><textarea id="photo_banner-perso_text" rows="2"></textarea></div>
+      <div class="btn-bar"><button class="btn btn-primary" onclick="saveSingleton('photo_banner',['pro_img_url','pro_text','perso_img_url','perso_text'])">Save Banner</button></div>
+    </div>
+
+    <!-- MOTTO TAB -->
+    <div class="tab-content" id="tab-motto">
+      <h2>Motto <span>Section</span></h2>
+      <p class="subtitle">Quote section with background images</p>
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Formal</h3>
+      <div class="field"><label>Quote (HTML)</label><textarea id="motto-pro_quote" rows="2"></textarea></div>
+      <div class="field"><label>Attribution</label><input id="motto-pro_attr"></div>
+      <div class="field"><label>Background Image URL</label><input id="motto-pro_bg_url"></div>
+      <h3 style="margin:24px 0 16px;font-size:.9rem;color:var(--accent)">— Informal</h3>
+      <div class="field"><label>Quote (HTML)</label><textarea id="motto-perso_quote" rows="2"></textarea></div>
+      <div class="field"><label>Attribution</label><input id="motto-perso_attr"></div>
+      <div class="field"><label>Background Image URL</label><input id="motto-perso_bg_url"></div>
+      <div class="btn-bar"><button class="btn btn-primary" onclick="saveSingleton('motto',['pro_quote','pro_attr','pro_bg_url','perso_quote','perso_attr','perso_bg_url'])">Save Motto</button></div>
+    </div>
+
+    <!-- FOOTER TAB -->
+    <div class="tab-content" id="tab-footer">
+      <h2>Footer <span>Settings</span></h2>
+      <p class="subtitle">Descriptions and social links</p>
+      <div class="field"><label>Formal Description</label><textarea id="footer-pro_desc" rows="2"></textarea></div>
+      <div class="field"><label>Informal Description</label><textarea id="footer-perso_desc" rows="2"></textarea></div>
+      <div class="field-row">
+        <div class="field"><label>LinkedIn URL</label><input id="footer-linkedin_url"></div>
+        <div class="field"><label>X / Twitter URL</label><input id="footer-twitter_url"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>WhatsApp URL</label><input id="footer-whatsapp_url"></div>
+        <div class="field"><label>Email</label><input id="footer-email"></div>
+      </div>
+      <div class="btn-bar"><button class="btn btn-primary" onclick="saveSingleton('footer',['pro_desc','perso_desc','linkedin_url','twitter_url','whatsapp_url','email'])">Save Footer</button></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal" id="modal-box">
+    <h3 id="modal-title">Edit <span>Item</span></h3>
+    <div id="modal-fields"></div>
+    <div class="btn-bar">
+      <button class="btn btn-primary" id="modal-save">Save</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+/* ========================================
+   SUPABASE CONFIG
+   ======================================== */
+const SB_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nd2NibGV1dGh5enFrbGRjZmd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzI0MTgsImV4cCI6MjA4Njc0ODQxOH0.sW3mvGI5zSFdNffOHvQ8BwmzyV6j8GIVmKkBIxEi0rI';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ========================================
+   AUTH
+   ======================================== */
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pw = document.getElementById('login-password').value;
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  if (error) {
+    document.getElementById('login-error').textContent = error.message;
+  } else {
+    showAdmin();
+  }
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  location.reload();
+}
+
+async function checkAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) showAdmin();
+}
+
+function showAdmin() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-panel').classList.add('active');
+  loadAllData();
+}
+
+/* ========================================
+   TAB NAVIGATION
+   ======================================== */
+document.querySelectorAll('.sidebar a[data-tab]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    document.querySelectorAll('.sidebar a').forEach(x => x.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + a.dataset.tab).classList.add('active');
+  });
+});
+
+/* ========================================
+   TOAST
+   ======================================== */
+function toast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 2500);
+}
+
+/* ========================================
+   LOAD ALL DATA
+   ======================================== */
+let DATA = {};
+
+async function loadAllData() {
+  const tables = ['hero','about','motto','photo_banner','footer','hero_tags','stats','logos','timeline','media','feed','gallery'];
+  const results = await Promise.all(tables.map(t => sb.from(t).select('*').order('sort_order', { ascending: true, nullsFirst: false })));
+  tables.forEach((t, i) => { DATA[t] = results[i].data; });
+  populateAll();
+}
+
+function populateAll() {
+  // Singletons
+  populateSingleton('hero', ['pro_pre','pro_h1','pro_sub','perso_pre','perso_h1','perso_sub','pro_portrait_url','perso_portrait_url']);
+  populateSingleton('about', ['pro_title','pro_body','perso_title','perso_body']);
+  populateSingleton('motto', ['pro_quote','pro_attr','pro_bg_url','perso_quote','perso_attr','perso_bg_url']);
+  populateSingleton('photo_banner', ['pro_img_url','pro_text','perso_img_url','perso_text']);
+  populateSingleton('footer', ['pro_desc','perso_desc','linkedin_url','twitter_url','whatsapp_url','email']);
+
+  // Lists
+  renderTagsList();
+  renderListTable('stats', r => `<b>${r.number}</b> — ${r.label} (${r.mode})`);
+  renderListTable('logos', r => `<b>${r.name}</b> (${r.mode})`);
+  renderListTable('timeline', r => `<b>${r.year}</b> — ${r.role} @ ${r.company} (${r.mode})`);
+  renderListTable('media', r => `<b>${r.source}</b> — ${r.title}`);
+  renderListTable('gallery', r => `<b>${r.title}</b>`);
+  renderListTable('feed', r => `<b>${r.author}</b> — ${r.body.substring(0, 60)}... (${r.mode})`);
+}
+
+function populateSingleton(table, fields) {
+  const row = Array.isArray(DATA[table]) ? DATA[table][0] : DATA[table];
+  if (!row) return;
+  fields.forEach(f => {
+    const el = document.getElementById(table + '-' + f);
+    if (el) el.value = row[f] || '';
+  });
+}
+
+/* ========================================
+   SAVE SINGLETON
+   ======================================== */
+async function saveSingleton(table, fields) {
+  const updates = { updated_at: new Date().toISOString() };
+  fields.forEach(f => {
+    const el = document.getElementById(table + '-' + f);
+    if (el) updates[f] = el.value;
+  });
+  const { error } = await sb.from(table).update(updates).eq('id', 'singleton');
+  if (error) { toast('Error: ' + error.message, true); } else { toast('Saved ✓'); }
+}
+
+async function saveHero() {
+  await saveSingleton('hero', ['pro_pre','pro_h1','pro_sub','perso_pre','perso_h1','perso_sub','pro_portrait_url','perso_portrait_url']);
+}
+
+/* ========================================
+   LIST RENDERING
+   ======================================== */
+function renderListTable(table, labelFn) {
+  const el = document.getElementById(table + '-list');
+  const items = DATA[table] || [];
+  if (!items.length) { el.innerHTML = '<p style="color:var(--text3);font-size:.85rem">No items yet</p>'; return; }
+  el.innerHTML = items.map(r => `
+    <div class="list-item">
+      <span class="list-item-order">${r.sort_order ?? ''}</span>
+      <div class="list-item-body"><div class="list-item-title">${labelFn(r)}</div></div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editListItem('${table}',${r.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteListItem('${table}',${r.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderTagsList() {
+  const el = document.getElementById('hero-tags-list');
+  const items = DATA.hero_tags || [];
+  if (!items.length) { el.innerHTML = '<p style="color:var(--text3);font-size:.85rem">No tags yet</p>'; return; }
+  el.innerHTML = items.map(r => `
+    <div class="list-item">
+      <span class="list-item-order">${r.sort_order}</span>
+      <div class="list-item-body"><div class="list-item-title">${r.label} <span style="color:var(--text3)">(${r.mode})</span></div></div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editListItem('hero_tags',${r.id})">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteListItem('hero_tags',${r.id})">✕</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ========================================
+   FIELD SCHEMAS PER TABLE
+   ======================================== */
+const SCHEMAS = {
+  hero_tags: [
+    { key: 'mode', label: 'Mode', type: 'select', options: ['pro','perso'] },
+    { key: 'label', label: 'Label' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  stats: [
+    { key: 'mode', label: 'Mode', type: 'select', options: ['pro','perso'] },
+    { key: 'number', label: 'Number/Value' },
+    { key: 'label', label: 'Label' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  logos: [
+    { key: 'mode', label: 'Mode', type: 'select', options: ['pro','perso'] },
+    { key: 'name', label: 'Name' },
+    { key: 'img_url', label: 'Image URL' },
+    { key: 'css_class', label: 'CSS Class (optional)' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  timeline: [
+    { key: 'mode', label: 'Mode', type: 'select', options: ['pro','perso'] },
+    { key: 'year', label: 'Year' },
+    { key: 'role', label: 'Role' },
+    { key: 'company', label: 'Company' },
+    { key: 'description', label: 'Description', type: 'textarea' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  media: [
+    { key: 'source', label: 'Source' },
+    { key: 'card_type', label: 'Type', type: 'select', options: ['Interview','Feature','Podcast','Case Study'] },
+    { key: 'title', label: 'Title' },
+    { key: 'description', label: 'Description', type: 'textarea' },
+    { key: 'img_url', label: 'Image URL' },
+    { key: 'link_url', label: 'Link URL' },
+    { key: 'link_text', label: 'Link Text' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  gallery: [
+    { key: 'title', label: 'Title' },
+    { key: 'img_url', label: 'Image URL' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ],
+  feed: [
+    { key: 'mode', label: 'Mode', type: 'select', options: ['pro','perso'] },
+    { key: 'author', label: 'Author' },
+    { key: 'handle', label: 'Handle' },
+    { key: 'platform', label: 'Platform', type: 'select', options: ['linkedin','x'] },
+    { key: 'body', label: 'Body', type: 'textarea' },
+    { key: 'likes', label: 'Likes' },
+    { key: 'comments', label: 'Comments' },
+    { key: 'shares', label: 'Shares' },
+    { key: 'time_ago', label: 'Time Ago' },
+    { key: 'link_url', label: 'Link URL' },
+    { key: 'sort_order', label: 'Sort Order', type: 'number' }
+  ]
+};
+
+/* ========================================
+   MODAL — ADD / EDIT
+   ======================================== */
+let modalState = { table: null, id: null };
+
+function openListModal(table, id) {
+  modalState = { table, id: id || null };
+  const schema = SCHEMAS[table];
+  const existing = id ? (DATA[table] || []).find(r => r.id === id) : null;
+  document.getElementById('modal-title').innerHTML = (id ? 'Edit' : 'Add') + ' <span>Item</span>';
+
+  document.getElementById('modal-fields').innerHTML = schema.map(f => {
+    const val = existing ? (existing[f.key] ?? '') : (f.key === 'sort_order' ? ((DATA[table]||[]).length + 1) : '');
+    if (f.type === 'select') {
+      return `<div class="field"><label>${f.label}</label><select id="modal-${f.key}">${f.options.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('')}</select></div>`;
+    } else if (f.type === 'textarea') {
+      return `<div class="field"><label>${f.label}</label><textarea id="modal-${f.key}" rows="4">${val}</textarea></div>`;
+    } else if (f.type === 'number') {
+      return `<div class="field"><label>${f.label}</label><input type="number" id="modal-${f.key}" value="${val}"></div>`;
+    }
+    return `<div class="field"><label>${f.label}</label><input id="modal-${f.key}" value="${String(val).replace(/"/g,'&quot;')}"></div>`;
+  }).join('');
+
+  document.getElementById('modal-save').onclick = () => saveListItem();
+  document.getElementById('modal-overlay').classList.add('active');
+}
+
+function openTagModal(id) { openListModal('hero_tags', id); }
+function editListItem(table, id) { openListModal(table, id); }
+
+function closeModal() { document.getElementById('modal-overlay').classList.remove('active'); }
+
+async function saveListItem() {
+  const { table, id } = modalState;
+  const schema = SCHEMAS[table];
+  const row = {};
+  schema.forEach(f => {
+    let v = document.getElementById('modal-' + f.key).value;
+    if (f.type === 'number') v = parseInt(v) || 0;
+    row[f.key] = v;
+  });
+
+  let error;
+  if (id) {
+    ({ error } = await sb.from(table).update(row).eq('id', id));
+  } else {
+    ({ error } = await sb.from(table).insert(row));
+  }
+
+  if (error) { toast('Error: ' + error.message, true); return; }
+  toast('Saved ✓');
+  closeModal();
+  await loadAllData();
+}
+
+async function deleteListItem(table, id) {
+  if (!confirm('Delete this item?')) return;
+  const { error } = await sb.from(table).delete().eq('id', id);
+  if (error) { toast('Error: ' + error.message, true); return; }
+  toast('Deleted');
+  await loadAllData();
+}
+
+/* ========================================
+   INIT
+   ======================================== */
+checkAuth();
+
+// Allow Enter on password field
+document.getElementById('login-password').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+</script>
+</body>
+</html>
