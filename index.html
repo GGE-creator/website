@@ -7,7 +7,6 @@
 <meta name="description" content="Giovanni Everduin — Chief Strategy & Innovation Officer at Commercial Bank International, Co-founder of CBIx. Harvard Business School alum with 20+ years driving fintech innovation, AI, Web3, and digital transformation in the UAE and beyond.">
 <meta name="keywords" content="Giovanni Everduin, CBIx, Commercial Bank International, fintech, innovation, Web3, tokenized assets, AI, Dubai, Harvard Business School, banking innovation, digital transformation">
 <link rel="canonical" href="https://giovannieverduin.com/">
-<!-- Open Graph -->
 <meta property="og:type" content="profile">
 <meta property="og:title" content="Giovanni Everduin — Chief Strategy & Innovation Officer | CBIx">
 <meta property="og:description" content="Harvard Business School alum with 20+ years building the future of banking. Co-founder of CBIx, driving fintech, AI, and Web3 innovation from Dubai.">
@@ -16,14 +15,12 @@
 <meta property="og:site_name" content="Giovanni Everduin">
 <meta property="profile:first_name" content="Giovanni">
 <meta property="profile:last_name" content="Everduin">
-<!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@geverduin">
 <meta name="twitter:creator" content="@geverduin">
 <meta name="twitter:title" content="Giovanni Everduin — CSIO & Co-founder CBIx">
 <meta name="twitter:description" content="Building the future of banking from Dubai. Harvard Business School alum, fintech innovator, Web3 builder.">
 <meta name="twitter:image" content="https://giovannieverduin.com/images/blazer-cutout.png">
-<!-- JSON-LD Structured Data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -55,6 +52,7 @@
 }
 </script>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -90,7 +88,6 @@ body[data-mode="pro"] .content-perso,body[data-mode="perso"] .content-pro{displa
 body[data-mode="pro"] .photo-perso,body[data-mode="perso"] .photo-pro{display:none}
 body[data-mode="pro"] .motto-bg-perso,body[data-mode="perso"] .motto-bg-pro{opacity:0!important}
 body[data-mode="pro"] .motto-bg-pro,body[data-mode="perso"] .motto-bg-perso{opacity:1!important}
-
 body[data-mode="pro"] .hero-portrait-perso,body[data-mode="perso"] .hero-portrait-pro{display:none!important}
 
 body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px;opacity:.5}
@@ -293,7 +290,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
-/* SEO: visually hidden but accessible to screen readers and crawlers */
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border-width:0}
 
 @media(max-width:900px){
@@ -315,7 +311,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </head>
 <body data-mode="pro">
 
-<!-- SEO: Hidden H1 for search engines -->
 <h1 class="sr-only">Giovanni Everduin — Chief Strategy &amp; Innovation Officer, Co-founder CBIx, Commercial Bank International Dubai</h1>
 
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
@@ -418,7 +413,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 
 <section class="logos-section" aria-label="Affiliations and partnerships">
   <div class="logos-track-wrapper">
-    <!-- Formal logos -->
     <div class="logos-track content-pro">
       <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=128" alt="Accenture" loading="lazy"><span class="logo-text">Accenture</span></div>
       <div class="logo-item"><img src="./images/logo-enbd.jpeg" alt="Emirates NBD" loading="lazy"><span class="logo-text">Emirates NBD</span></div>
@@ -441,7 +435,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="logo-item"><img src="./images/logo-tumar.jpeg" alt="Tumar Fund" loading="lazy"><span class="logo-text">Tumar Fund</span></div>
       <div class="logo-item"><img src="./images/logo-un.jpeg" alt="United Nations" loading="lazy"><span class="logo-text">United Nations</span></div>
     </div>
-    <!-- Informal logos -->
     <div class="logos-track content-perso">
       <div class="logo-item"><img src="./images/logo-artsdao.jpeg" alt="ArtsDAO" loading="lazy"><span class="logo-text">ArtsDAO</span></div>
       <div class="logo-item"><img src="./images/logo-monkedao.jpeg" alt="MonkeDAO" loading="lazy"><span class="logo-text">MonkeDAO</span></div>
@@ -536,34 +529,17 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   </div>
 </section>
 
+<!-- FEED — Dynamically loaded from Supabase -->
 <section id="feed" aria-label="Latest posts">
   <div class="container">
     <div class="section-label reveal">Latest</div>
     <div class="content-pro">
       <h2 class="section-title reveal">Latest from the <span class="highlight">boardroom</span></h2>
-      <div class="feed-grid">
-        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="Giovanni Everduin avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span></div><div class="feed-body truncated">The future of banking in the Middle East isn't about catching up — it's about leapfrogging. At CBIx, we're proving that a 100-year-old institution can out-innovate fintechs when you give builders real autonomy inside the machine.
-
-Here's what most people get wrong about corporate innovation: they treat it like R&amp;D. But innovation isn't a department. It's an operating system. We embedded it into credit, payments, and onboarding simultaneously — and the results speak for themselves.
-
-Three things I've learned building inside a legacy bank that every fintech founder should know...</div><button class="feed-read-more" onclick="toggleFeed(this)">Read more</button><div class="feed-meta"><span>♡ 847</span><span>💬 63</span><span>🔄 122</span></div><a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" class="feed-link">View on LinkedIn →</a></div>
-        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="Giovanni Everduin avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span></div><div class="feed-body truncated">Just wrapped up a panel at Dubai FinTech Summit on the convergence of traditional finance and digital assets. The room was split — half skeptics, half believers. My take?
-
-The skeptics aren't wrong about the risks. The believers aren't wrong about the opportunity. The winners will be those who can hold both truths simultaneously and build accordingly.
-
-Regulation isn't the enemy of innovation. Bad regulation is. And what I'm seeing from ADGM and DIFC gives me genuine optimism about the UAE's trajectory...</div><button class="feed-read-more" onclick="toggleFeed(this)">Read more</button><div class="feed-meta"><span>♡ 1.2k</span><span>💬 94</span><span>🔄 201</span></div><a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" class="feed-link">View on LinkedIn →</a></div>
-      </div>
-      <p class="feed-placeholder-note">⚡ Live LinkedIn feed — connect API to replace placeholders</p>
+      <div class="feed-grid" id="feed-grid-pro"></div>
     </div>
     <div class="content-perso">
       <h2 class="section-title reveal">Latest from the <span class="highlight">timeline</span></h2>
-      <div class="feed-grid">
-        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="Gio avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span></div><div class="feed-body">just mass-bid on 12 ordinals inscriptions during a meeting about Q2 credit card strategy. the duality of man is real and he works in banking. 🦁⚡</div><div class="feed-meta"><span>♡ 342</span><span>💬 28</span><span>🔄 47</span><span style="margin-left:auto;opacity:.5">2h</span></div><a href="https://x.com/geverduin" target="_blank" rel="noopener" class="feed-link">View on 𝕏 →</a></div>
-        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="Gio avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span></div><div class="feed-body">unpopular opinion: the best NFT art isn't on ETH or SOL right now. it's on BTC ordinals and nobody in tradfi wants to admit they're collecting because "bitcoin is supposed to be money not art."
-
-brother, everything is art if you're paying enough. 🎨</div><div class="feed-meta"><span>♡ 891</span><span>💬 73</span><span>🔄 156</span><span style="margin-left:auto;opacity:.5">8h</span></div><a href="https://x.com/geverduin" target="_blank" rel="noopener" class="feed-link">View on 𝕏 →</a></div>
-      </div>
-      <p class="feed-placeholder-note">⚡ Live 𝕏 feed — connect API to replace placeholders</p>
+      <div class="feed-grid" id="feed-grid-perso"></div>
     </div>
   </div>
 </section>
@@ -611,18 +587,137 @@ brother, everything is art if you're paying enough. 🎨</div><div class="feed-m
 </footer>
 
 <script>
-const body=document.body,toggle=document.getElementById('toggle'),lPro=document.getElementById('label-pro'),lPerso=document.getElementById('label-perso');
-toggle.addEventListener('click',()=>{const m=body.dataset.mode==='pro'?'perso':'pro';body.dataset.mode=m;lPro.classList.toggle('active',m==='pro');lPerso.classList.toggle('active',m==='perso')});
-toggle.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
-const ham=document.getElementById('hamburger'),nLinks=document.getElementById('nav-links'),nOverlay=document.getElementById('nav-overlay');
-function toggleMenu(){nLinks.classList.toggle('open');nOverlay.classList.toggle('open');document.body.style.overflow=nLinks.classList.contains('open')?'hidden':''}
-ham.addEventListener('click',toggleMenu);nOverlay.addEventListener('click',toggleMenu);
-nLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(nLinks.classList.contains('open'))toggleMenu()}));
-const ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
-document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
-function toggleFeed(btn){const b=btn.previousElementSibling;b.classList.toggle('truncated');b.classList.toggle('expanded');btn.textContent=b.classList.contains('truncated')?'Read more':'Show less'}
-function toggleMedia(btn){const b=btn.previousElementSibling;b.classList.toggle('truncated');b.classList.toggle('expanded');btn.textContent=b.classList.contains('truncated')?'Read more':'Show less'}
+// --- Supabase Init ---
+const SUPABASE_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
+const SUPABASE_ANON = 'sb_publishable_jvcjBK380uS79Gct7fzQ2A_jr8RyOSX';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+// --- Mode Toggle ---
+const body = document.body;
+const toggle = document.getElementById('toggle');
+const lPro = document.getElementById('label-pro');
+const lPerso = document.getElementById('label-perso');
+toggle.addEventListener('click', () => {
+  const m = body.dataset.mode === 'pro' ? 'perso' : 'pro';
+  body.dataset.mode = m;
+  lPro.classList.toggle('active', m === 'pro');
+  lPerso.classList.toggle('active', m === 'perso');
+});
+toggle.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
+});
+
+// --- Hamburger ---
+const ham = document.getElementById('hamburger');
+const nLinks = document.getElementById('nav-links');
+const nOverlay = document.getElementById('nav-overlay');
+function toggleMenu() {
+  nLinks.classList.toggle('open');
+  nOverlay.classList.toggle('open');
+  document.body.style.overflow = nLinks.classList.contains('open') ? 'hidden' : '';
+}
+ham.addEventListener('click', toggleMenu);
+nOverlay.addEventListener('click', toggleMenu);
+nLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+  if (nLinks.classList.contains('open')) toggleMenu();
+}));
+
+// --- Scroll Reveal ---
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
+
+// --- Smooth Scroll ---
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+// --- Toggle helpers ---
+function toggleFeed(btn) {
+  const b = btn.previousElementSibling;
+  b.classList.toggle('truncated');
+  b.classList.toggle('expanded');
+  btn.textContent = b.classList.contains('truncated') ? 'Read more' : 'Show less';
+}
+function toggleMedia(btn) {
+  const b = btn.previousElementSibling;
+  b.classList.toggle('truncated');
+  b.classList.toggle('expanded');
+  btn.textContent = b.classList.contains('truncated') ? 'Read more' : 'Show less';
+}
+
+// --- Feed: Fetch from Supabase & Render ---
+function esc(str) {
+  if (!str) return '';
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+function buildFeedCard(post) {
+  const isLI = post.platform === 'linkedin';
+  const iconId = isLI ? '#icon-linkedin' : '#icon-x';
+  const platformLabel = isLI ? 'LinkedIn' : '𝕏';
+  const handleDisplay = isLI ? `${post.handle} · LinkedIn` : post.handle;
+  const isLong = post.body && post.body.length > 280;
+
+  const card = document.createElement('div');
+  card.className = 'feed-card reveal';
+  card.innerHTML = `
+    <div class="feed-card-header">
+      <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="${esc(post.author)} avatar"></div>
+      <div class="feed-author-info">
+        <span class="feed-author">${esc(post.author)}</span>
+        <span class="feed-handle">${esc(handleDisplay)}</span>
+      </div>
+      <span class="feed-platform-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24"><use href="${iconId}"/></svg>
+      </span>
+    </div>
+    <div class="feed-body${isLong ? ' truncated' : ''}">${esc(post.body)}</div>
+    ${isLong ? '<button class="feed-read-more" onclick="toggleFeed(this)">Read more</button>' : ''}
+    <div class="feed-meta">
+      <span>♡ ${esc(post.likes || '0')}</span>
+      <span>💬 ${esc(post.comments || '0')}</span>
+      <span>🔄 ${esc(post.shares || '0')}</span>
+    </div>
+    <a href="${esc(post.link_url)}" target="_blank" rel="noopener" class="feed-link">View on ${platformLabel} →</a>
+  `;
+  return card;
+}
+
+async function loadFeed() {
+  try {
+    const { data, error } = await sb
+      .from('feed')
+      .select('*')
+      .order('sort_order', { ascending: true });
+
+    if (error) { console.error('Feed fetch error:', error); return; }
+    if (!data || data.length === 0) return;
+
+    const proGrid = document.getElementById('feed-grid-pro');
+    const persoGrid = document.getElementById('feed-grid-perso');
+
+    data.forEach(post => {
+      const card = buildFeedCard(post);
+      if (post.mode === 'pro') proGrid.appendChild(card);
+      else persoGrid.appendChild(card);
+    });
+
+    // Re-observe new cards for reveal animation
+    document.querySelectorAll('.feed-card.reveal:not(.visible)').forEach(el => ro.observe(el));
+  } catch (err) {
+    console.error('Feed load failed:', err);
+  }
+}
+
+loadFeed();
 </script>
 </body>
 </html>
