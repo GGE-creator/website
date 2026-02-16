@@ -41,6 +41,7 @@ body[data-mode="pro"] .content-perso,body[data-mode="perso"] .content-pro{displa
 body[data-mode="pro"] .photo-perso,body[data-mode="perso"] .photo-pro{display:none}
 body[data-mode="pro"] .motto-bg-perso,body[data-mode="perso"] .motto-bg-pro{opacity:0!important}
 body[data-mode="pro"] .motto-bg-pro,body[data-mode="perso"] .motto-bg-perso{opacity:1!important}
+
 body[data-mode="pro"] .hero-portrait-perso,body[data-mode="perso"] .hero-portrait-pro{display:none!important}
 
 body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px;opacity:.5}
@@ -86,8 +87,8 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hero-portrait-container{position:relative;width:100%;max-width:440px;aspect-ratio:3/4;border-radius:var(--radius);overflow:hidden}
 body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
 .hero-portrait-bg{display:none}
-.hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:.7}
-.hero-portrait-pro .hero-portrait-cutout{opacity:.7}
+.hero-portrait-cutout{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;z-index:1;opacity:1}
+.hero-portrait-pro .hero-portrait-cutout{opacity:1}
 
 .scroll-hint{position:absolute;bottom:32px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;opacity:.5;z-index:0;pointer-events:none}
 .scroll-hint span{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--text2)}
@@ -111,6 +112,7 @@ body[data-mode="perso"] .hero-portrait-container{box-shadow:none}
   .scroll-hint{bottom:12px}
   .photo-banner-text{font-size:1.15rem;padding:24px 20px;line-height:1.4;flex-direction:column}
   .photo-banner-text .mobile-br{display:block}
+  br.mobile-br{display:block}
 }
 
 section{padding:100px 0;transition:background .7s var(--ease)}
@@ -153,6 +155,7 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.4rem,3.5vw,2.8rem);font-weight:700;line-height:1.3;letter-spacing:-1px;text-align:center;padding:40px 24px}
 .photo-banner-text .mobile-br{display:none}
 .photo-banner-text span{display:inline}
+br.mobile-br{display:none}
 
 .skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
 .skill-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px 28px;transition:all .3s var(--ease);box-shadow:var(--card-shadow)}
@@ -169,6 +172,10 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .gallery-item-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8) 0%,transparent 50%);opacity:0;transition:opacity .3s;display:flex;flex-direction:column;justify-content:flex-end;padding:16px}
 .gallery-item:hover .gallery-item-overlay{opacity:1}
 .gallery-item-title{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:#fff}
+.gallery-item-artist{font-size:.75rem;color:rgba(255,255,255,.6)}
+.gallery-item-chain{position:absolute;top:12px;right:12px;font-size:.65rem;font-weight:600;padding:4px 10px;border-radius:20px;background:rgba(0,0,0,.5);color:#fff;backdrop-filter:blur(8px);letter-spacing:.5px;text-transform:uppercase}
+.gallery-placeholder{aspect-ratio:1;border-radius:var(--radius);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:.8rem;text-align:center;padding:20px;transition:border-color .3s}
+.gallery-placeholder:hover{border-color:var(--accent)}
 
 #media{padding:80px 0 60px}
 #media .section-title{margin-bottom:28px}
@@ -200,7 +207,9 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .feed-author{font-weight:600;font-size:.9rem}
 .feed-handle{font-size:.75rem;color:var(--text3)}
 .feed-platform-icon{margin-left:auto;display:flex;align-items:center}
-body[data-mode="perso"] .feed-platform-icon svg{opacity:.4}
+.feed-platform-icon img{width:20px;height:20px;opacity:.5;transition:opacity .2s}
+.feed-platform-icon img.dark-invert{filter:none}
+body[data-mode="perso"] .feed-platform-icon img.dark-invert{filter:invert(1);opacity:.4}
 .feed-body{font-size:.9rem;line-height:1.7;color:var(--text2);margin-bottom:12px;white-space:pre-line}
 .feed-body.truncated{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .feed-body.expanded{-webkit-line-clamp:unset;display:block}
@@ -235,9 +244,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 
-/* Loading skeleton */
-.cms-loading{min-height:200px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:.9rem}
-
 @media(max-width:900px){
   .about-grid{grid-template-columns:1fr}
   .skills-grid{grid-template-columns:repeat(2,1fr)}
@@ -257,13 +263,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </head>
 <body data-mode="pro">
 
-<!-- SVG ICONS -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
   <symbol id="icon-linkedin" viewBox="0 0 24 24"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></symbol>
   <symbol id="icon-x" viewBox="0 0 24 24"><path fill="currentColor" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
 </svg>
 
-<!-- NAV -->
 <nav>
   <div class="container">
     <a href="#" class="nav-logo">Giovanni Everduin<span>.</span></a>
@@ -287,26 +291,31 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </nav>
 <div class="nav-overlay" id="nav-overlay"></div>
 
-<!-- HERO -->
 <section class="hero">
   <div class="container">
     <div class="hero-layout">
       <div class="hero-content">
-        <div class="hero-pre content-pro" id="hero-pro-pre"></div>
-        <div class="hero-pre content-perso" id="hero-perso-pre"></div>
-        <h1 class="content-pro" id="hero-pro-h1"></h1>
-        <h1 class="content-perso" id="hero-perso-h1"></h1>
-        <p class="hero-sub content-pro" id="hero-pro-sub"></p>
-        <p class="hero-sub content-perso" id="hero-perso-sub"></p>
-        <div class="hero-tags content-pro" id="hero-tags-pro"></div>
-        <div class="hero-tags content-perso" id="hero-tags-perso"></div>
+        <div class="hero-pre content-pro">Strategy · Innovation · Ventures</div>
+        <div class="hero-pre content-perso">Crypto · Culture · Collecting</div>
+        <h1 class="content-pro">Building the <span class="highlight">future</span><br>of banking since<br>before it was cool</h1>
+        <h1 class="content-perso">A <span style="color:#fff">closeted</span><br><span class="highlight">DeFi maxi</span><br>in a banker's suit</h1>
+        <p class="hero-sub content-pro">Chief Strategy &amp; Innovation Officer and Co-founder of CBIx. Harvard Business School alum with 20+ years turning bold ideas into working products across fintech, AI, and digital transformation.</p>
+        <p class="hero-sub content-perso">NFT collector, hip-hop head, and art enthusiast navigating multiple identities across web3 communities, Bitcoin Ordinals, and the occasional shisha session. There's always more to the book than the cover.</p>
+        <div class="hero-tags content-pro">
+          <span class="tag">Fintech</span><span class="tag">Innovation</span><span class="tag">AI &amp; Crypto</span>
+          <span class="tag">Board Director</span><span class="tag">Start Up Mentor</span><span class="tag">Adviser &amp; VC</span>
+        </div>
+        <div class="hero-tags content-perso">
+          <span class="tag">Ordinals OG</span><span class="tag">NFT Enjoyoor</span><span class="tag">Sneakerhead</span>
+          <span class="tag">Art Collector</span><span class="tag">Film Producer</span><span class="tag">Karaoke King</span>
+        </div>
       </div>
       <div class="hero-portrait-wrap">
         <div class="hero-portrait-container hero-portrait-pro">
-          <img class="hero-portrait-cutout" id="hero-pro-portrait" src="" alt="Giovanni Everduin">
+          <img class="hero-portrait-cutout" src="./images/blazer-cutout.png" alt="Giovanni Everduin">
         </div>
         <div class="hero-portrait-container hero-portrait-perso">
-          <img class="hero-portrait-cutout" id="hero-perso-portrait" src="" alt="Giovanni Everduin">
+          <img class="hero-portrait-cutout" src="./images/hoodie-cutout.png" alt="Giovanni Everduin">
         </div>
       </div>
     </div>
@@ -314,414 +323,250 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="scroll-hint"><span>Scroll</span><div class="scroll-line"></div></div>
 </section>
 
-<!-- ABOUT -->
 <section id="about">
   <div class="container">
     <div class="section-label reveal">About</div>
     <div class="content-pro">
-      <div class="section-title reveal" id="about-pro-title"></div>
+      <div class="section-title reveal">A <span class="highlight">strategist</span> who builds,<br>not just advises</div>
       <div class="about-grid">
-        <div class="about-text reveal" id="about-pro-body"></div>
-        <div class="stats-grid reveal" id="stats-pro"></div>
+        <div class="about-text reveal">
+          <p><strong>Giovanni Gavino Everduin</strong> — most people call him Gio — is a Harvard Business School alum (GMP21) with over two decades of experience driving transformation across banking, fintech, and digital innovation. A true citizen of the world, he has lived and worked across <strong>10 countries</strong> spanning Europe, North America, Central America and the Middle East.</p>
+          <p>Currently the <strong>Chief Strategy &amp; Innovation Officer</strong> and <strong>Head of Ventures</strong> at Commercial Bank International (CBI) in Dubai, and <strong>Co-founder of CBIx</strong> — CBI's independent innovation subsidiary exploring AI, tokenized assets, Web3, gaming, and next-gen banking models.</p>
+          <p>Before CBI, Gio held senior roles at <strong>Accenture in London</strong> (advising Fortune 500 firms), <strong>Emirates NBD's Tanfeeth</strong> (as Chief People Officer), and ran his own consulting firm. He speaks at global stages including <strong>Ai4 Las Vegas, the UN, GITEX, InMerge and GFTN</strong>, and mentors early-stage founders through accelerators like <strong>Ascend</strong> - the world's first ever RWA accelerator - and the <strong>SUI Foundation</strong>.</p>
+        </div>
+        <div class="stats-grid reveal">
+          <div class="stat-card"><div class="stat-number">20+</div><div class="stat-label">Years of experience</div></div>
+          <div class="stat-card"><div class="stat-number">10</div><div class="stat-label">Countries lived &amp; worked</div></div>
+          <div class="stat-card"><div class="stat-number">150k+</div><div class="stat-label">Miles spent on a plane<br>each year</div></div>
+          <div class="stat-card"><div class="stat-number">Top 5%</div><div class="stat-label">LinkedIn creator<br>Crypto &amp; Fintech | UAE</div></div>
+        </div>
       </div>
     </div>
     <div class="content-perso">
-      <div class="section-title reveal" id="about-perso-title"></div>
+      <div class="section-title reveal">The <span class="highlight">person</span> behind<br>the persona</div>
       <div class="about-grid">
-        <div class="about-text reveal" id="about-perso-body"></div>
-        <div class="stats-grid reveal" id="stats-perso"></div>
+        <div class="about-text reveal">
+          <p>By day, Gio runs strategy and innovation for a bank. By night and over weekends, he exists across <strong>multiple identities</strong> in fundamentally different communities — from Bitcoin Ordinals maxis who'd lose it if they knew he works at a bank, to Ethereum collectors, Solana degens, and hip-hop heads.</p>
+          <p>His on-chain art collection includes <strong>1/1 art pieces</strong> by artists like Tony Tafuro, No Legs, Scrog and Rupture — each representing a different facet of who he is across the real world, Discord, Telegram, and various SoFi platforms. His alter egos span an OMB, a Doodle, a ZMB, and a Bearmarketeer.</p>
+          <p>He also produces <strong>films and documentaries</strong>, has provided creative direction for fashion brands, and once produced an award-winning documentary on women's empowerment called <strong><a href="https://www.youtube.com/watch?v=pWujTMejs0Q&t=33s" target="_blank" style="color:var(--accent);text-decoration:underline">"SHE"</a></strong>. Outside of screens, you'll find him reading The Business of Fashion, going down HBR rabbit holes at 5AM, or collecting art that tells stories worth telling.</p>
+        </div>
+        <div class="stats-grid reveal">
+          <div class="stat-card"><div class="stat-number">10+</div><div class="stat-label">Undoxxed alter egos &amp; PFPs</div></div>
+          <div class="stat-card"><div class="stat-number">5AM</div><div class="stat-label">Daily wake-up call</div></div>
+          <div class="stat-card"><div class="stat-number">100+</div><div class="stat-label">Crypto wallets, most of which forgotten</div></div>
+          <div class="stat-card"><div class="stat-number">15</div><div class="stat-label">Film Festival Awards</div></div>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- LOGO CAROUSEL -->
 <section class="logos-section">
   <div class="logos-track-wrapper">
-    <div class="logos-track content-pro" id="logos-pro"></div>
-    <div class="logos-track content-perso" id="logos-perso"></div>
+    <!-- Formal logos -->
+    <div class="logos-track content-pro">
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=128" alt="Accenture"><span class="logo-text">Accenture</span></div>
+      <div class="logo-item"><img src="./images/logo-enbd.jpeg" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
+      <div class="logo-item"><img src="./images/logo-sui.jpeg" alt="Sui"><span class="logo-text">Sui Foundation</span></div>
+      <div class="logo-item"><img src="./images/logo-plume.png" alt="Plume"><span class="logo-text">Plume</span></div>
+      <div class="logo-item"><img src="./images/logo-cbi.jpeg" alt="CBI"><span class="logo-text">Commercial Bank International</span></div>
+      <div class="logo-item"><img src="./images/logo-tajikistan.jpeg" alt="Tajikistan"><span class="logo-text logo-text-sm">Tajikistan Ministry of Industry &amp; New Technologies</span></div>
+      <div class="logo-item"><img src="./images/logo-zypl.jpeg" alt="Zypl"><span class="logo-text">Zypl.ai</span></div>
+      <div class="logo-item"><img src="./images/logo-tumar.jpeg" alt="Tumar"><span class="logo-text">Tumar Fund</span></div>
+      <div class="logo-item"><img src="./images/logo-un.jpeg" alt="UN"><span class="logo-text">United Nations</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=accenture.com&sz=128" alt="Accenture"><span class="logo-text">Accenture</span></div>
+      <div class="logo-item"><img src="./images/logo-enbd.jpeg" alt="Emirates NBD"><span class="logo-text">Emirates NBD</span></div>
+      <div class="logo-item"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="HBS"><span class="logo-text">Harvard Business School</span></div>
+      <div class="logo-item"><img src="./images/logo-sui.jpeg" alt="Sui"><span class="logo-text">Sui Foundation</span></div>
+      <div class="logo-item"><img src="./images/logo-plume.png" alt="Plume"><span class="logo-text">Plume</span></div>
+      <div class="logo-item"><img src="./images/logo-cbi.jpeg" alt="CBI"><span class="logo-text">Commercial Bank International</span></div>
+      <div class="logo-item"><img src="./images/logo-tajikistan.jpeg" alt="Tajikistan"><span class="logo-text logo-text-sm">Tajikistan Ministry of Industry &amp; New Technologies</span></div>
+      <div class="logo-item"><img src="./images/logo-zypl.jpeg" alt="Zypl"><span class="logo-text">Zypl.ai</span></div>
+      <div class="logo-item"><img src="./images/logo-tumar.jpeg" alt="Tumar"><span class="logo-text">Tumar Fund</span></div>
+      <div class="logo-item"><img src="./images/logo-un.jpeg" alt="UN"><span class="logo-text">United Nations</span></div>
+    </div>
+    <!-- Informal logos -->
+    <div class="logos-track content-perso">
+      <div class="logo-item"><img src="./images/logo-artsdao.jpeg" alt="ArtsDAO"><span class="logo-text">ArtsDAO</span></div>
+      <div class="logo-item"><img src="./images/logo-monkedao.jpeg" alt="MonkeDAO"><span class="logo-text">MonkeDAO</span></div>
+      <div class="logo-item"><img src="./images/logo-monkeventures.jpeg" alt="Monke Ventures"><span class="logo-text">Monke Ventures</span></div>
+      <div class="logo-item"><img src="./images/logo-theartsclub.jpeg" alt="The Arts Club"><span class="logo-text">The Arts Club</span></div>
+      <div class="logo-item"><img src="./images/logo-zmb.jpeg" alt="ZMB"><span class="logo-text">ZMB</span></div>
+      <div class="logo-item"><img src="./images/logo-omb.jpeg" alt="OMB"><span class="logo-text">OMB</span></div>
+      <div class="logo-item"><img src="./images/logo-rtfkt.jpeg" alt="RTFKT"><span class="logo-text">RTFKT</span></div>
+      <div class="logo-item"><img src="./images/logo-pudgypenguins.jpeg" alt="Pudgy Penguins"><span class="logo-text">Pudgy Penguins</span></div>
+      <div class="logo-item"><img src="./images/logo-artsdao.jpeg" alt="ArtsDAO"><span class="logo-text">ArtsDAO</span></div>
+      <div class="logo-item"><img src="./images/logo-monkedao.jpeg" alt="MonkeDAO"><span class="logo-text">MonkeDAO</span></div>
+      <div class="logo-item"><img src="./images/logo-monkeventures.jpeg" alt="Monke Ventures"><span class="logo-text">Monke Ventures</span></div>
+      <div class="logo-item"><img src="./images/logo-theartsclub.jpeg" alt="The Arts Club"><span class="logo-text">The Arts Club</span></div>
+      <div class="logo-item"><img src="./images/logo-zmb.jpeg" alt="ZMB"><span class="logo-text">ZMB</span></div>
+      <div class="logo-item"><img src="./images/logo-omb.jpeg" alt="OMB"><span class="logo-text">OMB</span></div>
+      <div class="logo-item"><img src="./images/logo-rtfkt.jpeg" alt="RTFKT"><span class="logo-text">RTFKT</span></div>
+      <div class="logo-item"><img src="./images/logo-pudgypenguins.jpeg" alt="Pudgy Penguins"><span class="logo-text">Pudgy Penguins</span></div>
+    </div>
   </div>
 </section>
 
-<!-- EXPERIENCE -->
 <section id="experience">
   <div class="container">
     <div class="section-label reveal">Experience</div>
     <div class="content-pro">
       <div class="section-title reveal">Over <span class="highlight">two decades</span> of building<br>things that matter</div>
-      <div class="timeline reveal" id="timeline-pro"></div>
+      <div class="timeline reveal">
+        <div class="timeline-item"><div class="timeline-year">NOW</div><div><div class="timeline-role">Co-founder, CBIx</div><div class="timeline-company">Commercial Bank International</div><div class="timeline-desc">Independent innovation subsidiary exploring AI, tokenized assets, Web3, gaming &amp; next-gen banking models across the UAE and beyond.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">NOW</div><div><div class="timeline-role">Chief Strategy &amp; Innovation Officer</div><div class="timeline-company">Commercial Bank International</div><div class="timeline-desc">Leading strategy, transformation, CX, BI, ventures, fintech partnerships, innovation lab, Web3, AI, and metaverse initiatives. Multiple "First Bank to" accolades in the UAE.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2024</div><div><div class="timeline-role">Non Executive Board Director</div><div class="timeline-company">Zypl</div><div class="timeline-desc">Board seat at a fast growing pre Series A global AI &amp; synthetic data startup.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2023</div><div><div class="timeline-role">Advisory Board Member</div><div class="timeline-company">Luna PR</div><div class="timeline-desc">Global, award-winning integrated communications consultancy &amp; agency.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2011</div><div><div class="timeline-role">Chief People Officer</div><div class="timeline-company">Tanfeeth (Emirates NBD)</div><div class="timeline-desc">Created award winning culture and operating model for a hyper growth startup documented in a Harvard Business School case study.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2014</div><div><div class="timeline-role">Managing Partner</div><div class="timeline-company">ETNICITY Group</div><div class="timeline-desc">Strategy consulting across people analytics, organizational design, and transformation for clients globally.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2004</div><div><div class="timeline-role">Strategy Consultant</div><div class="timeline-company">Accenture, London</div><div class="timeline-desc">Led global change programs and advised Fortune 500 boards on organizational strategy, culture, and analytics.</div></div></div>
+      </div>
     </div>
     <div class="content-perso">
       <div class="section-title reveal">The <span class="highlight">side quests</span> that<br>became main quests</div>
-      <div class="timeline reveal" id="timeline-perso"></div>
+      <div class="timeline reveal">
+        <div class="timeline-item"><div class="timeline-year">NOW</div><div><div class="timeline-role">Multi-chain Collector &amp; Community Member</div><div class="timeline-company">Bitcoin Ordinals · Ethereum · Solana</div><div class="timeline-desc">Ordinal Maxi Biz, Doodle, BAYC, ZMB, MonkeDAO and Monke Ventures. Close internet &amp; Discord friends who meet IRL once a year.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2022</div><div><div class="timeline-role">Metaverse Explorer &amp; DeFi Maxi</div><div class="timeline-company">Terrible trader - great navigator</div><div class="timeline-desc">First bank in the Middle East to enter the metaverse. Solana &amp; BTC Maxi engaged in memecoining, vaults and stable yields</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2015</div><div><div class="timeline-role">Film Producer</div><div class="timeline-company">Independent</div><div class="timeline-desc">Produced "SHE," an award-winning documentary on women's empowerment. Started with "The Journey is the Destination" for My Dubai, premiered at DIFF.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">2010s</div><div><div class="timeline-role">Creative Director &amp; Content Producer</div><div class="timeline-company">Fashion &amp; Lifestyle Brands</div><div class="timeline-desc">Creative direction for a fashion brand, producing commercials and online content for global lifestyle brands.</div></div></div>
+        <div class="timeline-item"><div class="timeline-year">Always</div><div><div class="timeline-role">Hip-Hop, Sneakerhead &amp; Art Collector</div><div class="timeline-company">Everywhere</div><div class="timeline-desc">Eminem and Drake karaoke king. Former MC and radio show host. On-chain &amp; physical art collector because art invokes emotions. I likely own more sneakers than any sane person.</div></div></div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- PHOTO BANNER -->
 <div class="photo-banner">
-  <img class="photo-pro" id="banner-pro-img" src="" alt="Giovanni speaking">
-  <img class="photo-perso" id="banner-perso-img" src="" alt="Giovanni casual">
-  <div class="photo-banner-text content-pro" id="banner-pro-text"></div>
-  <div class="photo-banner-text content-perso" id="banner-perso-text"></div>
+  <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni speaking">
+  <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni casual">
+  <div class="photo-banner-text content-pro">Building what's next —<br class="mobile-br"> from the <span class="highlight">boardroom</span><br class="mobile-br"> to the blockchain</div>
+  <div class="photo-banner-text content-perso">Multiple identities.<br class="mobile-br"> One person.<br class="mobile-br"> Always <span class="highlight">more to the story</span></div>
 </div>
 
-<!-- NFT GALLERY -->
 <section id="gallery" class="content-perso">
   <div class="container">
     <div class="section-label reveal">Collection</div>
     <div class="section-title reveal">The <span class="highlight">on-chain art</span> gallery</div>
     <p style="color:var(--text2);margin-bottom:40px;max-width:560px;line-height:1.7" class="reveal">Each piece represents a different identity, community, or moment. Collected across chains, displayed without borders.</p>
-    <div class="gallery-grid reveal" id="gallery-grid"></div>
+    <div class="gallery-grid reveal">
+      <div class="gallery-item"><img src="./images/NFT/Apostles%20by%20No%20Legs.jpeg" alt="Apostles by No Legs"><div class="gallery-item-overlay"><span class="gallery-item-title">Apostles by No Legs</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Azuki.jpeg" alt="Azuki"><div class="gallery-item-overlay"><span class="gallery-item-title">Azuki</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/BagHeads%20by%20Pfffle.jpeg" alt="BagHeads by Pfffle"><div class="gallery-item-overlay"><span class="gallery-item-title">BagHeads by Pfffle</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Bored%20Ape%20Yacht%20Club.jpeg" alt="Bored Ape Yacht Club"><div class="gallery-item-overlay"><span class="gallery-item-title">Bored Ape Yacht Club</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Braincells%20by%20Scrog.jpeg" alt="Braincells by Scrog"><div class="gallery-item-overlay"><span class="gallery-item-title">Braincells by Scrog</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Doodles.jpeg" alt="Doodles"><div class="gallery-item-overlay"><span class="gallery-item-title">Doodles</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Hats.jpeg" alt="Hats"><div class="gallery-item-overlay"><span class="gallery-item-title">Hats</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/NodeMonkes.jpeg" alt="NodeMonkes"><div class="gallery-item-overlay"><span class="gallery-item-title">NodeMonkes</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/OMB%202.jpeg" alt="OMB 2"><div class="gallery-item-overlay"><span class="gallery-item-title">OMB</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Scripture%20by%20No%20Legs.jpeg" alt="Scripture by No Legs"><div class="gallery-item-overlay"><span class="gallery-item-title">Scripture by No Legs</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Solana Monkey Business"><div class="gallery-item-overlay"><span class="gallery-item-title">Solana Monkey Business</span></div></div>
+      <div class="gallery-item"><img src="./images/NFT/Zero%20Monke%20Biz%20by%20Tony%20Tafuro.jpeg" alt="Zero Monke Biz by Tony Tafuro"><div class="gallery-item-overlay"><span class="gallery-item-title">Zero Monke Biz by Tony Tafuro</span></div></div>
+    </div>
   </div>
 </section>
 
-<!-- IN THE MEDIA -->
 <section id="media" class="content-pro">
   <div class="container">
     <div class="section-label reveal">In The Media</div>
     <div class="section-title reveal">In the <span class="highlight">media</span></div>
-    <div class="media-grid reveal" id="media-grid"></div>
+    <div class="media-grid reveal">
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=theluxuryplaybook.com&sz=128" alt="The Luxury Playbook"></div><div class="media-card-body"><div class="media-card-source">The Luxury Playbook<span class="media-card-type">Interview</span></div><div class="media-card-title">The Strategist Propelling Innovation at Commercial Bank International</div><div class="media-card-text truncated">A long-form profile exploring how Gio bridges traditional banking with emerging technologies — from AI and tokenized assets to Web3 and gaming. The piece covers his Harvard Business School background, the founding of CBIx, and why he believes the best innovation happens when you give builders real autonomy inside legacy institutions. It also touches on his multidimensional identity — from NFT collector to film producer — and how that shapes his approach to strategy.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://share.google/X2c9kFR0h9i0HvLY8" target="_blank" class="media-card-link">Read on The Luxury Playbook →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=entrepreneur.com&sz=128" alt="Entrepreneur ME"></div><div class="media-card-body"><div class="media-card-source">Entrepreneur Middle East · Oct 2025<span class="media-card-type">Feature</span></div><div class="media-card-title">The UAE's New Hub for AI, FinTech, Web3, and Disruptive Ventures</div><div class="media-card-text truncated">Coverage of the official launch of CBIx, CBI's independent innovation subsidiary co-founded by Gio. The article details how CBIx bridges emerging technologies with real-world banking applications, from tokenized assets and AI-driven finance to gaming-focused financial products built with the DIFC gaming hub. It also covers early partnerships with QNB, Al Farabi Innovation Hub, and the Ascend RWA Accelerator for tokenization projects.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.entrepreneur.com/en-ae/news-and-trends/the-uaes-new-hub-for-ai-fintech-web3-and-disruptive/498849" target="_blank" class="media-card-link">Read on Entrepreneur ME →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=apple.com&sz=128" alt="Couchonomics Podcast"></div><div class="media-card-body"><div class="media-card-source">Couchonomics with Arjun<span class="media-card-type">Podcast</span></div><div class="media-card-title">What Innovation Actually Looks Like Inside a Regulated Bank</div><div class="media-card-text truncated">A candid conversation with Arjun Singh about the reality of innovating within regulatory guardrails. Gio unpacks how banks and fintechs are shifting from competition to collaboration, why the future of finance will be hybrid rather than fully on-chain, and how regulation can actually act as a catalyst for innovation. The discussion covers tokenization, stablecoins, privacy, and why understanding the problem always matters more than chasing the latest technology.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://podcasts.apple.com/ye/podcast/couchonomics-with-arjun/id1617252446" target="_blank" class="media-card-link">Listen on Apple Podcasts →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=podbean.com&sz=128" alt="Chief Digital Heroes"></div><div class="media-card-body"><div class="media-card-source">Chief Digital Heroes in Banking<span class="media-card-type">Podcast</span></div><div class="media-card-title">Balancing Compliance and Creativity in Financial Innovation</div><div class="media-card-text truncated">Gio joins host Matthew to explore the critical role of innovation in the financial sector. The episode covers why banks need to embrace AI and blockchain, how to foster collaboration between innovation and compliance teams, and how cognitive cities and holographic technology could change customer interactions. He also shares insights on sustainability in banking and how synthetic data is improving predictive accuracy in credit scoring and risk modeling.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://chiefdigitalheroes.podbean.com/e/commercial-bank-international-s-giovanni-everduin-on-balancing-compliance-and-creativity/" target="_blank" class="media-card-link">Listen on Podbean →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="Harvard Business School"></div><div class="media-card-body"><div class="media-card-source">Harvard Business School · 2015<span class="media-card-type">Case Study</span></div><div class="media-card-title">Tanfeeth: Bringing Service Excellence to the GCC</div><div class="media-card-text truncated">An HBS case study documenting the creation and rapid growth of Tanfeeth, Emirates NBD's shared services subsidiary. Gio was part of the founding team that scaled the operation from 20 to 3,000 people in under three years, building an award-winning business model and culture in a market that said it couldn't be done. The case became part of the Harvard curriculum, examining organizational design, people analytics, and transformation in the GCC.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.hbs.edu/faculty/Pages/default.aspx" target="_blank" class="media-card-link">Harvard Business School →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=azertag.az&sz=128" alt="AZERTAC Interview"></div><div class="media-card-body"><div class="media-card-source">AZERTAC (Azerbaijan State News Agency)<span class="media-card-type">Interview</span></div><div class="media-card-title">Azerbaijan as a Regional Hub for Fintech and Blockchain</div><div class="media-card-text truncated">An exclusive interview with Azerbaijan's state news agency on the country's potential as a fintech and blockchain hub. Gio discusses cross-border financial innovation, the role of regulatory frameworks in enabling digital asset ecosystems, and how emerging markets in Central Asia and the Caucasus can leapfrog traditional financial infrastructure by embracing technology-first approaches.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://azertag.az/en/xeber/azerbaijan_as_a_regional_hub_for_fintech_and_blockchain_an_exclusive_interview_with_giovanni_everduin-3862947" target="_blank" class="media-card-link">Read on AZERTAC →</a></div></div>
+      <div class="media-card"><div class="media-card-img"><img src="./images/logo-un.jpeg" alt="United Nations"></div><div class="media-card-body"><div class="media-card-source">Asia-Plus Tajikistan · Mar 2025<span class="media-card-type">Feature</span></div><div class="media-card-title">Tajikistan Proposes AI Regulation Initiative at the United Nations</div><div class="media-card-text truncated">Coverage of Tajikistan's UN resolution on Artificial Intelligence, introduced by the Ministry of Industry and New Technologies — an institution Gio has been advising. The initiative proposes a horizontal self-regulation approach for AI in Central Asia, including supporting regional AI startups and establishing a Regional AI Center for computing power, joint research, and data-sharing. The resolution seeks to balance technological progress and security while ensuring developing countries' interests are represented.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://asiaplustj.info/en/node/346663" target="_blank" class="media-card-link">Read on Asia-Plus →</a></div></div>
+    </div>
   </div>
 </section>
 
-<!-- SOCIAL FEED -->
 <section id="feed">
   <div class="container">
     <div class="section-label reveal">Latest</div>
     <div class="content-pro">
       <div class="section-title reveal">Latest from the <span class="highlight">boardroom</span></div>
-      <div class="feed-grid" id="feed-pro"></div>
+      <div class="feed-grid">
+        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span></div><div class="feed-body truncated">The future of banking in the Middle East isn't about catching up — it's about leapfrogging. At CBIx, we're proving that a 100-year-old institution can out-innovate fintechs when you give builders real autonomy inside the machine.
+
+Here's what most people get wrong about corporate innovation: they treat it like R&amp;D. But innovation isn't a department. It's an operating system. We embedded it into credit, payments, and onboarding simultaneously — and the results speak for themselves.
+
+Three things I've learned building inside a legacy bank that every fintech founder should know...</div><button class="feed-read-more" onclick="toggleFeed(this)">Read more</button><div class="feed-meta"><span>♡ 847</span><span>💬 63</span><span>🔄 122</span></div><a href="https://www.linkedin.com/in/geverduin/" target="_blank" class="feed-link">View on LinkedIn →</a></div>
+        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Giovanni Everduin</span><span class="feed-handle">@geverduin · LinkedIn</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-linkedin"/></svg></span></div><div class="feed-body truncated">Just wrapped up a panel at Dubai FinTech Summit on the convergence of traditional finance and digital assets. The room was split — half skeptics, half believers. My take?
+
+The skeptics aren't wrong about the risks. The believers aren't wrong about the opportunity. The winners will be those who can hold both truths simultaneously and build accordingly.
+
+Regulation isn't the enemy of innovation. Bad regulation is. And what I'm seeing from ADGM and DIFC gives me genuine optimism about the UAE's trajectory...</div><button class="feed-read-more" onclick="toggleFeed(this)">Read more</button><div class="feed-meta"><span>♡ 1.2k</span><span>💬 94</span><span>🔄 201</span></div><a href="https://www.linkedin.com/in/geverduin/" target="_blank" class="feed-link">View on LinkedIn →</a></div>
+      </div>
       <p class="feed-placeholder-note">⚡ Live LinkedIn feed — connect API to replace placeholders</p>
     </div>
     <div class="content-perso">
       <div class="section-title reveal">Latest from the <span class="highlight">timeline</span></div>
-      <div class="feed-grid" id="feed-perso"></div>
+      <div class="feed-grid">
+        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span></div><div class="feed-body">just mass-bid on 12 ordinals inscriptions during a meeting about Q2 credit card strategy. the duality of man is real and he works in banking. 🦁⚡</div><div class="feed-meta"><span>♡ 342</span><span>💬 28</span><span>🔄 47</span><span style="margin-left:auto;opacity:.5">2h</span></div><a href="https://x.com/geverduin" target="_blank" class="feed-link">View on 𝕏 →</a></div>
+        <div class="feed-card reveal"><div class="feed-card-header"><div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div><div class="feed-author-info"><span class="feed-author">Gio</span><span class="feed-handle">@geverduin</span></div><span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#icon-x"/></svg></span></div><div class="feed-body">unpopular opinion: the best NFT art isn't on ETH or SOL right now. it's on BTC ordinals and nobody in tradfi wants to admit they're collecting because "bitcoin is supposed to be money not art."
+
+brother, everything is art if you're paying enough. 🎨</div><div class="feed-meta"><span>♡ 891</span><span>💬 73</span><span>🔄 156</span><span style="margin-left:auto;opacity:.5">8h</span></div><a href="https://x.com/geverduin" target="_blank" class="feed-link">View on 𝕏 →</a></div>
+      </div>
       <p class="feed-placeholder-note">⚡ Live 𝕏 feed — connect API to replace placeholders</p>
     </div>
   </div>
 </section>
 
-<!-- MOTTO -->
 <section class="motto-section">
-  <div class="motto-bg motto-bg-pro" id="motto-pro-bg"></div>
-  <div class="motto-bg motto-bg-perso" id="motto-perso-bg"></div>
+  <div class="motto-bg motto-bg-pro" style="background-image:url('./images/speaking2.jpeg')"></div>
+  <div class="motto-bg motto-bg-perso" style="background-image:url('./images/stage.jpeg')"></div>
   <div class="container">
-    <div class="content-pro reveal">
-      <div class="motto-quote" id="motto-pro-quote"></div>
-      <div class="motto-attr" id="motto-pro-attr"></div>
-    </div>
-    <div class="content-perso reveal">
-      <div class="motto-quote" id="motto-perso-quote"></div>
-      <div class="motto-attr" id="motto-perso-attr"></div>
-    </div>
+    <div class="content-pro reveal"><div class="motto-quote">To predict the future of banking, you need to understand the <span class="highlight">future of everything</span></div><div class="motto-attr">— Giovanni Everduin</div></div>
+    <div class="content-perso reveal"><div class="motto-quote">We are <span class="highlight">multi-dimensional</span> beings. There is always more to the book than the cover</div><div class="motto-attr">— Gio, somewhere on LinkedIn</div></div>
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer id="contact">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
         <h3>Giovanni<span>.</span></h3>
-        <p class="content-pro" id="footer-pro-desc"></p>
-        <p class="content-perso" id="footer-perso-desc"></p>
+        <p class="content-pro">Strategy, innovation, and ventures at the intersection of traditional finance and emerging technology. Based in Dubai, building globally.</p>
+        <p class="content-perso">A multi-dimensional human navigating web3 communities, art worlds, and hip-hop culture — with a banker's day job and a collector's obsession.</p>
       </div>
-      <div class="footer-col" id="footer-connect">
+      <div class="footer-col">
         <h4>Connect</h4>
+        <a href="https://www.linkedin.com/in/geverduin/" target="_blank">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
+        <a href="https://x.com/geverduin" target="_blank">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
+        <a href="https://wa.me/14155238886" target="_blank">WhatsApp<br><span class="link-sub">Get in touch with my Media &amp; PR team</span></a>
+        <a href="mailto:giovanni.everduin@gmail.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
-      <div class="footer-col" id="footer-speaking">
+      <div class="footer-col">
         <h4>Speaking &amp; Advisory</h4>
+        <a href="https://wa.me/14155238886" target="_blank">Keynote Inquiries</a>
+        <a href="https://wa.me/14155238886" target="_blank">Advisory &amp; Board Roles</a>
+        <a href="https://wa.me/14155238886" target="_blank">Startup Mentoring</a>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Giovanni Everduin. Dubai, UAE.</span>
-      <div class="footer-socials" id="footer-socials"></div>
+      <div class="footer-socials">
+        <a href="https://www.linkedin.com/in/geverduin/" target="_blank" title="LinkedIn">in</a>
+        <a href="https://x.com/geverduin" target="_blank" title="X">𝕏</a>
+        <a href="mailto:giovanni.everduin@gmail.com" title="Email">@</a>
+      </div>
     </div>
   </div>
 </footer>
 
-<!-- SUPABASE SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-/* ========================================
-   SUPABASE CONFIG
-   ======================================== */
-const SB_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5nd2NibGV1dGh5enFrbGRjZmd3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzI0MTgsImV4cCI6MjA4Njc0ODQxOH0.sW3mvGI5zSFdNffOHvQ8BwmzyV6j8GIVmKkBIxEi0rI';
-const sb = supabase.createClient(SB_URL, SB_KEY);
-
-/* ========================================
-   FETCH ALL DATA
-   ======================================== */
-async function loadSite() {
-  try {
-    const [
-      { data: hero },
-      { data: heroTags },
-      { data: about },
-      { data: stats },
-      { data: logos },
-      { data: tl },
-      { data: mediaItems },
-      { data: feedItems },
-      { data: galleryItems },
-      { data: motto },
-      { data: banner },
-      { data: footerData }
-    ] = await Promise.all([
-      sb.from('hero').select('*').eq('id', 'singleton').single(),
-      sb.from('hero_tags').select('*').order('sort_order'),
-      sb.from('about').select('*').eq('id', 'singleton').single(),
-      sb.from('stats').select('*').order('sort_order'),
-      sb.from('logos').select('*').order('sort_order'),
-      sb.from('timeline').select('*').order('sort_order'),
-      sb.from('media').select('*').order('sort_order'),
-      sb.from('feed').select('*').order('sort_order'),
-      sb.from('gallery').select('*').order('sort_order'),
-      sb.from('motto').select('*').eq('id', 'singleton').single(),
-      sb.from('photo_banner').select('*').eq('id', 'singleton').single(),
-      sb.from('footer').select('*').eq('id', 'singleton').single()
-    ]);
-
-    renderHero(hero, heroTags);
-    renderAbout(about, stats);
-    renderLogos(logos);
-    renderTimeline(tl);
-    renderMedia(mediaItems);
-    renderFeed(feedItems);
-    renderGallery(galleryItems);
-    renderMotto(motto);
-    renderBanner(banner);
-    renderFooter(footerData);
-    initReveal();
-  } catch (err) {
-    console.error('Failed to load site data:', err);
-  }
-}
-
-/* ========================================
-   RENDER FUNCTIONS
-   ======================================== */
-function renderHero(h, tags) {
-  if (!h) return;
-  document.getElementById('hero-pro-pre').innerHTML = h.pro_pre;
-  document.getElementById('hero-perso-pre').innerHTML = h.perso_pre;
-  document.getElementById('hero-pro-h1').innerHTML = h.pro_h1;
-  document.getElementById('hero-perso-h1').innerHTML = h.perso_h1;
-  document.getElementById('hero-pro-sub').textContent = h.pro_sub;
-  document.getElementById('hero-perso-sub').textContent = h.perso_sub;
-  document.getElementById('hero-pro-portrait').src = h.pro_portrait_url;
-  document.getElementById('hero-perso-portrait').src = h.perso_portrait_url;
-
-  const proTags = tags.filter(t => t.mode === 'pro');
-  const persoTags = tags.filter(t => t.mode === 'perso');
-  document.getElementById('hero-tags-pro').innerHTML = proTags.map(t => `<span class="tag">${t.label}</span>`).join('');
-  document.getElementById('hero-tags-perso').innerHTML = persoTags.map(t => `<span class="tag">${t.label}</span>`).join('');
-}
-
-function renderAbout(a, allStats) {
-  if (!a) return;
-  document.getElementById('about-pro-title').innerHTML = a.pro_title;
-  document.getElementById('about-pro-body').innerHTML = a.pro_body;
-  document.getElementById('about-perso-title').innerHTML = a.perso_title;
-  document.getElementById('about-perso-body').innerHTML = a.perso_body;
-
-  const proStats = allStats.filter(s => s.mode === 'pro');
-  const persoStats = allStats.filter(s => s.mode === 'perso');
-  document.getElementById('stats-pro').innerHTML = proStats.map(s =>
-    `<div class="stat-card"><div class="stat-number">${s.number}</div><div class="stat-label">${s.label}</div></div>`
-  ).join('');
-  document.getElementById('stats-perso').innerHTML = persoStats.map(s =>
-    `<div class="stat-card"><div class="stat-number">${s.number}</div><div class="stat-label">${s.label}</div></div>`
-  ).join('');
-}
-
-function renderLogos(allLogos) {
-  ['pro', 'perso'].forEach(mode => {
-    const el = document.getElementById('logos-' + mode);
-    const items = allLogos.filter(l => l.mode === mode);
-    const html = items.map(l =>
-      `<div class="logo-item"><img src="${l.img_url}" alt="${l.name}"><span class="logo-text ${l.css_class || ''}">${l.name}</span></div>`
-    ).join('');
-    // Duplicate for seamless marquee
-    el.innerHTML = html + html;
-  });
-}
-
-function renderTimeline(allTl) {
-  ['pro', 'perso'].forEach(mode => {
-    const el = document.getElementById('timeline-' + mode);
-    const items = allTl.filter(t => t.mode === mode);
-    el.innerHTML = items.map(t => `
-      <div class="timeline-item">
-        <div class="timeline-year">${t.year}</div>
-        <div>
-          <div class="timeline-role">${t.role}</div>
-          <div class="timeline-company">${t.company}</div>
-          <div class="timeline-desc">${t.description}</div>
-        </div>
-      </div>
-    `).join('');
-  });
-}
-
-function renderMedia(items) {
-  if (!items) return;
-  const el = document.getElementById('media-grid');
-  el.innerHTML = items.map(m => `
-    <div class="media-card">
-      <div class="media-card-img"><img src="${m.img_url}" alt="${m.source}"></div>
-      <div class="media-card-body">
-        <div class="media-card-source">${m.source}<span class="media-card-type">${m.card_type}</span></div>
-        <div class="media-card-title">${m.title}</div>
-        <div class="media-card-text truncated">${m.description}</div>
-        <button class="media-read-more" onclick="toggleExpand(this)">Read more</button>
-        <a href="${m.link_url}" target="_blank" class="media-card-link">${m.link_text}</a>
-      </div>
-    </div>
-  `).join('');
-}
-
-function renderFeed(items) {
-  if (!items) return;
-  ['pro', 'perso'].forEach(mode => {
-    const el = document.getElementById('feed-' + mode);
-    const posts = items.filter(f => f.mode === mode);
-    el.innerHTML = posts.map(f => {
-      const iconId = f.platform === 'linkedin' ? 'icon-linkedin' : 'icon-x';
-      const isLong = f.body.length > 200;
-      return `
-        <div class="feed-card reveal">
-          <div class="feed-card-header">
-            <div class="feed-avatar"><img src="https://www.gravatar.com/avatar/?d=mp" alt="avatar"></div>
-            <div class="feed-author-info"><span class="feed-author">${f.author}</span><span class="feed-handle">${f.handle}</span></div>
-            <span class="feed-platform-icon"><svg width="20" height="20" viewBox="0 0 24 24"><use href="#${iconId}"/></svg></span>
-          </div>
-          <div class="feed-body ${isLong ? 'truncated' : ''}">${f.body}</div>
-          ${isLong ? '<button class="feed-read-more" onclick="toggleExpand(this)">Read more</button>' : ''}
-          <div class="feed-meta">
-            <span>♡ ${f.likes}</span><span>💬 ${f.comments}</span><span>🔄 ${f.shares}</span>
-            ${f.time_ago ? `<span style="margin-left:auto;opacity:.5">${f.time_ago}</span>` : ''}
-          </div>
-          <a href="${f.link_url}" target="_blank" class="feed-link">View on ${f.platform === 'linkedin' ? 'LinkedIn' : '𝕏'} →</a>
-        </div>
-      `;
-    }).join('');
-  });
-}
-
-function renderGallery(items) {
-  if (!items) return;
-  const el = document.getElementById('gallery-grid');
-  el.innerHTML = items.map(g => `
-    <div class="gallery-item">
-      <img src="${g.img_url}" alt="${g.title}">
-      <div class="gallery-item-overlay"><span class="gallery-item-title">${g.title}</span></div>
-    </div>
-  `).join('');
-}
-
-function renderMotto(m) {
-  if (!m) return;
-  document.getElementById('motto-pro-bg').style.backgroundImage = `url('${m.pro_bg_url}')`;
-  document.getElementById('motto-perso-bg').style.backgroundImage = `url('${m.perso_bg_url}')`;
-  document.getElementById('motto-pro-quote').innerHTML = m.pro_quote;
-  document.getElementById('motto-pro-attr').innerHTML = m.pro_attr;
-  document.getElementById('motto-perso-quote').innerHTML = m.perso_quote;
-  document.getElementById('motto-perso-attr').innerHTML = m.perso_attr;
-}
-
-function renderBanner(b) {
-  if (!b) return;
-  document.getElementById('banner-pro-img').src = b.pro_img_url;
-  document.getElementById('banner-perso-img').src = b.perso_img_url;
-  document.getElementById('banner-pro-text').innerHTML = b.pro_text;
-  document.getElementById('banner-perso-text').innerHTML = b.perso_text;
-}
-
-function renderFooter(f) {
-  if (!f) return;
-  document.getElementById('footer-pro-desc').textContent = f.pro_desc;
-  document.getElementById('footer-perso-desc').textContent = f.perso_desc;
-
-  document.getElementById('footer-connect').innerHTML = `
-    <h4>Connect</h4>
-    <a href="${f.linkedin_url}" target="_blank">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
-    <a href="${f.twitter_url}" target="_blank">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
-    <a href="${f.whatsapp_url}" target="_blank">WhatsApp<br><span class="link-sub">Get in touch with my Media &amp; PR team</span></a>
-    <a href="mailto:${f.email}">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
-  `;
-
-  document.getElementById('footer-speaking').innerHTML = `
-    <h4>Speaking &amp; Advisory</h4>
-    <a href="${f.whatsapp_url}" target="_blank">Keynote Inquiries</a>
-    <a href="${f.whatsapp_url}" target="_blank">Advisory &amp; Board Roles</a>
-    <a href="${f.whatsapp_url}" target="_blank">Startup Mentoring</a>
-  `;
-
-  document.getElementById('footer-socials').innerHTML = `
-    <a href="${f.linkedin_url}" target="_blank" title="LinkedIn">in</a>
-    <a href="${f.twitter_url}" target="_blank" title="X">𝕏</a>
-    <a href="mailto:${f.email}" title="Email">@</a>
-  `;
-}
-
-/* ========================================
-   UTILITIES
-   ======================================== */
-function toggleExpand(btn) {
-  const b = btn.previousElementSibling;
-  b.classList.toggle('truncated');
-  b.classList.toggle('expanded');
-  btn.textContent = b.classList.contains('truncated') ? 'Read more' : 'Show less';
-}
-
-function initReveal() {
-  const ro = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: .1, rootMargin: '0px 0px -40px 0px' });
-  document.querySelectorAll('.reveal').forEach(el => ro.observe(el));
-}
-
-/* ========================================
-   MODE TOGGLE
-   ======================================== */
-const body = document.body;
-const toggle = document.getElementById('toggle');
-const lPro = document.getElementById('label-pro');
-const lPerso = document.getElementById('label-perso');
-toggle.addEventListener('click', () => {
-  const m = body.dataset.mode === 'pro' ? 'perso' : 'pro';
-  body.dataset.mode = m;
-  lPro.classList.toggle('active', m === 'pro');
-  lPerso.classList.toggle('active', m === 'perso');
-});
-
-/* HAMBURGER */
-const ham = document.getElementById('hamburger');
-const nLinks = document.getElementById('nav-links');
-const nOverlay = document.getElementById('nav-overlay');
-function toggleMenu() {
-  nLinks.classList.toggle('open');
-  nOverlay.classList.toggle('open');
-  document.body.style.overflow = nLinks.classList.contains('open') ? 'hidden' : '';
-}
-ham.addEventListener('click', toggleMenu);
-nOverlay.addEventListener('click', toggleMenu);
-nLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => { if (nLinks.classList.contains('open')) toggleMenu(); }));
-
-/* SMOOTH SCROLL */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    e.preventDefault();
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-});
-
-/* INIT */
-loadSite();
+const body=document.body,toggle=document.getElementById('toggle'),lPro=document.getElementById('label-pro'),lPerso=document.getElementById('label-perso');
+toggle.addEventListener('click',()=>{const m=body.dataset.mode==='pro'?'perso':'pro';body.dataset.mode=m;lPro.classList.toggle('active',m==='pro');lPerso.classList.toggle('active',m==='perso')});
+const ham=document.getElementById('hamburger'),nLinks=document.getElementById('nav-links'),nOverlay=document.getElementById('nav-overlay');
+function toggleMenu(){nLinks.classList.toggle('open');nOverlay.classList.toggle('open');document.body.style.overflow=nLinks.classList.contains('open')?'hidden':''}
+ham.addEventListener('click',toggleMenu);nOverlay.addEventListener('click',toggleMenu);
+nLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{if(nLinks.classList.contains('open'))toggleMenu()}));
+const ro=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>ro.observe(el));
+document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)t.scrollIntoView({behavior:'smooth',block:'start'})})});
+function toggleFeed(btn){const b=btn.previousElementSibling;b.classList.toggle('truncated');b.classList.toggle('expanded');btn.textContent=b.classList.contains('truncated')?'Read more':'Show less'}
+function toggleMedia(btn){const b=btn.previousElementSibling;b.classList.toggle('truncated');b.classList.toggle('expanded');btn.textContent=b.classList.contains('truncated')?'Read more':'Show less'}
 </script>
 </body>
 </html>
