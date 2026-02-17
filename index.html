@@ -225,11 +225,15 @@ br.mobile-br{display:none}
 
 #media{padding:80px 0 60px}
 #media .section-title{margin-bottom:28px}
-.media-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);box-shadow:var(--card-shadow);display:flex;flex-direction:column;border-top:3px solid var(--accent)}
+.media-grid{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:12px;scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface2)}
+.media-grid::-webkit-scrollbar{height:6px}
+.media-grid::-webkit-scrollbar-track{background:var(--surface2);border-radius:3px}
+.media-grid::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+.media-grid::-webkit-scrollbar-thumb:hover{background:var(--accent2)}
+.media-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:all .3s var(--ease);box-shadow:var(--card-shadow);display:flex;flex-direction:column;border-top:3px solid var(--accent);min-width:280px;max-width:300px;flex-shrink:0;scroll-snap-align:start}
 .media-card:hover{border-color:var(--accent);transform:translateY(-4px)}
-.media-card-img{width:100%;height:160px;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center}
-.media-card-img img{width:100%;height:100%;object-fit:contain;padding:32px;transition:transform .4s var(--ease)}
+.media-card-img{width:100%;height:140px;background:var(--surface2);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.media-card-img img{width:100%;height:100%;object-fit:contain;padding:28px;transition:transform .4s var(--ease)}
 .media-card:hover .media-card-img img{transform:scale(1.05)}
 .media-card-body{padding:18px;flex:1;display:flex;flex-direction:column}
 .media-card-source{font-family:var(--font-mono);font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
@@ -273,6 +277,27 @@ body[data-mode="perso"] .feed-platform-icon img.dark-invert{filter:invert(1);opa
 .motto-quote{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:700;line-height:1.3;letter-spacing:-1px;max-width:800px;margin:0 auto 20px;color:#fff}
 .motto-attr{font-size:.9rem;color:rgba(255,255,255,.6)}
 
+/* FLAPPY MONKE GAME */
+.game-trigger{display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;border-radius:var(--radius-sm);border:1px dashed var(--border2);transition:all .3s var(--ease);opacity:.6}
+.game-trigger:hover{opacity:1;border-color:var(--accent);background:var(--accent-glow)}
+.game-trigger-img{width:36px;height:36px;border-radius:8px;object-fit:cover}
+.game-trigger-label{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:1px;transition:color .3s}
+.game-trigger:hover .game-trigger-label{color:var(--accent)}
+.game-overlay{position:fixed;inset:0;z-index:10000;background:#0a0a0a;display:none;flex-direction:column;align-items:center;justify-content:center}
+.game-overlay.active{display:flex}
+.game-close{position:absolute;top:20px;right:24px;z-index:10001;background:none;border:1px solid rgba(255,255,255,.2);color:#fff;font-size:1.2rem;width:44px;height:44px;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.game-close:hover{border-color:var(--accent);color:var(--accent)}
+#game-canvas{display:block;max-width:100%;max-height:100%}
+.game-ui{position:absolute;display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none;z-index:2}
+.game-ui.hidden{display:none}
+.game-ui-monke{width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid var(--accent)}
+.game-ui-title{font-family:var(--font-display);font-size:2.2rem;font-weight:800;color:#fff;letter-spacing:-1px}
+.game-ui-sub{font-family:var(--font-mono);font-size:.75rem;color:rgba(255,255,255,.5);letter-spacing:1px}
+.game-ui-start{font-family:var(--font-mono);font-size:.85rem;color:var(--accent);letter-spacing:2px;margin-top:8px;animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.game-score{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:1.6rem;font-weight:700;color:#22c55e;z-index:2;display:none;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.game-score.active{display:block}
+
 /* CRYPTO TICKER */
 .ticker-section{padding:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;transition:border-color .7s var(--ease)}
 .ticker-inner{overflow:hidden;position:relative;padding:18px 0}
@@ -310,13 +335,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 @media(max-width:900px){
   .about-grid{grid-template-columns:1fr}
   .skills-grid{grid-template-columns:repeat(2,1fr)}
-  .media-grid{grid-template-columns:repeat(2,1fr)}
   .footer-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:600px){
   .skills-grid{grid-template-columns:1fr}
-  .media-grid{grid-template-columns:1fr}
   .feed-grid{grid-template-columns:1fr}
   .gallery-grid{grid-template-columns:repeat(2,1fr)}
   .photo-banner{min-height:46vh}
@@ -499,13 +522,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   </div>
 </section>
 
-<!-- CRYPTO TICKER (Informal only) -->
-<section class="ticker-section content-perso" aria-label="Live crypto prices">
-  <div class="ticker-inner">
-    <div class="ticker-strip" id="ticker-strip"></div>
-  </div>
-</section>
-
 <div class="photo-banner">
   <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni Everduin speaking at a conference" loading="lazy">
   <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni Everduin casual" loading="lazy">
@@ -544,7 +560,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=entrepreneur.com&sz=128" alt="Entrepreneur ME" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Entrepreneur Middle East · Oct 2025<span class="media-card-type">Feature</span></div><h3 class="media-card-title">The UAE's New Hub for AI, FinTech, Web3, and Disruptive Ventures</h3><div class="media-card-text truncated">Coverage of the official launch of CBIx, CBI's independent innovation subsidiary co-founded by Gio. The article details how CBIx bridges emerging technologies with real-world banking applications, from tokenized assets and AI-driven finance to gaming-focused financial products built with the DIFC gaming hub. It also covers early partnerships with QNB, Al Farabi Innovation Hub, and the Ascend RWA Accelerator for tokenization projects.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.entrepreneur.com/en-ae/news-and-trends/the-uaes-new-hub-for-ai-fintech-web3-and-disruptive/498849" target="_blank" rel="noopener" class="media-card-link">Read on Entrepreneur ME →</a></div></article>
       <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt="Couchonomics Podcast" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Couchonomics with Arjun<span class="media-card-type">Podcast</span></div><h3 class="media-card-title">What Innovation Actually Looks Like Inside a Regulated Bank</h3><div class="media-card-text truncated">A candid conversation with Arjun Singh about the reality of innovating within regulatory guardrails. Gio unpacks how banks and fintechs are shifting from competition to collaboration, why the future of finance will be hybrid rather than fully on-chain, and how regulation can actually act as a catalyst for innovation. The discussion covers tokenization, stablecoins, privacy, and why understanding the problem always matters more than chasing the latest technology.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.youtube.com/watch?v=HpoSLL4ELIY" target="_blank" rel="noopener" class="media-card-link">Watch on YouTube →</a></div></article>
       <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=spotify.com&sz=128" alt="Chief Digital Heroes" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Chief Digital Heroes in Banking<span class="media-card-type">Podcast</span></div><h3 class="media-card-title">Balancing Compliance and Creativity in Financial Innovation</h3><div class="media-card-text truncated">Gio joins host Matthew to explore the critical role of innovation in the financial sector. The episode covers why banks need to embrace AI and blockchain, how to foster collaboration between innovation and compliance teams, and how cognitive cities and holographic technology could change customer interactions. He also shares insights on sustainability in banking and how synthetic data is improving predictive accuracy in credit scoring and risk modeling.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://open.spotify.com/episode/0QecRVsjeLJ2xU4k4uKO6K" target="_blank" rel="noopener" class="media-card-link">Listen on Spotify →</a></div></article>
-      <article class="media-card"><div class="media-card-img"><img src="./images/logo-hbs.png" alt="Harvard Business School" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Harvard Business School · 2015<span class="media-card-type">Case Study</span></div><h3 class="media-card-title">Tanfeeth: Bringing Service Excellence to the GCC</h3><div class="media-card-text truncated">An HBS case study documenting the creation and rapid growth of Tanfeeth, Emirates NBD's shared services subsidiary. Gio was part of the founding team that scaled the operation from 20 to 3,000 people in under three years, building an award-winning business model and culture in a market that said it couldn't be done. The case became part of the Harvard curriculum, examining organizational design, people analytics, and transformation in the GCC.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.hbs.edu/faculty/Pages/default.aspx" target="_blank" rel="noopener" class="media-card-link">Harvard Business School →</a></div></article>
+
       <article class="media-card"><div class="media-card-img"><img src="./images/logo-azertac.png" alt="AZERTAC Interview" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">AZERTAC (Azerbaijan State News Agency)<span class="media-card-type">Interview</span></div><h3 class="media-card-title">Azerbaijan as a Regional Hub for Fintech and Blockchain</h3><div class="media-card-text truncated">An exclusive interview with Azerbaijan's state news agency on the country's potential as a fintech and blockchain hub. Gio discusses cross-border financial innovation, the role of regulatory frameworks in enabling digital asset ecosystems, and how emerging markets in Central Asia and the Caucasus can leapfrog traditional financial infrastructure by embracing technology-first approaches.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://azertag.az/en/xeber/azerbaijan_as_a_regional_hub_for_fintech_and_blockchain_an_exclusive_interview_with_giovanni_everduin-3862947" target="_blank" rel="noopener" class="media-card-link">Read on AZERTAC →</a></div></article>
       <article class="media-card"><div class="media-card-img"><img src="./images/logo-un.jpeg" alt="United Nations" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Asia-Plus Tajikistan · Mar 2025<span class="media-card-type">Feature</span></div><h3 class="media-card-title">Tajikistan Proposes AI Regulation Initiative at the United Nations</h3><div class="media-card-text truncated">Coverage of Tajikistan's UN resolution on Artificial Intelligence, introduced by the Ministry of Industry and New Technologies — an institution Gio has been advising. The initiative proposes a horizontal self-regulation approach for AI in Central Asia, including supporting regional AI startups and establishing a Regional AI Center for computing power, joint research, and data-sharing. The resolution seeks to balance technological progress and security while ensuring developing countries' interests are represented.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://asiaplustj.info/en/node/346663" target="_blank" rel="noopener" class="media-card-link">Read on Asia-Plus →</a></div></article>
     </div>
@@ -594,10 +610,18 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Keynote Inquiries</a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Advisory &amp; Board Roles</a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Startup Mentoring</a>
+        <div class="content-perso" style="margin-top:20px">
+          <div class="game-trigger" id="game-trigger" title="Play Flappy Monke">
+            <img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Play Flappy Monke" class="game-trigger-img">
+            <span class="game-trigger-label">▶ Flappy Monke</span>
+          </div>
+        </div>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Giovanni Everduin. Dubai, UAE.</span>
+      <span class="content-pro" style="color:var(--text3);font-size:.72rem;opacity:.5">This site may or may not have been vibe coded with Claude.</span>
+      <span class="content-perso" style="color:var(--text3);font-size:.72rem;opacity:.5">This site was definitely maybe vibe coded with Claude.</span>
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X">𝕏</a>
@@ -606,6 +630,26 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
     </div>
   </div>
 </footer>
+
+<!-- CRYPTO TICKER (Informal only) -->
+<section class="ticker-section content-perso" aria-label="Live crypto prices">
+  <div class="ticker-inner">
+    <div class="ticker-strip" id="ticker-strip"></div>
+  </div>
+</section>
+
+<!-- FLAPPY MONKE GAME OVERLAY -->
+<div class="game-overlay" id="game-overlay">
+  <button class="game-close" id="game-close">✕</button>
+  <canvas id="game-canvas"></canvas>
+  <div class="game-ui" id="game-ui">
+    <img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Flappy Monke" class="game-ui-monke">
+    <div class="game-ui-title">Flappy Monke</div>
+    <div class="game-ui-sub" id="game-ui-sub">Tap or press Space to fly</div>
+    <div class="game-ui-start" id="game-ui-start">TAP TO START</div>
+  </div>
+  <div class="game-score" id="game-score">$0</div>
+</div>
 
 <script>
 // --- Supabase Init ---
@@ -761,6 +805,178 @@ async function loadFeed() {
 }
 
 loadFeed();
+
+// --- Flappy Monke Game ---
+(function() {
+  const overlay = document.getElementById('game-overlay');
+  const closeBtn = document.getElementById('game-close');
+  const canvas = document.getElementById('game-canvas');
+  const ctx = canvas.getContext('2d');
+  const ui = document.getElementById('game-ui');
+  const uiSub = document.getElementById('game-ui-sub');
+  const uiStart = document.getElementById('game-ui-start');
+  const scoreEl = document.getElementById('game-score');
+  const trigger = document.getElementById('game-trigger');
+
+  let W, H, monke, pipes, score, best, state, frame, grav, flapPow, pipeW, gapH, pipeSpd, spawnInt;
+  let monkeImg = new Image();
+  monkeImg.src = './images/NFT/Solana%20Monkey%20Business.jpeg';
+
+  function resize() {
+    const dpr = window.devicePixelRatio || 1;
+    W = Math.min(window.innerWidth, 480);
+    H = Math.min(window.innerHeight, 720);
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function init() {
+    resize();
+    grav = 0.4; flapPow = -6.5; pipeW = 52; gapH = 150; pipeSpd = 2.2; spawnInt = 100;
+    monke = { x: W * 0.25, y: H / 2, w: 40, h: 40, vy: 0, rot: 0 };
+    pipes = []; score = 0; best = best || 0; frame = 0;
+    state = 'idle';
+    scoreEl.classList.remove('active');
+    ui.classList.remove('hidden');
+    uiSub.textContent = 'Tap or press Space to fly';
+    uiStart.textContent = 'TAP TO START';
+    drawIdle();
+  }
+
+  function flap() {
+    if (state === 'idle') { state = 'play'; ui.classList.add('hidden'); scoreEl.classList.add('active'); }
+    if (state === 'play') monke.vy = flapPow;
+    if (state === 'dead') init();
+  }
+
+  function spawnPipe() {
+    const minY = 80, maxY = H - gapH - 80;
+    const topH = minY + Math.random() * (maxY - minY);
+    pipes.push({ x: W, topH: topH, scored: false });
+  }
+
+  function drawCandle(x, y, h, green) {
+    const col = green ? '#22c55e' : '#ef4444';
+    const wick = green ? '#16a34a' : '#dc2626';
+    const cW = pipeW, wickW = 4;
+    // Wick
+    ctx.fillStyle = wick;
+    ctx.fillRect(x + cW / 2 - wickW / 2, y, wickW, h);
+    // Body
+    const bodyH = h * 0.6, bodyY = y + (h - bodyH) / 2;
+    ctx.fillStyle = col;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath();
+    ctx.roundRect(x, bodyY, cW, bodyH, 4);
+    ctx.fill();
+    ctx.globalAlpha = 1;
+    // Shine
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fillRect(x + 4, bodyY + 4, cW * 0.3, bodyH - 8);
+  }
+
+  function update() {
+    frame++;
+    monke.vy += grav;
+    monke.y += monke.vy;
+    monke.rot = Math.max(-25, Math.min(monke.vy * 3, 70));
+
+    if (frame % spawnInt === 0) spawnPipe();
+
+    for (let i = pipes.length - 1; i >= 0; i--) {
+      const p = pipes[i];
+      p.x -= pipeSpd;
+      if (p.x + pipeW < 0) { pipes.splice(i, 1); continue; }
+      if (!p.scored && p.x + pipeW < monke.x) { p.scored = true; score++; scoreEl.textContent = '
+</script>
+</body>
+</html> + (score * 1000).toLocaleString(); }
+      // Collision
+      const mx = monke.x, my = monke.y, mr = monke.w / 2 - 4;
+      const inX = mx + mr > p.x && mx - mr < p.x + pipeW;
+      if (inX && (my - mr < p.topH || my + mr > p.topH + gapH)) die();
+    }
+
+    if (monke.y - monke.w / 2 < 0 || monke.y + monke.w / 2 > H) die();
+  }
+
+  function die() {
+    state = 'dead';
+    best = Math.max(best, score);
+    ui.classList.remove('hidden');
+    uiSub.textContent = 'Portfolio: 
+</script>
+</body>
+</html> + (score * 1000).toLocaleString() + '  |  ATH: 
+</script>
+</body>
+</html> + (best * 1000).toLocaleString();
+    uiStart.textContent = 'TAP TO RETRY';
+    scoreEl.classList.remove('active');
+  }
+
+  function draw() {
+    // BG gradient
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0f0f1a'); bg.addColorStop(1, '#1a0a2e');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
+    for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+
+    // Pipes as candles
+    pipes.forEach(p => {
+      drawCandle(p.x, 0, p.topH, false);
+      drawCandle(p.x, p.topH + gapH, H - p.topH - gapH, true);
+    });
+
+    // Monke
+    ctx.save();
+    ctx.translate(monke.x, monke.y);
+    ctx.rotate(monke.rot * Math.PI / 180);
+    ctx.beginPath();
+    ctx.arc(0, 0, monke.w / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(monkeImg, -monke.w / 2, -monke.h / 2, monke.w, monke.h);
+    ctx.restore();
+
+    // Floor line
+    ctx.fillStyle = 'rgba(255,107,43,0.3)';
+    ctx.fillRect(0, H - 2, W, 2);
+  }
+
+  function drawIdle() {
+    const bg = ctx.createLinearGradient(0, 0, 0, H);
+    bg.addColorStop(0, '#0f0f1a'); bg.addColorStop(1, '#1a0a2e');
+    ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = 'rgba(255,255,255,0.03)'; ctx.lineWidth = 1;
+    for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  }
+
+  function loop() {
+    if (!overlay.classList.contains('active')) return;
+    if (state === 'play') { update(); draw(); }
+    requestAnimationFrame(loop);
+  }
+
+  function openGame() { overlay.classList.add('active'); document.body.style.overflow = 'hidden'; init(); loop(); }
+  function closeGame() { overlay.classList.remove('active'); document.body.style.overflow = ''; state = 'idle'; }
+
+  trigger.addEventListener('click', openGame);
+  closeBtn.addEventListener('click', closeGame);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay || e.target === canvas) flap(); });
+  document.addEventListener('keydown', (e) => {
+    if (!overlay.classList.contains('active')) return;
+    if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
+    if (e.code === 'Escape') closeGame();
+  });
+  window.addEventListener('resize', () => { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawIdle(); } });
+})();
 </script>
 </body>
 </html>
