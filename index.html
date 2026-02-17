@@ -575,6 +575,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Advisory &amp; Board Roles</a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Startup Mentoring</a>
         <div class="content-perso" style="margin-top:20px">
+          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;opacity:.5">Play me</div>
           <div class="game-trigger" id="game-trigger" title="Play Flappy Monke">
             <img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Play Flappy Monke" class="game-trigger-img">
             <span class="game-trigger-label">&#9654; Flappy Monke</span>
@@ -773,7 +774,7 @@ try {
   if (!overlay || !canvas || !trigger) return;
 
   var W, H, monke, pipes, score, best = 0, state, frame;
-  var grav = 0.4, flapPow = -6.5, pipeW = 52, gapH = 150, pipeSpd = 2.2, spawnInt = 100;
+  var grav = 0.25, flapPow = -5.2, pipeW = 52, gapH = 180, pipeSpd = 1.5, spawnInt = 140;
   var monkeImg = new Image();
   monkeImg.src = './images/NFT/Solana%20Monkey%20Business.jpeg';
 
