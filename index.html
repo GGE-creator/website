@@ -964,7 +964,9 @@ try {
     if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     if (e.code === 'Escape') closeGame();
   });
-  window.addEventListener('re
+  // resize listener removed for mobile compatibility
+})();
+} catch(gameErr) { console.error('Game init error:', gameErr); }
 </script>
 </body>
 </html>
