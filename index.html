@@ -658,7 +658,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="game-score" id="game-score">$0</div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
 var SUPABASE_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
 var SUPABASE_ANON = 'sb_publishable_jvcjBK380uS79Gct7fzQ2A_jr8RyOSX';
 var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -961,6 +962,7 @@ try {
   window.addEventListener('resize', function() { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawBg(); } });
 })();
 } catch(gameErr) { console.error('Game init error:', gameErr); }
+}); /* end DOMContentLoaded */
 </script>
 <!-- ============================================================
      ASK AI GIO — Chat Widget (Production Version)
