@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask AI Gio &mdash; Giovanni Everduin</title>
+<meta name="description" content="Chat with AI Gio &mdash; an experimental AI prototype trained on Giovanni Everduin's public persona, writings, and talks.">
+<meta property="og:title" content="Ask AI Gio">
+<meta property="og:description" content="An AI prototype of Giovanni Everduin. Ask about banking innovation, Web3, tokenized assets, or what it's like being a closeted DeFi maxi in a banker's suit.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0a0a;
+  --bg2:#111;
+  --surface:#161616;
+  --surface2:#1e1e1e;
+  --border:#2a2a2a;
+  --text:#f0ece4;
+  --text2:#a8a199;
+  --text3:#5c564e;
+  --accent:#FF6B2B;
+  --accent2:#e55a1f;
+  --accent-glow:rgba(255,107,43,.08);
+  --accent-border:rgba(255,107,43,.25);
+  --font-display:'Outfit',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'Space Mono',monospace;
+  --radius:16px;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
+}
+
+/* --- Layout --- */
+.app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+  max-width:720px;
+  margin:0 auto;
+  position:relative;
+}
+
+/* --- Header --- */
+.header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  flex-shrink:0;
+  position:relative;
+  z-index:10;
+}
+.header .avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid var(--accent);
+  flex-shrink:0;
+}
+.header .info{flex:1}
+.header .name{
+  font-family:var(--font-display);
+  font-weight:800;
+  font-size:1.1rem;
+  letter-spacing:-.5px;
+  color:var(--text);
+}
+.header .name span{color:var(--accent)}
+.header .status{
+  font-size:.72rem;
+  color:var(--text3);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:2px;
+}
+.header .status-dot{
+  width:7px;height:7px;border-radius:50%;background:#22c55e;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}
+  50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}
+}
+.header .status-text{font-family:var(--font-mono);letter-spacing:.5px}
+
+/* Speaking indicator */
+.speaking{display:none;align-items:center;gap:2px;padding:0 8px}
+.speaking.active{display:flex}
+.speaking .bar{
+  width:3px;border-radius:2px;background:var(--accent);
+  animation:wave .5s ease-in-out infinite alternate;
+}
+.speaking .bar:nth-child(1){height:12px}
+.speaking .bar:nth-child(2){height:16px;animation-delay:.1s}
+.speaking .bar:nth-child(3){height:10px;animation-delay:.2s}
+.speaking .bar:nth-child(4){height:18px;animation-delay:.3s}
+.speaking .bar:nth-child(5){height:8px;animation-delay:.15s}
+@keyframes wave{from{transform:scaleY(.4)}to{transform:scaleY(1)}}
+
+/* Header buttons */
+.h-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:all .2s;
+}
+.h-btn:hover{border-color:var(--accent);color:var(--accent)}
+.h-btn.sound-active{border-color:var(--accent);background:var(--accent-glow);color:var(--accent)}
+
+/* --- Welcome Screen --- */
+.welcome{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;gap:20px;
+  animation:fadeUp .6s var(--ease);
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.welcome .w-avatar{
+  width:88px;height:88px;border-radius:50%;object-fit:cover;
+  border:3px solid var(--accent);
+  box-shadow:0 0 40px rgba(255,107,43,.15);
+}
+.welcome h1{
+  font-family:var(--font-display);font-weight:900;
+  font-size:2rem;letter-spacing:-1px;line-height:1.15;
+}
+.welcome h1 span{color:var(--accent)}
+.welcome .tagline{
+  font-size:.95rem;color:var(--text2);line-height:1.65;
+  max-width:420px;
+}
+.welcome .proto-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-glow);border:1px solid var(--accent-border);
+  color:var(--accent);font-family:var(--font-mono);
+  font-size:.65rem;font-weight:700;letter-spacing:1.5px;
+  padding:5px 14px;border-radius:20px;text-transform:uppercase;
+}
+.welcome .proto-badge::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--accent);animation:pulse 2s infinite;
+}
+
+/* --- Suggestions --- */
+.suggestions{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:8px;padding:0 20px 16px;flex-shrink:0;
+  animation:fadeUp .6s var(--ease) .2s both;
+}
+.chip{
+  font-family:var(--font-body);font-size:.8rem;
+  padding:10px 18px;border-radius:24px;
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);cursor:pointer;transition:all .25s var(--ease);
+  white-space:nowrap;
+}
+.chip:hover{
+  border-color:var(--accent);color:var(--accent);
+  background:var(--accent-glow);transform:translateY(-1px);
+}
+
+/* --- Messages Area --- */
+.messages{
+  flex:1;overflow-y:auto;padding:20px;
+  display:none;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface);
+}
+.messages.active{display:flex}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-track{background:transparent}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.messages::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+.msg{
+  max-width:82%;display:flex;flex-direction:column;gap:5px;
+  animation:msgIn .3s var(--ease);
+}
+@keyframes msgIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.msg-user{align-self:flex-end}
+.msg-ai{align-self:flex-start}
+.msg .bubble{
+  padding:14px 18px;border-radius:20px;
+  font-size:.9rem;line-height:1.65;word-break:break-word;
+}
+.msg-user .bubble{
+  background:var(--accent);color:#fff;
+  border-bottom-right-radius:6px;
+}
+.msg-ai .bubble{
+  background:var(--surface2);color:var(--text);
+  border-bottom-left-radius:6px;
+  border:1px solid var(--border);
+}
+.msg .meta{
+  font-size:.62rem;color:var(--text3);
+  font-family:var(--font-mono);letter-spacing:.5px;padding:0 6px;
+}
+.msg-user .meta{text-align:right}
+
+/* Typing indicator */
+.typing{
+  display:flex;align-items:center;gap:5px;
+  padding:16px 20px;background:var(--surface2);
+  border-radius:20px;border-bottom-left-radius:6px;
+  border:1px solid var(--border);
+  max-width:72px;align-self:flex-start;
+}
+.typing span{
+  width:7px;height:7px;border-radius:50%;background:var(--text3);
+  animation:bounce .6s infinite alternate;
+}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{
+  from{transform:translateY(0);opacity:.4}
+  to{transform:translateY(-5px);opacity:1}
+}
+
+/* --- Disclaimer --- */
+.disclaimer{
+  padding:8px 20px;font-size:.6rem;color:var(--text3);
+  text-align:center;font-family:var(--font-mono);
+  letter-spacing:.5px;border-top:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;line-height:1.5;
+}
+.disclaimer .badge{
+  display:inline-block;background:var(--accent-glow);
+  border:1px solid var(--accent-border);color:var(--accent);
+  font-weight:700;padding:1px 7px;border-radius:4px;
+  font-size:.55rem;margin-right:5px;
+}
+
+/* --- Input Area --- */
+.input-area{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;border-top:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;
+}
+.input-area input{
+  flex:1;border:1px solid var(--border);border-radius:28px;
+  padding:13px 20px;font-family:var(--font-body);font-size:.9rem;
+  background:var(--surface);color:var(--text);outline:none;
+  transition:border-color .2s;
+}
+.input-area input::placeholder{color:var(--text3)}
+.input-area input:focus{border-color:var(--accent)}
+.send-btn{
+  width:44px;height:44px;border-radius:50%;border:none;
+  background:var(--accent);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
+}
+.send-btn:hover{background:var(--accent2);transform:scale(1.05)}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.send-btn svg{
+  width:18px;height:18px;fill:none;stroke:#fff;
+  stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;
+}
+
+/* --- Footer Link --- */
+.footer-link{
+  padding:10px 20px;text-align:center;flex-shrink:0;
+  background:var(--bg);
+}
+.footer-link a{
+  font-family:var(--font-mono);font-size:.65rem;
+  color:var(--text3);text-decoration:none;letter-spacing:.5px;
+  transition:color .2s;
+}
+.footer-link a:hover{color:var(--accent)}
+.footer-link a span{color:var(--accent)}
+
+/* --- Background atmosphere --- */
+.bg-glow{
+  position:fixed;top:-200px;right:-200px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,43,.06) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.bg-glow-2{
+  position:fixed;bottom:-300px;left:-200px;
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,43,.03) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* --- Mobile --- */
+@media(max-width:600px){
+  .app{max-width:100%}
+  .welcome h1{font-size:1.6rem}
+  .welcome .tagline{font-size:.85rem}
+  .suggestions{gap:6px}
+  .chip{font-size:.75rem;padding:8px 14px}
+  .header .name{font-size:1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
+
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <img class="avatar" src="https://giovannieverduin.com/images/blazer-cutout.png" alt="Gio"
+         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2724%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2724%27 y=%2732%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2722%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+    <div class="info">
+      <div class="name">AI <span>Gio</span></div>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span class="status-text" id="status-text">Online</span>
+        <div class="speaking" id="speaking">
+          <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+        </div>
+      </div>
+    </div>
+    <button class="h-btn" id="sound-btn" onclick="App.toggleSound()" title="Toggle voice">&#x1F50A;</button>
+  </div>
+
+  <!-- Welcome Screen -->
+  <div class="welcome" id="welcome">
+    <img class="w-avatar" src="https://giovannieverduin.com/images/blazer-cutout.png" alt="Gio"
+         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 88 88%27%3E%3Ccircle cx=%2744%27 cy=%2744%27 r=%2744%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2744%27 y=%2756%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2738%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+    <div class="proto-badge">AI Prototype</div>
+    <h1>Ask AI <span>Gio</span></h1>
+    <p class="tagline">An experimental AI trained on Gio&rsquo;s public persona, writings, and talks. Ask about banking innovation, Web3, tokenized assets &mdash; or what it&rsquo;s like being a closeted DeFi maxi in a banker&rsquo;s suit.</p>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages"></div>
+
+  <!-- Suggestion Chips -->
+  <div class="suggestions" id="suggestions">
+    <button class="chip" onclick="App.askChip(this)">What is CBIx?</button>
+    <button class="chip" onclick="App.askChip(this)">Your view on tokenized assets?</button>
+    <button class="chip" onclick="App.askChip(this)">What NFTs do you collect?</button>
+    <button class="chip" onclick="App.askChip(this)">Book Gio for a keynote</button>
+    <button class="chip" onclick="App.askChip(this)">Favorite karaoke song?</button>
+    <button class="chip" onclick="App.askChip(this)">Drake or Jay-Z?</button>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">
+    <span class="badge">AI PROTOTYPE</span>
+    This is not the real Gio. Responses are AI-generated and may not be accurate.
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <input id="input" type="text" placeholder="Ask AI Gio something&hellip;"
+           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.send()}"
+           autocomplete="off" maxlength="2000">
+    <button class="send-btn" id="send-btn" onclick="App.send()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer-link">
+    <a href="https://giovannieverduin.com" target="_blank">&larr; <span>giovannieverduin.com</span></a>
+  </div>
+
+</div>
+
+<script>
+var App = (function() {
+  'use strict';
+
+  // ---- Config ----
+  var API_BASE = 'https://giovannieverduin.com';
+  var SOUND_ON = true;
+  var messages = [];
+  var processing = false;
+  var started = false;
+  var audio = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function escHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // ---- Sound ----
+  function toggleSound() {
+    SOUND_ON = !SOUND_ON;
+    var btn = $('sound-btn');
+    btn.textContent = SOUND_ON ? '\u{1F50A}' : '\u{1F507}';
+    btn.classList.toggle('sound-active', SOUND_ON);
+    if (!SOUND_ON) stopSpeaking();
+  }
+
+  function stopSpeaking() {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio = null;
+    }
+    $('speaking').classList.remove('active');
+    $('status-text').textContent = 'Online';
+  }
+
+  // ---- Messages ----
+  function addMsg(role, text) {
+    if (!started) {
+      $('welcome').style.display = 'none';
+      $('messages').classList.add('active');
+      $('suggestions').style.display = 'none';
+      started = true;
+    }
+    var c = $('messages');
+    var m = document.createElement('div');
+    m.className = 'msg ' + (role === 'user' ? 'msg-user' : 'msg-ai');
+    var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    m.innerHTML = '<div class="bubble">' + escHtml(text) + '</div>' +
+                  '<div class="meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' &middot; ' + t + '</div>';
+    c.appendChild(m);
+    c.scrollTop = c.scrollHeight;
+    messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
+  }
+
+  function showTyping() {
+    var c = $('messages');
+    var d = document.createElement('div');
+    d.className = 'typing'; d.id = 'typing';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    c.appendChild(d);
+    c.scrollTop = c.scrollHeight;
+    $('status-text').textContent = 'Thinking...';
+  }
+
+  function hideTyping() {
+    var t = $('typing'); if (t) t.remove();
+    $('status-text').textContent = 'Online';
+  }
+
+  // ---- Chat API ----
+  async function callChat(text) {
+    try {
+      var res = await fetch(API_BASE + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      var data = await res.json();
+      return data.text || fallback(text);
+    } catch (err) {
+      console.error('Chat error:', err);
+      return fallback(text);
+    }
+  }
+
+  // ---- TTS ----
+  async function speak(text) {
+    if (!SOUND_ON) return;
+    try {
+      $('speaking').classList.add('active');
+      $('status-text').textContent = 'Speaking...';
+
+      var ttsText = text.length > 1000 ? text.substring(0, 1000) : text;
+      var res = await fetch(API_BASE + '/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: ttsText })
+      });
+      if (!res.ok) throw new Error('TTS ' + res.status);
+
+      var blob = await res.blob();
+      var url = URL.createObjectURL(blob);
+      audio = new Audio(url);
+      audio.onended = function() {
+        $('speaking').classList.remove('active');
+        $('status-text').textContent = 'Online';
+        URL.revokeObjectURL(url); audio = null;
+      };
+      audio.onerror = function() {
+        $('speaking').classList.remove('active');
+        $('status-text').textContent = 'Online'; audio = null;
+      };
+      audio.play();
+    } catch (err) {
+      console.error('TTS error:', err);
+      $('speaking').classList.remove('active');
+      $('status-text').textContent = 'Online';
+    }
+  }
+
+  // ---- Fallback ----
+  function fallback(input) {
+    var q = input.toLowerCase();
+    if (q.includes('cbix') || q.includes('cbi'))
+      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank \u2014 but with the freedom to actually ship things.";
+    if (q.includes('tokeniz') || q.includes('rwa'))
+      return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs.";
+    if (q.includes('nft') || q.includes('collect'))
+      return "I collect across chains \u2014 Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
+    if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
+      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on giovannieverduin.com \u2014 my team will get back to you quickly.";
+    if (q.includes('karaoke') || q.includes('song') || q.includes('rap'))
+      return "Karaoke King is an official title. Stan by Eminem is the showstopper, but Forgot About Dre and Numb/Encore are crowd favorites. As Aristotle said, we are what we repeatedly do \u2014 I repeatedly murder karaoke mics.";
+    if (q.includes('drake') || q.includes('jay'))
+      return "That's like asking me to pick a favorite child. Drake for the vibe, Jay-Z for the blueprint \u2014 pun intended. But if I'm being honest, Drake's been the soundtrack to more of my life chapters.";
+    if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
+      return "I'm a closeted DeFi maxi in a banker's suit \u2014 that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
+    return "Great question! I'm AI Gio \u2014 an experimental prototype. For the full answer, reach out to the real Gio at giovannieverduin.com. What else can I help with?";
+  }
+
+  // ---- Send ----
+  async function send() {
+    if (processing) return;
+    var input = $('input');
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    stopSpeaking();
+    processing = true;
+    $('send-btn').disabled = true;
+
+    addMsg('user', text);
+    showTyping();
+
+    try {
+      var resp = await callChat(text);
+      hideTyping();
+      addMsg('ai', resp);
+      speak(resp);
+    } catch (e) {
+      hideTyping();
+      addMsg('ai', "Something went wrong \u2014 try again in a moment!");
+    }
+    processing = false;
+    $('send-btn').disabled = false;
+    $('input').focus();
+  }
+
+  function askChip(btn) {
+    $('input').value = btn.textContent;
+    send();
+  }
+
+  // Auto-focus on load
+  window.addEventListener('load', function() { $('input').focus(); });
+
+  return { toggleSound: toggleSound, send: send, askChip: askChip };
+})();
+</script>
+</body>
+</html>
