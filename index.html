@@ -51,7 +51,15 @@
   }
 }
 </script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FF6B2B'/%3E%3Ctext x='16' y='21' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='16' fill='white'%3EG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Outfit';font-style:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/outfit/v11/QGYyz_MVcBeNP4NjuGObqx1XmO1I4TC1C4G-EiAou6Y.woff2) format('woff2');unicode-range:U+0000-00FF}
+@font-face{font-family:'DM Sans';font-style:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZOIHTWEBlw.woff2) format('woff2');unicode-range:U+0000-00FF}
+@font-face{font-family:'Space Mono';font-style:normal;font-display:swap;src:url(https://fonts.gstatic.com/s/spacemono/v13/i7dPIFZifjKcF5UAWdDRYEF8RQ.woff2) format('woff2');unicode-range:U+0000-00FF}
+</style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -82,7 +90,9 @@ img{max-width:100%;display:block}
 .container{max-width:1200px;margin:0 auto;padding:0 24px}
 .highlight{color:var(--accent)}
 
-body[data-mode="pro"] .content-perso,body[data-mode="perso"] .content-pro{display:none!important}
+body[data-mode="pro"] .content-perso,body[data-mode="perso"] .content-pro{opacity:0;visibility:hidden;position:absolute;pointer-events:none;height:0;overflow:hidden}
+.content-pro,.content-perso{transition:opacity .5s var(--ease)}
+body[data-mode="pro"] .content-pro,body[data-mode="perso"] .content-perso{opacity:1;visibility:visible;position:relative;pointer-events:auto;height:auto;overflow:visible}
 body[data-mode="pro"] .photo-perso,body[data-mode="perso"] .photo-pro{display:none}
 body[data-mode="pro"] .motto-bg-perso,body[data-mode="perso"] .motto-bg-pro{opacity:0!important}
 body[data-mode="pro"] .motto-bg-pro,body[data-mode="perso"] .motto-bg-perso{opacity:1!important}
@@ -138,16 +148,16 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
   .hero-layout{grid-template-columns:1fr;gap:40px;text-align:center}
   .hero-content{align-items:center}
   .hero-sub{margin-left:auto;margin-right:auto}
-  .hero-tags{justify-content:center}
+  .hero-tags{justify-content:center;margin-bottom:48px}
   .hero-portrait-wrap{order:-1}
   .hero-portrait-container{max-width:320px;aspect-ratio:1;border-radius:50%}
 }
 @media(max-width:600px){
-  .hero{padding:100px 0 80px}
+  .hero{padding:100px 0 100px}
   .hero-portrait-container{max-width:240px}
   .hero-tags{grid-template-columns:repeat(2,1fr);max-width:100%}
-  .photo-banner-text{font-size:1.1rem;padding:24px 20px;line-height:1.4}
-  br.mobile-br{display:block}
+  .scroll-hint{bottom:16px}
+  .photo-banner-text{font-size:1.3rem;padding:24px 20px}
 }
 
 section{padding:100px 0;transition:background .7s var(--ease)}
@@ -186,8 +196,7 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .photo-banner img{width:100%;height:100%;object-fit:cover;object-position:center center;position:absolute;inset:0}
 .photo-banner .photo-perso{object-position:center 25%}
 .photo-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.625)}
-.photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:700;line-height:1.3;letter-spacing:-1px;text-align:center;padding:40px 24px}
-br.mobile-br{display:none}
+.photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:700;line-height:1.4;letter-spacing:-1px;text-align:center;padding:40px 32px}
 
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .gallery-item{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:1;background:var(--surface2);border:1px solid var(--border);transition:all .3s var(--ease);cursor:pointer}
@@ -283,8 +292,8 @@ body[data-mode="perso"] .feed-platform-icon img.dark-invert{filter:invert(1);opa
 .ticker-dot{width:4px;height:4px;border-radius:50%;background:var(--border2);flex-shrink:0}
 @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 
-.game-trigger{display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:10px 16px;border-radius:var(--radius-sm);border:1px dashed var(--border2);transition:all .3s var(--ease);opacity:.6}
-.game-trigger:hover{opacity:1;border-color:var(--accent);background:var(--accent-glow)}
+.game-trigger{display:inline-flex;align-items:center;gap:10px;cursor:pointer;padding:0;border-radius:var(--radius-sm);border:none;transition:all .3s var(--ease);opacity:.85}
+.game-trigger:hover{opacity:1;transform:scale(1.04)}
 .game-trigger-img{width:36px;height:36px;border-radius:8px;object-fit:cover}
 .game-trigger-label{font-family:var(--font-mono);font-size:.7rem;color:var(--text3);letter-spacing:1px}
 .game-trigger:hover .game-trigger-label{color:var(--accent)}
@@ -316,6 +325,12 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 .footer-socials{display:flex;gap:16px}
 .footer-socials a{font-size:1rem;font-weight:700;color:var(--text3);transition:color .2s}
 .footer-socials a:hover{color:var(--accent)}
+
+/* BACK TO TOP */
+.btt{position:fixed;bottom:28px;right:28px;z-index:999;width:44px;height:44px;border-radius:50%;background:var(--accent);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(255,107,43,.3);opacity:0;visibility:hidden;transform:translateY(12px);transition:all .3s var(--ease)}
+.btt.visible{opacity:1;visibility:visible;transform:translateY(0)}
+.btt:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(255,107,43,.4)}
+.btt svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 
 .reveal{opacity:0;transform:translateY(30px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .reveal.visible{opacity:1;transform:translateY(0)}
@@ -510,8 +525,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 <div class="photo-banner">
   <img class="photo-pro" src="./images/pink.jpeg" alt="Giovanni speaking" loading="lazy">
   <img class="photo-perso" src="./images/polo.jpeg" alt="Giovanni casual" loading="lazy">
-  <div class="photo-banner-text content-pro">Building what's next –<br class="mobile-br"> from the&nbsp;<span class="highlight">boardroom</span>&nbsp;<br class="mobile-br">to the blockchain</div>
-  <div class="photo-banner-text content-perso">Multiple identities.<br class="mobile-br"> One person.<br class="mobile-br"> Always&nbsp;<span class="highlight">more to the story</span></div>
+  <div class="photo-banner-text content-pro"><span>Building what's next –<br>from the <span class="highlight">boardroom</span><br>to the blockchain</span></div>
+  <div class="photo-banner-text content-perso"><span>Multiple identities. One person.<br>Always <span class="highlight">more to the story</span></span></div>
 </div>
 
 <section id="gallery" class="content-perso">
@@ -554,6 +569,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=youtube.com&sz=128" alt="Couchonomics" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Couchonomics with Arjun<span class="media-card-type">Podcast</span></div><h3 class="media-card-title">What Innovation Actually Looks Like Inside a Regulated Bank</h3><div class="media-card-text truncated">A candid conversation about the reality of innovating within regulatory guardrails.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.youtube.com/watch?v=HpoSLL4ELIY" target="_blank" rel="noopener" class="media-card-link">Watch on YouTube →</a></div></article>
         <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=spotify.com&sz=128" alt="Chief Digital Heroes" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Chief Digital Heroes in Banking<span class="media-card-type">Podcast</span></div><h3 class="media-card-title">Balancing Compliance and Creativity in Financial Innovation</h3><div class="media-card-text truncated">Exploring the critical role of innovation in the financial sector with host Matthew.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://open.spotify.com/episode/0QecRVsjeLJ2xU4k4uKO6K" target="_blank" rel="noopener" class="media-card-link">Listen on Spotify →</a></div></article>
         <article class="media-card"><div class="media-card-img"><img src="./images/logo-azertac.png" alt="AZERTAC" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">AZERTAC (Azerbaijan State News Agency)<span class="media-card-type">Interview</span></div><h3 class="media-card-title">Azerbaijan as a Regional Hub for Fintech and Blockchain</h3><div class="media-card-text truncated">An exclusive interview on the country's potential as a fintech and blockchain hub.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://azertag.az/en/xeber/azerbaijan_as_a_regional_hub_for_fintech_and_blockchain_an_exclusive_interview_with_giovanni_everduin-3862947" target="_blank" rel="noopener" class="media-card-link">Read on AZERTAC →</a></div></article>
+        <article class="media-card"><div class="media-card-img"><img src="https://www.google.com/s2/favicons?domain=hbs.edu&sz=128" alt="Harvard Business School" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Harvard Business School · 2015<span class="media-card-type">Case Study</span></div><h3 class="media-card-title">Tanfeeth: Bringing Service Excellence to the GCC</h3><div class="media-card-text truncated">An HBS case study documenting the creation and rapid growth of Tanfeeth, Emirates NBD's shared services subsidiary that scaled from 20 to 3,000 people.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://www.hbs.edu/faculty/Pages/default.aspx" target="_blank" rel="noopener" class="media-card-link">Harvard Business School →</a></div></article>
         <article class="media-card"><div class="media-card-img"><img src="./images/logo-un.jpeg" alt="UN" loading="lazy"></div><div class="media-card-body"><div class="media-card-source">Asia-Plus Tajikistan · Mar 2025<span class="media-card-type">Feature</span></div><h3 class="media-card-title">Tajikistan Proposes AI Regulation Initiative at the United Nations</h3><div class="media-card-text truncated">Coverage of Tajikistan's UN resolution on Artificial Intelligence, introduced by the Ministry Gio advises.</div><button class="media-read-more" onclick="toggleMedia(this)">Read more</button><a href="https://asiaplustj.info/en/node/346663" target="_blank" rel="noopener" class="media-card-link">Read on Asia-Plus →</a></div></article>
       </div>
     </div>
@@ -590,6 +606,11 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   </div>
 </section>
 
+<!-- BACK TO TOP -->
+<button class="btt" id="btt" aria-label="Back to top">
+  <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
+
 <footer id="contact">
   <div class="container">
     <div class="footer-grid">
@@ -611,10 +632,8 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Advisory &amp; Board Roles</a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">Startup Mentoring</a>
         <div class="content-perso" style="margin-top:20px">
-          <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;opacity:.5">Play me</div>
           <div class="game-trigger" id="game-trigger" title="Play Flappy Monke">
-            <img src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="Play Flappy Monke" class="game-trigger-img">
-            <span class="game-trigger-label">&#9654; Flappy Monke</span>
+            <span class="game-trigger-label" style="color:#fff;background:#d42626;padding:8px 20px;border-radius:8px;font-weight:700;letter-spacing:1.5px;font-size:.75rem;border:none">DO NOT PRESS</span>
           </div>
         </div>
       </div>
@@ -850,6 +869,20 @@ function loadFeed() {
   }).catch(function(err) { console.error('Feed error:', err); });
 }
 loadFeed();
+
+// --- Back to Top ---
+(function() {
+  var btt = document.getElementById('btt');
+  if (!btt) return;
+  var hero = document.querySelector('.hero');
+  var heroH = hero ? hero.offsetHeight : 600;
+  window.addEventListener('scroll', function() {
+    btt.classList.toggle('visible', window.scrollY > heroH);
+  });
+  btt.addEventListener('click', function() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+})();
 
 // --- Flappy Monke Game ---
 try {
