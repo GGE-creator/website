@@ -105,8 +105,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;background:v
 @supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
   nav{-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
 }
-nav .container{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px;flex-shrink:1;white-space:nowrap}
+nav .container{display:flex;align-items:center;justify-content:space-between;max-width:100%;overflow:hidden}
+.nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px;flex-shrink:1;min-width:0}
 .nav-logo span{color:var(--accent)}
 .nav-right{display:flex;align-items:center;gap:20px;position:relative;z-index:2;flex-shrink:0}
 .nav-links{list-style:none;display:flex;gap:28px}
@@ -359,67 +359,6 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </style>
 </head>
 <body data-mode="pro">
-<div id="debug-panel" style="position:fixed;bottom:0;left:0;right:0;z-index:99999;background:red;color:white;font-size:11px;padding:8px;font-family:monospace;max-height:30vh;overflow:auto;display:none"></div>
-<script>
-(function(){
-  var dp = document.getElementById('debug-panel');
-  var isMobile = window.innerWidth < 900;
-  if (!isMobile) return;
-  dp.style.display = 'block';
-  var log = [];
-  function addLog(msg) { log.push(msg); dp.innerHTML = log.join('<br>'); }
-  addLog('VP: ' + window.innerWidth + 'x' + window.innerHeight);
-  addLog('UA: ' + navigator.userAgent.substring(0, 60));
-  
-  // Watch for elements disappearing
-  var checkCount = 0;
-  function check() {
-    checkCount++;
-    var nav = document.querySelector('nav');
-    var navRight = document.querySelector('.nav-right');
-    var toggle = document.getElementById('toggle');
-    var ham = document.getElementById('hamburger');
-    var trigger = document.getElementById('gio-chat-trigger');
-    
-    var navCS = nav ? getComputedStyle(nav) : null;
-    var nrCS = navRight ? getComputedStyle(navRight) : null;
-    var hamCS = ham ? getComputedStyle(ham) : null;
-    
-    var info = 'T' + checkCount + ': ';
-    info += 'nav:' + (navCS ? navCS.display + '/' + navCS.visibility + '/z' + navCS.zIndex + '/h' + nav.offsetHeight : 'NULL') + ' | ';
-    info += 'nr:' + (nrCS ? nrCS.display + '/' + nrCS.visibility + '/w' + navRight.offsetWidth : 'NULL') + ' | ';
-    info += 'ham:' + (hamCS ? hamCS.display + '/w' + ham.offsetWidth : 'NULL') + ' | ';
-    info += 'trig:' + (trigger ? trigger.offsetWidth + 'x' + trigger.offsetHeight : 'NULL');
-    
-    // Check for any element covering the nav
-    var navRect = nav ? nav.getBoundingClientRect() : null;
-    if (navRect) {
-      var elAtPoint = document.elementFromPoint(navRect.right - 50, navRect.top + navRect.height/2);
-      info += ' | atPt:' + (elAtPoint ? elAtPoint.tagName + '#' + elAtPoint.id + '.' + (elAtPoint.className||'').toString().substring(0,20) : 'NULL');
-    }
-    
-    addLog(info);
-    if (checkCount < 20) setTimeout(check, 500);
-  }
-  
-  // Start checking immediately and after various load events
-  check();
-  window.addEventListener('load', function() { addLog('=== WINDOW LOAD ==='); check(); });
-  document.addEventListener('DOMContentLoaded', function() { addLog('=== DOM READY ==='); });
-  
-  // Watch for style changes on nav-right
-  var navRight = document.querySelector('.nav-right');
-  if (navRight && window.MutationObserver) {
-    var mo = new MutationObserver(function(mutations) {
-      mutations.forEach(function(m) {
-        addLog('MUTATION on ' + m.target.tagName + '#' + m.target.id + ': ' + m.attributeName + '=' + (m.target.getAttribute(m.attributeName)||'').substring(0,50));
-      });
-    });
-    mo.observe(navRight, {attributes: true, attributeFilter: ['style','class'], subtree: true});
-    mo.observe(document.querySelector('nav'), {attributes: true, attributeFilter: ['style','class']});
-  }
-})();
-</script>
 
 <h1 class="sr-only">Giovanni Everduin &ndash; Chief Strategy &amp; Innovation Officer, Co-founder CBIx, Commercial Bank International Dubai</h1>
 
