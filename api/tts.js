@@ -52,9 +52,9 @@ export default async function handler(req, res) {
           text: sanitizedText,
           model_id: 'eleven_turbo_v2_5',
           voice_settings: {
-            stability: 0.5,
+            stability: 0.35,
             similarity_boost: 0.75,
-            style: 0.3,
+            style: 0.7,
             use_speaker_boost: true
           }
         })
