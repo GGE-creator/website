@@ -620,7 +620,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">WhatsApp<br><span class="link-sub">Talk to my PR team who are definitely not AI, I think</span></a>
-        <a href="mailto:giovanni.everduin&#64;gmail.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
+        <a href="mailto:gio@giovannieverduin.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
       <div class="footer-col">
         <h4>Speaking &amp; Advisory</h4>
@@ -641,7 +641,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X">&#120143;</a>
-        <a href="mailto:giovanni.everduin&#64;gmail.com" title="Email">@</a>
+        <a href="mailto:gio@giovannieverduin.com" title="Email">@</a>
       </div>
     </div>
   </div>
@@ -1640,12 +1640,8 @@ var GioChat = (function() {
     $('gio-input').focus();
   }
 
-  function askChip(btn) {
-    $('gio-input').value = btn.textContent;
-    send();
-  }
-
-  return { toggle: toggle, toggleSound: toggleSound, send: send, askChip: askChip };
+  // Expose to inline handlers
+  window.GioChat = { toggleSound: toggleSound, send: send, openChat: openChat, closeChat: closeChat };
 })();
 </script>
 </body>
