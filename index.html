@@ -104,7 +104,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;backdrop-fil
 nav .container{display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px}
 .nav-logo span{color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:20px}
+.nav-right{display:flex;align-items:center;gap:20px;position:relative;z-index:2}
 .nav-links{list-style:none;display:flex;gap:28px}
 .nav-links a{font-size:.85rem;font-weight:500;color:var(--text2);transition:color .2s}
 .nav-links a:hover{color:var(--accent)}
@@ -1368,9 +1368,17 @@ try {
 }
 
 /* --- Mobile --- */
+@media (max-width: 900px) {
+  #gio-chat-trigger {
+    top: auto;
+    bottom: 24px;
+    right: 20px;
+  }
+}
 @media (max-width: 500px) {
   #gio-chat-trigger {
-    top: 68px;
+    top: auto;
+    bottom: 20px;
     right: 16px;
     padding: 10px 16px 10px 12px;
   }
