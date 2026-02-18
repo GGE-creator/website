@@ -1602,12 +1602,23 @@ var GioChat = (function() {
   }
 
   // ---- Send ----
+  function stopSpeaking() {
+    if (audio) {
+      audio.pause();
+      audio.currentTime = 0;
+      audio = null;
+    }
+    $('gio-speaking').classList.remove('gio-active');
+    $('gio-status').textContent = 'Online';
+  }
+
   async function send() {
     if (processing) return;
     var input = $('gio-input');
     var text = input.value.trim();
     if (!text) return;
     input.value = '';
+    stopSpeaking();
     processing = true;
     $('gio-send').disabled = true;
 
