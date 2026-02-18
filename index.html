@@ -128,11 +128,13 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
   .hamburger{display:flex}
 }
 @media(max-width:480px){
-  .toggle-label{display:none}
+  .toggle-label{font-size:.5rem;letter-spacing:.5px}
   .toggle-wrap{gap:4px}
-  .toggle-wrap::before{content:'👔';font-size:.75rem}
-  .toggle-wrap::after{content:'🎨';font-size:.75rem}
-  .nav-right{gap:12px}
+  .toggle-track{width:36px;height:20px}
+  .toggle-track::after{width:14px;height:14px;top:2px;left:2px}
+  body[data-mode="perso"] .toggle-track::after{transform:translateX(16px)}
+  .nav-right{gap:10px}
+  .nav-logo{font-size:.85rem}
 }
 .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s}
 .nav-overlay.open{opacity:1;pointer-events:auto}
