@@ -669,6 +669,9 @@ toggle.addEventListener('click', function() {
   lPro.classList.toggle('active', m === 'pro');
   lPerso.classList.toggle('active', m === 'perso');
 });
+toggle.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
+});
 
 var ham = document.getElementById('hamburger');
 var nLinks = document.getElementById('nav-links');
@@ -680,6 +683,29 @@ function toggleMenu() {
 }
 ham.addEventListener('click', toggleMenu);
 nOverlay.addEventListener('click', toggleMenu);
+nLinks.querySelectorAll('a').forEach(function(a) { a.addEventListener('click', function() { if (nLinks.classList.contains('open')) toggleMenu(); }); });
+
+var ro = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(function(el) { ro.observe(el); });
+
+document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+  a.addEventListener('click', function(e) {
+    e.preventDefault();
+    var t = document.querySelector(a.getAttribute('href'));
+    if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
+
+(function() {
+  var btt = document.getElementById('btt');
+  if (!btt) return;
+  var hero = document.querySelector('.hero');
+  var heroH = hero ? hero.offsetHeight : 600;
+  window.addEventListener('scroll', function() { btt.classList.toggle('visible', window.scrollY > heroH); });
+  btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+})();
 </script>
 </body>
 </html>
