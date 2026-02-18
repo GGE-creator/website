@@ -619,7 +619,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">WhatsApp<br><span class="link-sub">Get in touch with my Media &amp; PR team</span></a>
-        <a href="/cdn-cgi/l/email-protection#5e393731283f303037703b283b2c3a2b37301e39333f3732703d3133">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
+        <a href="mailto:giovanni.everduin&#64;gmail.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
       <div class="footer-col">
         <h4>Speaking &amp; Advisory</h4>
@@ -640,7 +640,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X">&#120143;</a>
-        <a href="/cdn-cgi/l/email-protection#5037393f26313e3e397e352635223425393e10373d31393c7e333f3d" title="Email">@</a>
+        <a href="mailto:giovanni.everduin&#64;gmail.com" title="Email">@</a>
       </div>
     </div>
   </div>
@@ -659,10 +659,10 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+try {
 var SUPABASE_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
 var SUPABASE_ANON = 'sb_publishable_jvcjBK380uS79Gct7fzQ2A_jr8RyOSX';
-var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+var sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
 
 var body = document.body;
 var toggle = document.getElementById('toggle');
@@ -845,6 +845,12 @@ loadFeed();
   btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 })();
 
+} catch(mainErr) {
+  console.error('Main script error:', mainErr);
+  /* Failsafe: show all reveal elements even if script crashed */
+  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
+}
+
 try {
 (function() {
   var overlay = document.getElementById('game-overlay');
@@ -962,7 +968,6 @@ try {
   window.addEventListener('resize', function() { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawBg(); } });
 })();
 } catch(gameErr) { console.error('Game init error:', gameErr); }
-}); /* end DOMContentLoaded */
 </script>
 <!-- ============================================================
      ASK AI GIO — Chat Widget (Production Version)
