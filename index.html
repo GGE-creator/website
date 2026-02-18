@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="vercel-live" content="off">
 <title>Giovanni Everduin &ndash; Chief Strategy &amp; Innovation Officer | Co-founder CBIx Dubai</title>
 <meta name="description" content="Giovanni Everduin &ndash; Chief Strategy &amp; Innovation Officer at Commercial Bank International, Co-founder of CBIx. Harvard Business School alum with 20+ years driving fintech innovation, AI, Web3, and digital transformation in the UAE and beyond.">
 <meta name="keywords" content="Giovanni Everduin, CBIx, Commercial Bank International, fintech, innovation, Web3, tokenized assets, AI, Dubai, Harvard Business School, banking innovation, digital transformation">
@@ -74,14 +73,14 @@ body[data-mode="pro"]{
   --bg:#fafafa;--bg2:#fff;--surface:#fff;--surface2:#f5f5f5;
   --border:#e8e8e8;--border2:#ddd;
   --text:#111;--text2:#555;--text3:#888;
-  --nav-bg:#fafafa;--nav-border:#e8e8e8;
+  --nav-bg:rgba(250,250,250,.85);--nav-border:#e8e8e8;
   --card-shadow:0 2px 12px rgba(0,0,0,.06);
 }
 body[data-mode="perso"]{
   --bg:#0a0a0a;--bg2:#111;--surface:#151515;--surface2:#1a1a1a;
   --border:#222;--border2:#333;
   --text:#f5f5f5;--text2:#bbb;--text3:#888;
-  --nav-bg:#0a0a0a;--nav-border:#222;
+  --nav-bg:rgba(10,10,10,.85);--nav-border:#222;
   --card-shadow:0 2px 12px rgba(0,0,0,.3);
 }
 html{scroll-behavior:smooth}
@@ -101,14 +100,11 @@ body[data-mode="pro"] .hero-portrait-perso,body[data-mode="perso"] .hero-portrai
 
 body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px;opacity:.5}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;background:var(--nav-bg);border-bottom:1px solid var(--nav-border);transition:all .7s var(--ease)}
-@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
-  nav{-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
-}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:var(--nav-bg);border-bottom:1px solid var(--nav-border);transition:all .7s var(--ease)}
 nav .container{display:flex;align-items:center;justify-content:space-between}
-.nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px;flex-shrink:1;min-width:0}
+.nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px}
 .nav-logo span{color:var(--accent)}
-.nav-right{display:flex;align-items:center;gap:20px;position:relative;z-index:2}
+.nav-right{display:flex;align-items:center;gap:20px}
 .nav-links{list-style:none;display:flex;gap:28px}
 .nav-links a{font-size:.85rem;font-weight:500;color:var(--text2);transition:color .2s}
 .nav-links a:hover{color:var(--accent)}
@@ -126,15 +122,6 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
   .nav-links.open{right:0}
   .nav-links a{font-size:1.1rem;color:var(--text)}
   .hamburger{display:flex}
-}
-@media(max-width:480px){
-  .toggle-label{font-size:.5rem;letter-spacing:.5px}
-  .toggle-wrap{gap:4px}
-  .toggle-track{width:36px;height:20px}
-  .toggle-track::after{width:14px;height:14px;top:2px;left:2px}
-  body[data-mode="perso"] .toggle-track::after{transform:translateX(16px)}
-  .nav-right{gap:10px}
-  .nav-logo{font-size:.85rem}
 }
 .nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s}
 .nav-overlay.open{opacity:1;pointer-events:auto}
@@ -982,7 +969,7 @@ try {
 } catch(gameErr) { console.error('Game init error:', gameErr); }
 </script>
 <!-- ============================================================
-     ASK AI GIO — Chat Widget (Production Version)
+     ASK AI GIO â€” Chat Widget (Production Version)
      Drop this into your index.html before </body>
      
      REQUIRES: Vercel API proxy deployed at your domain
@@ -991,7 +978,7 @@ try {
 
 <style>
 /* ============================================================
-   ASK AI GIO — Widget Styles
+   ASK AI GIO â€” Widget Styles
    Inherits CSS variables from the main site
    ============================================================ */
 
@@ -1381,20 +1368,14 @@ try {
 }
 
 /* --- Mobile --- */
-@media (max-width: 900px) {
-  #gio-chat-trigger {
-    top: 76px;
-    right: 20px;
-    padding: 10px 16px 10px 12px;
-  }
-  #gio-chat-trigger .gio-trigger-text { display: none; }
-}
 @media (max-width: 500px) {
   #gio-chat-trigger {
     top: auto;
     bottom: 20px;
     right: 16px;
+    padding: 10px 16px 10px 12px;
   }
+  #gio-chat-trigger .gio-trigger-text { display: none; }
   #gio-chat-window {
     top: 0;
     left: 0;
@@ -1437,8 +1418,8 @@ try {
         </div>
       </div>
     </div>
-    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">🔊</button>
-    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">✕</button>
+    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">ðŸ”Š</button>
+    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">âœ•</button>
   </div>
 
   <div class="gio-welcome" id="gio-welcome">
@@ -1512,7 +1493,7 @@ var GioChat = (function() {
   function toggleSound() {
     SOUND_ON = !SOUND_ON;
     var btn = $('gio-sound-btn');
-    btn.textContent = SOUND_ON ? '🔊' : '🔇';
+    btn.textContent = SOUND_ON ? 'ðŸ”Š' : 'ðŸ”‡';
     btn.classList.toggle('gio-sound-active', SOUND_ON);
     if (!SOUND_ON && audio) {
       audio.pause(); audio = null;
@@ -1534,7 +1515,7 @@ var GioChat = (function() {
     m.className = 'gio-msg ' + (role === 'user' ? 'gio-msg-user' : 'gio-msg-ai');
     var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     m.innerHTML = '<div class="gio-bubble">' + escHtml(text) + '</div>' +
-                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' · ' + t + '</div>';
+                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' Â· ' + t + '</div>';
     c.appendChild(m);
     c.scrollTop = c.scrollHeight;
     messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
@@ -1609,16 +1590,16 @@ var GioChat = (function() {
   function fallback(input) {
     var q = input.toLowerCase();
     if (q.includes('cbix') || q.includes('cbi'))
-      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank — but with the freedom to actually ship things.";
+      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank â€” but with the freedom to actually ship things.";
     if (q.includes('tokeniz') || q.includes('rwa'))
       return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs.";
     if (q.includes('nft') || q.includes('collect'))
-      return "I collect across chains — Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
+      return "I collect across chains â€” Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
     if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
-      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site — my team will get back to you quickly.";
+      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site â€” my team will get back to you quickly.";
     if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
-      return "I'm a closeted DeFi maxi in a banker's suit — that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
-    return "Great question! I'm AI Gio — an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
+      return "I'm a closeted DeFi maxi in a banker's suit â€” that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
+    return "Great question! I'm AI Gio â€” an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
   }
 
   // ---- Send ----
@@ -1652,7 +1633,7 @@ var GioChat = (function() {
       speak(resp);
     } catch (e) {
       hideTyping();
-      addMsg('ai', "Something went wrong — try again in a moment!");
+      addMsg('ai', "Something went wrong â€” try again in a moment!");
     }
     processing = false;
     $('gio-send').disabled = false;
