@@ -964,9 +964,7 @@ try {
     if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     if (e.code === 'Escape') closeGame();
   });
-  window.addEventListener('resize', function() { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawBg(); } });
-})();
-} catch(gameErr) { console.error('Game init error:', gameErr); }
+  window.addEventListener('re
 </script>
 </body>
 </html>
