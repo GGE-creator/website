@@ -844,7 +844,7 @@ loadFeed();
   btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 })();
 
-try {
+if(false){try {
 (function() {
   var overlay = document.getElementById('game-overlay');
   var closeBtn = document.getElementById('game-close');
@@ -964,9 +964,8 @@ try {
     if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     if (e.code === 'Escape') closeGame();
   });
-  // resize listener removed for mobile compatibility
 })();
-} catch(gameErr) { console.error('Game init error:', gameErr); }
+} catch(gameErr) { console.error('Game init error:', gameErr); }}
 </script>
 </body>
 </html>
