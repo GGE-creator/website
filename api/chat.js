@@ -78,8 +78,15 @@ BOUNDARIES:
 - If someone asks if you're real: "I'm AI Gio, an experimental prototype. For the real thing, you'll have to buy me a coffee in Dubai."`;
 
 export default async function handler(req, res) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', 'https://giovannieverduin.com');
+  // CORS — allow main site and ask subdomain
+  const allowedOrigins = [
+    'https://giovannieverduin.com',
+    'https://ask.giovannieverduin.com'
+  ];
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
