@@ -53,8 +53,8 @@ export default async function handler(req, res) {
           model_id: 'eleven_turbo_v2_5',
           voice_settings: {
             stability: 0.35,
-            similarity_boost: 0.65,
-            style: 0.7,
+            similarity_boost: 0.6,
+            style: 0.6,
             use_speaker_boost: true
           }
         })
