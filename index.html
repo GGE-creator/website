@@ -658,5 +658,28 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="game-score" id="game-score">$0</div>
 </div>
 
+<script>
+var body = document.body;
+var toggle = document.getElementById('toggle');
+var lPro = document.getElementById('label-pro');
+var lPerso = document.getElementById('label-perso');
+toggle.addEventListener('click', function() {
+  var m = body.dataset.mode === 'pro' ? 'perso' : 'pro';
+  body.dataset.mode = m;
+  lPro.classList.toggle('active', m === 'pro');
+  lPerso.classList.toggle('active', m === 'perso');
+});
+
+var ham = document.getElementById('hamburger');
+var nLinks = document.getElementById('nav-links');
+var nOverlay = document.getElementById('nav-overlay');
+function toggleMenu() {
+  nLinks.classList.toggle('open');
+  nOverlay.classList.toggle('open');
+  document.body.style.overflow = nLinks.classList.contains('open') ? 'hidden' : '';
+}
+ham.addEventListener('click', toggleMenu);
+nOverlay.addEventListener('click', toggleMenu);
+</script>
 </body>
 </html>
