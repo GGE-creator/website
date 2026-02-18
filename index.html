@@ -157,7 +157,7 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
   .hero-portrait-container{max-width:240px}
   .hero-tags{grid-template-columns:repeat(2,1fr);max-width:100%}
   .scroll-hint{bottom:16px}
-  .photo-banner-text{font-size:1.3rem;padding:24px 20px}
+  .photo-banner-text{font-size:1.6rem;padding:24px 20px}
 }
 
 section{padding:100px 0;transition:background .7s var(--ease)}
@@ -196,7 +196,7 @@ section{padding:100px 0;transition:background .7s var(--ease)}
 .photo-banner img{width:100%;height:100%;object-fit:cover;object-position:center center;position:absolute;inset:0}
 .photo-banner .photo-perso{object-position:center 25%}
 .photo-banner::after{content:'';position:absolute;inset:0;background:rgba(0,0,0,.625)}
-.photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(1.3rem,2.8vw,2.2rem);font-weight:700;line-height:1.4;letter-spacing:-1px;text-align:center;padding:40px 32px;width:100%;height:100%}
+.photo-banner-text{position:absolute;inset:0;z-index:1;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-display);font-size:clamp(2rem,4vw,3.2rem);font-weight:700;line-height:1.15;letter-spacing:-1px;text-align:center;padding:40px 32px;width:100%;height:100%}
 
 .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
 .gallery-item{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:1;background:var(--surface2);border:1px solid var(--border);transition:all .3s var(--ease);cursor:pointer}
@@ -619,7 +619,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">WhatsApp<br><span class="link-sub">Get in touch with my Media &amp; PR team</span></a>
-        <a href="mailto:giovanni.everduin@gmail.com">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
+        <a href="/cdn-cgi/l/email-protection#4b2c22243d2a252522652e3d2e392f3e22250b2c262a222765282426">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
       <div class="footer-col">
         <h4>Speaking &amp; Advisory</h4>
@@ -640,7 +640,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X">&#120143;</a>
-        <a href="mailto:giovanni.everduin@gmail.com" title="Email">@</a>
+        <a href="/cdn-cgi/l/email-protection#f2959b9d84939c9c9bdc9784978096879b9cb2959f939b9edc919d9f" title="Email">@</a>
       </div>
     </div>
   </div>
@@ -658,7 +658,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
   <div class="game-score" id="game-score">$0</div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 var SUPABASE_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
 var SUPABASE_ANON = 'sb_publishable_jvcjBK380uS79Gct7fzQ2A_jr8RyOSX';
 var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
@@ -964,9 +964,4 @@ try {
     if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     if (e.code === 'Escape') closeGame();
   });
-  window.addEventListener('resize', function() { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawBg(); } });
-})();
-} catch(gameErr) { console.error('Game init error:', gameErr); }
-</script>
-</body>
-</html>
+  window.addEventListener('re
