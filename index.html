@@ -659,10 +659,9 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
 </div>
 
 <script>
-try {
 var SUPABASE_URL = 'https://ngwcbleuthyzqkldcfgw.supabase.co';
 var SUPABASE_ANON = 'sb_publishable_jvcjBK380uS79Gct7fzQ2A_jr8RyOSX';
-var sb = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON) : null;
+var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
 
 var body = document.body;
 var toggle = document.getElementById('toggle');
@@ -845,12 +844,6 @@ loadFeed();
   btt.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 })();
 
-} catch(mainErr) {
-  console.error('Main script error:', mainErr);
-  /* Failsafe: show all reveal elements even if script crashed */
-  document.querySelectorAll('.reveal').forEach(function(el) { el.classList.add('visible'); });
-}
-
 try {
 (function() {
   var overlay = document.getElementById('game-overlay');
@@ -943,7 +936,13 @@ try {
   }
   function draw() {
     drawBg();
-    for (var  monke.y);
+    for (var i = 0; i < pipes.length; i++) {
+      var p = pipes[i];
+      drawCandle(p.x, 0, p.topH, false);
+      drawCandle(p.x, p.topH + gapH, H - p.topH - gapH, true);
+    }
+    ctx.save();
+    ctx.translate(monke.x, monke.y);
     ctx.rotate(monke.rot * Math.PI / 180);
     ctx.beginPath(); ctx.arc(0, 0, monke.w / 2, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
     ctx.drawImage(monkeImg, -monke.w / 2, -monke.h / 2, monke.w, monke.h);
