@@ -74,14 +74,14 @@ body[data-mode="pro"]{
   --bg:#fafafa;--bg2:#fff;--surface:#fff;--surface2:#f5f5f5;
   --border:#e8e8e8;--border2:#ddd;
   --text:#111;--text2:#555;--text3:#888;
-  --nav-bg:rgba(250,250,250,.85);--nav-border:#e8e8e8;
+  --nav-bg:#fafafa;--nav-border:#e8e8e8;
   --card-shadow:0 2px 12px rgba(0,0,0,.06);
 }
 body[data-mode="perso"]{
   --bg:#0a0a0a;--bg2:#111;--surface:#151515;--surface2:#1a1a1a;
   --border:#222;--border2:#333;
   --text:#f5f5f5;--text2:#bbb;--text3:#888;
-  --nav-bg:rgba(10,10,10,.85);--nav-border:#222;
+  --nav-bg:#0a0a0a;--nav-border:#222;
   --card-shadow:0 2px 12px rgba(0,0,0,.3);
 }
 html{scroll-behavior:smooth}
@@ -99,9 +99,12 @@ body[data-mode="pro"] .motto-bg-perso,body[data-mode="perso"] .motto-bg-pro{opac
 body[data-mode="pro"] .motto-bg-pro,body[data-mode="perso"] .motto-bg-perso{opacity:1!important}
 body[data-mode="pro"] .hero-portrait-perso,body[data-mode="perso"] .hero-portrait-pro{display:none!important}
 
-body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px;opacity:.5}
+body::before{content:'';position:fixed;inset:0;z-index:1;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");background-repeat:repeat;background-size:256px;opacity:.5}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:10010;padding:16px 0;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);background:var(--nav-bg);border-bottom:1px solid var(--nav-border);transition:all .7s var(--ease)}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:16px 0;background:var(--nav-bg);border-bottom:1px solid var(--nav-border);transition:all .7s var(--ease)}
+@supports (backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px)){
+  nav{-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+}
 nav .container{display:flex;align-items:center;justify-content:space-between}
 .nav-logo{font-family:var(--font-display);font-weight:700;font-size:1.05rem;letter-spacing:-.3px}
 .nav-logo span{color:var(--accent)}
@@ -119,12 +122,12 @@ body[data-mode="perso"] .toggle-track::after{transform:translateX(20px)}
 .hamburger span{width:22px;height:2px;background:var(--text);transition:all .3s}
 
 @media(max-width:900px){
-  .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;flex-direction:column;background:var(--bg);padding:80px 32px;gap:24px;transition:right .35s var(--ease);border-left:1px solid var(--border);z-index:10012}
+  .nav-links{position:fixed;top:0;right:-100%;width:70%;height:100vh;flex-direction:column;background:var(--bg);padding:80px 32px;gap:24px;transition:right .35s var(--ease);border-left:1px solid var(--border);z-index:1002}
   .nav-links.open{right:0}
   .nav-links a{font-size:1.1rem;color:var(--text)}
   .hamburger{display:flex}
 }
-.nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:10011;opacity:0;pointer-events:none;transition:opacity .3s}
+.nav-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1001;opacity:0;pointer-events:none;transition:opacity .3s}
 .nav-overlay.open{opacity:1;pointer-events:auto}
 
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;padding:120px 0 80px;background:var(--bg);transition:background .7s var(--ease)}
@@ -1371,19 +1374,18 @@ try {
 /* --- Mobile --- */
 @media (max-width: 900px) {
   #gio-chat-trigger {
-    top: auto;
-    bottom: 24px;
+    top: 76px;
     right: 20px;
+    padding: 10px 16px 10px 12px;
   }
+  #gio-chat-trigger .gio-trigger-text { display: none; }
 }
 @media (max-width: 500px) {
   #gio-chat-trigger {
     top: auto;
     bottom: 20px;
     right: 16px;
-    padding: 10px 16px 10px 12px;
   }
-  #gio-chat-trigger .gio-trigger-text { display: none; }
   #gio-chat-window {
     top: 0;
     left: 0;
