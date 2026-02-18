@@ -619,7 +619,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener">LinkedIn<br><span class="link-sub">Carefully professionally curated</span></a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener">X / Twitter<br><span class="link-sub">Raw &amp; unfiltered thoughts</span></a>
         <a href="https://wa.me/14155238886" target="_blank" rel="noopener">WhatsApp<br><span class="link-sub">Get in touch with my Media &amp; PR team</span></a>
-        <a href="/cdn-cgi/l/email-protection#4b2c22243d2a252522652e3d2e392f3e22250b2c262a222765282426">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
+        <a href="/cdn-cgi/l/email-protection#5e393731283f303037703b283b2c3a2b37301e39333f3732703d3133">Email<br><span class="link-sub">50/50 chance I'll read it</span></a>
       </div>
       <div class="footer-col">
         <h4>Speaking &amp; Advisory</h4>
@@ -640,7 +640,7 @@ footer{background:var(--surface);border-top:1px solid var(--border);padding:64px
       <div class="footer-socials">
         <a href="https://www.linkedin.com/in/geverduin/" target="_blank" rel="noopener" title="LinkedIn">in</a>
         <a href="https://x.com/geverduin" target="_blank" rel="noopener" title="X">&#120143;</a>
-        <a href="/cdn-cgi/l/email-protection#f2959b9d84939c9c9bdc9784978096879b9cb2959f939b9edc919d9f" title="Email">@</a>
+        <a href="/cdn-cgi/l/email-protection#5037393f26313e3e397e352635223425393e10373d31393c7e333f3d" title="Email">@</a>
       </div>
     </div>
   </div>
@@ -936,13 +936,7 @@ try {
   }
   function draw() {
     drawBg();
-    for (var i = 0; i < pipes.length; i++) {
-      var p = pipes[i];
-      drawCandle(p.x, 0, p.topH, false);
-      drawCandle(p.x, p.topH + gapH, H - p.topH - gapH, true);
-    }
-    ctx.save();
-    ctx.translate(monke.x, monke.y);
+    for (var  monke.y);
     ctx.rotate(monke.rot * Math.PI / 180);
     ctx.beginPath(); ctx.arc(0, 0, monke.w / 2, 0, Math.PI * 2); ctx.closePath(); ctx.clip();
     ctx.drawImage(monkeImg, -monke.w / 2, -monke.h / 2, monke.w, monke.h);
@@ -964,4 +958,677 @@ try {
     if (e.code === 'Space' || e.code === 'ArrowUp') { e.preventDefault(); flap(); }
     if (e.code === 'Escape') closeGame();
   });
-  window.addEventListener('re
+  window.addEventListener('resize', function() { if (overlay.classList.contains('active')) { resize(); if (state === 'idle') drawBg(); } });
+})();
+} catch(gameErr) { console.error('Game init error:', gameErr); }
+</script>
+<!-- ============================================================
+     ASK AI GIO — Chat Widget (Production Version)
+     Drop this into your index.html before </body>
+     
+     REQUIRES: Vercel API proxy deployed at your domain
+     API routes: /api/chat (Claude) and /api/tts (ElevenLabs)
+     ============================================================ -->
+
+<style>
+/* ============================================================
+   ASK AI GIO — Widget Styles
+   Inherits CSS variables from the main site
+   ============================================================ */
+
+/* --- Floating Trigger Button --- */
+#gio-chat-trigger {
+  position: fixed;
+  bottom: 28px;
+  left: 28px;
+  z-index: 9990;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 12px 14px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e8e8e8);
+  border-radius: 40px;
+  cursor: pointer;
+  box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,.06));
+  transition: all .3s var(--ease);
+  font-family: var(--font-body);
+}
+#gio-chat-trigger:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(255,107,43,.2);
+}
+#gio-chat-trigger .gio-trigger-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+#gio-chat-trigger .gio-trigger-text {
+  display: flex;
+  flex-direction: column;
+}
+#gio-chat-trigger .gio-trigger-label {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .85rem;
+  color: var(--text);
+  line-height: 1.2;
+}
+#gio-chat-trigger .gio-trigger-sub {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  color: var(--accent);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+#gio-chat-trigger .gio-trigger-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: gio-pulse 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes gio-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,.4); }
+  50% { opacity: .7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+}
+
+/* --- Chat Window --- */
+#gio-chat-window {
+  position: fixed;
+  bottom: 90px;
+  left: 28px;
+  z-index: 9991;
+  width: 400px;
+  max-width: calc(100vw - 40px);
+  height: 560px;
+  max-height: calc(100vh - 120px);
+  background: var(--bg2, #fff);
+  border: 1px solid var(--border, #e8e8e8);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 40px rgba(0,0,0,.15);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(16px) scale(.96);
+  transition: opacity .3s var(--ease), transform .3s var(--ease);
+  font-family: var(--font-body);
+}
+#gio-chat-window.gio-open { display: flex; }
+#gio-chat-window.gio-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+/* --- Header --- */
+.gio-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.gio-chat-header .gio-h-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent);
+}
+.gio-chat-header .gio-h-info { flex: 1; }
+.gio-chat-header .gio-h-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: .95rem;
+  color: var(--text);
+}
+.gio-chat-header .gio-h-status {
+  font-size: .72rem;
+  color: var(--text3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.gio-chat-header .gio-h-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+.gio-chat-header .gio-h-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .85rem;
+  transition: all .2s;
+}
+.gio-chat-header .gio-h-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.gio-chat-header .gio-h-btn.gio-sound-active {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--accent);
+}
+
+/* --- Messages --- */
+.gio-chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) var(--surface2);
+}
+.gio-chat-msgs::-webkit-scrollbar { width: 4px; }
+.gio-chat-msgs::-webkit-scrollbar-track { background: transparent; }
+.gio-chat-msgs::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+.gio-msg {
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: gio-msg-in .3s var(--ease);
+}
+@keyframes gio-msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.gio-msg-user { align-self: flex-end; }
+.gio-msg-ai { align-self: flex-start; }
+.gio-msg .gio-bubble {
+  padding: 12px 16px;
+  border-radius: 16px;
+  font-size: .88rem;
+  line-height: 1.6;
+  word-break: break-word;
+}
+.gio-msg-user .gio-bubble {
+  background: var(--accent);
+  color: #fff;
+  border-bottom-right-radius: 4px;
+}
+.gio-msg-ai .gio-bubble {
+  background: var(--surface2);
+  color: var(--text);
+  border-bottom-left-radius: 4px;
+}
+.gio-msg .gio-meta {
+  font-size: .65rem;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  letter-spacing: .5px;
+  padding: 0 4px;
+}
+.gio-msg-user .gio-meta { text-align: right; }
+
+/* --- Typing Indicator --- */
+.gio-typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 18px;
+  background: var(--surface2);
+  border-radius: 16px;
+  border-bottom-left-radius: 4px;
+  max-width: 70px;
+  align-self: flex-start;
+}
+.gio-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--text3);
+  animation: gio-bounce .6s infinite alternate;
+}
+.gio-typing span:nth-child(2) { animation-delay: .15s; }
+.gio-typing span:nth-child(3) { animation-delay: .3s; }
+@keyframes gio-bounce {
+  from { transform: translateY(0); opacity: .4; }
+  to { transform: translateY(-4px); opacity: 1; }
+}
+
+/* --- Speaking Indicator --- */
+.gio-speaking {
+  display: none;
+  align-items: center;
+  gap: 2px;
+  padding: 0 8px;
+}
+.gio-speaking.gio-active { display: flex; }
+.gio-speaking .gio-wbar {
+  width: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: gio-wave .5s ease-in-out infinite alternate;
+}
+.gio-speaking .gio-wbar:nth-child(1) { height: 12px; }
+.gio-speaking .gio-wbar:nth-child(2) { height: 16px; animation-delay: .1s; }
+.gio-speaking .gio-wbar:nth-child(3) { height: 10px; animation-delay: .2s; }
+.gio-speaking .gio-wbar:nth-child(4) { height: 18px; animation-delay: .3s; }
+.gio-speaking .gio-wbar:nth-child(5) { height: 8px; animation-delay: .15s; }
+@keyframes gio-wave {
+  from { transform: scaleY(.4); }
+  to { transform: scaleY(1); }
+}
+
+/* --- Disclaimer --- */
+.gio-disclaimer {
+  padding: 6px 18px;
+  font-size: .62rem;
+  color: var(--text3);
+  text-align: center;
+  font-family: var(--font-mono);
+  letter-spacing: .5px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+  line-height: 1.4;
+}
+.gio-disclaimer .gio-badge {
+  display: inline-block;
+  background: var(--accent-glow);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: .58rem;
+  margin-right: 4px;
+}
+
+/* --- Suggestions --- */
+.gio-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 18px 10px;
+  flex-shrink: 0;
+}
+.gio-chip {
+  font-family: var(--font-body);
+  font-size: .75rem;
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text2);
+  cursor: pointer;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.gio-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+/* --- Welcome Screen --- */
+.gio-welcome {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  gap: 16px;
+}
+.gio-welcome .gio-w-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--accent);
+}
+.gio-welcome h3 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  color: var(--text);
+  letter-spacing: -.5px;
+}
+.gio-welcome h3 span { color: var(--accent); }
+.gio-welcome p {
+  font-size: .85rem;
+  color: var(--text2);
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+/* --- Input Area --- */
+.gio-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  flex-shrink: 0;
+}
+.gio-input-wrap input {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 10px 16px;
+  font-family: var(--font-body);
+  font-size: .85rem;
+  background: var(--bg2, #fff);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s;
+}
+.gio-input-wrap input::placeholder { color: var(--text3); }
+.gio-input-wrap input:focus { border-color: var(--accent); }
+.gio-send {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .2s;
+  flex-shrink: 0;
+}
+.gio-send:hover { background: var(--accent2); transform: scale(1.05); }
+.gio-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+.gio-send svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* --- Mobile --- */
+@media (max-width: 500px) {
+  #gio-chat-trigger {
+    bottom: 16px;
+    left: 16px;
+    padding: 10px 16px 10px 12px;
+  }
+  #gio-chat-trigger .gio-trigger-text { display: none; }
+  #gio-chat-window {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+}
+</style>
+
+<!-- Trigger Button -->
+<div id="gio-chat-trigger" onclick="GioChat.toggle()">
+  <img class="gio-trigger-avatar" src="./images/blazer-cutout.png" alt="Gio"
+       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%2720%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2720%27 y=%2726%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2718%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+  <div class="gio-trigger-text">
+    <span class="gio-trigger-label">Ask AI Gio</span>
+    <span class="gio-trigger-sub">AI Prototype</span>
+  </div>
+  <div class="gio-trigger-pulse"></div>
+</div>
+
+<!-- Chat Window -->
+<div id="gio-chat-window">
+  <div class="gio-chat-header">
+    <img class="gio-h-avatar" src="./images/blazer-cutout.png" alt="Gio"
+         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%2720%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2720%27 y=%2726%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2718%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+    <div class="gio-h-info">
+      <div class="gio-h-name">AI Gio</div>
+      <div class="gio-h-status">
+        <span class="gio-h-status-dot"></span>
+        <span id="gio-status">Online</span>
+        <div class="gio-speaking" id="gio-speaking">
+          <div class="gio-wbar"></div><div class="gio-wbar"></div><div class="gio-wbar"></div><div class="gio-wbar"></div><div class="gio-wbar"></div>
+        </div>
+      </div>
+    </div>
+    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">🔊</button>
+    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">✕</button>
+  </div>
+
+  <div class="gio-welcome" id="gio-welcome">
+    <img class="gio-w-avatar" src="./images/blazer-cutout.png" alt="Gio"
+         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 72 72%27%3E%3Ccircle cx=%2736%27 cy=%2736%27 r=%2736%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2736%27 y=%2746%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2732%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+    <h3>Ask AI <span>Gio</span></h3>
+    <p>An AI prototype trained on Gio's public persona, writings, and talks. Ask me anything about banking innovation, Web3, or what it's like being a closeted DeFi maxi in a banker's suit.</p>
+  </div>
+
+  <div class="gio-chat-msgs" id="gio-msgs" style="display:none;"></div>
+
+  <div class="gio-suggestions" id="gio-suggestions">
+    <button class="gio-chip" onclick="GioChat.askChip(this)">What is CBIx?</button>
+    <button class="gio-chip" onclick="GioChat.askChip(this)">Your view on tokenized assets?</button>
+    <button class="gio-chip" onclick="GioChat.askChip(this)">What NFTs do you collect?</button>
+    <button class="gio-chip" onclick="GioChat.askChip(this)">Book Gio for a keynote</button>
+  </div>
+
+  <div class="gio-disclaimer">
+    <span class="gio-badge">AI PROTOTYPE</span>
+    This is not the real Gio. Responses are AI-generated and may not be accurate.
+  </div>
+
+  <div class="gio-input-wrap">
+    <input id="gio-input" type="text" placeholder="Ask AI Gio something..."
+           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();GioChat.send()}"
+           autocomplete="off">
+    <button class="gio-send" id="gio-send" onclick="GioChat.send()">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+var GioChat = (function() {
+  'use strict';
+
+  // ---- Config ----
+  // API_BASE: set to '' for same-origin (Vercel), or your deployed proxy URL
+  var API_BASE = '';  // e.g. 'https://ask-ai-gio.vercel.app' if hosted separately
+  var SOUND_ON = true;
+  var messages = [];
+  var processing = false;
+  var started = false;
+  var audio = null;
+
+  function $(id) { return document.getElementById(id); }
+
+  function escHtml(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  // ---- Toggle Window ----
+  function toggle() {
+    var w = $('gio-chat-window');
+    if (!w.classList.contains('gio-open')) {
+      w.classList.add('gio-open');
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() { w.classList.add('gio-visible'); });
+      });
+      $('gio-input').focus();
+    } else {
+      w.classList.remove('gio-visible');
+      setTimeout(function() { w.classList.remove('gio-open'); }, 300);
+    }
+  }
+
+  // ---- Sound ----
+  function toggleSound() {
+    SOUND_ON = !SOUND_ON;
+    var btn = $('gio-sound-btn');
+    btn.textContent = SOUND_ON ? '🔊' : '🔇';
+    btn.classList.toggle('gio-sound-active', SOUND_ON);
+    if (!SOUND_ON && audio) {
+      audio.pause(); audio = null;
+      $('gio-speaking').classList.remove('gio-active');
+      $('gio-status').textContent = 'Online';
+    }
+  }
+
+  // ---- Add Message ----
+  function addMsg(role, text) {
+    if (!started) {
+      $('gio-welcome').style.display = 'none';
+      $('gio-msgs').style.display = 'flex';
+      $('gio-suggestions').style.display = 'none';
+      started = true;
+    }
+    var c = $('gio-msgs');
+    var m = document.createElement('div');
+    m.className = 'gio-msg ' + (role === 'user' ? 'gio-msg-user' : 'gio-msg-ai');
+    var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    m.innerHTML = '<div class="gio-bubble">' + escHtml(text) + '</div>' +
+                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' · ' + t + '</div>';
+    c.appendChild(m);
+    c.scrollTop = c.scrollHeight;
+    messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
+  }
+
+  function showTyping() {
+    var c = $('gio-msgs');
+    var d = document.createElement('div');
+    d.className = 'gio-typing'; d.id = 'gio-typing';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    c.appendChild(d);
+    c.scrollTop = c.scrollHeight;
+    $('gio-status').textContent = 'Thinking...';
+  }
+  function hideTyping() {
+    var t = $('gio-typing'); if (t) t.remove();
+    $('gio-status').textContent = 'Online';
+  }
+
+  // ---- Chat API (via Vercel proxy) ----
+  async function callChat(text) {
+    try {
+      var res = await fetch(API_BASE + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      var data = await res.json();
+      return data.text || fallback(text);
+    } catch (err) {
+      console.error('Chat error:', err);
+      return fallback(text);
+    }
+  }
+
+  // ---- TTS API (via Vercel proxy) ----
+  async function speak(text) {
+    if (!SOUND_ON) return;
+    try {
+      $('gio-speaking').classList.add('gio-active');
+      $('gio-status').textContent = 'Speaking...';
+
+      var res = await fetch(API_BASE + '/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text })
+      });
+      if (!res.ok) throw new Error('TTS ' + res.status);
+
+      var blob = await res.blob();
+      var url = URL.createObjectURL(blob);
+      audio = new Audio(url);
+      audio.onended = function() {
+        $('gio-speaking').classList.remove('gio-active');
+        $('gio-status').textContent = 'Online';
+        URL.revokeObjectURL(url); audio = null;
+      };
+      audio.onerror = function() {
+        $('gio-speaking').classList.remove('gio-active');
+        $('gio-status').textContent = 'Online'; audio = null;
+      };
+      audio.play();
+    } catch (err) {
+      console.error('TTS error:', err);
+      $('gio-speaking').classList.remove('gio-active');
+      $('gio-status').textContent = 'Online';
+    }
+  }
+
+  // ---- Fallback (offline / error) ----
+  function fallback(input) {
+    var q = input.toLowerCase();
+    if (q.includes('cbix') || q.includes('cbi'))
+      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank — but with the freedom to actually ship things.";
+    if (q.includes('tokeniz') || q.includes('rwa'))
+      return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs.";
+    if (q.includes('nft') || q.includes('collect'))
+      return "I collect across chains — Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
+    if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
+      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site — my team will get back to you quickly.";
+    if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
+      return "I'm a closeted DeFi maxi in a banker's suit — that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
+    return "Great question! I'm AI Gio — an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
+  }
+
+  // ---- Send ----
+  async function send() {
+    if (processing) return;
+    var input = $('gio-input');
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    processing = true;
+    $('gio-send').disabled = true;
+
+    addMsg('user', text);
+    showTyping();
+
+    try {
+      var resp = await callChat(text);
+      hideTyping();
+      addMsg('ai', resp);
+      speak(resp);
+    } catch (e) {
+      hideTyping();
+      addMsg('ai', "Something went wrong — try again in a moment!");
+    }
+    processing = false;
+    $('gio-send').disabled = false;
+    $('gio-input').focus();
+  }
+
+  function askChip(btn) {
+    $('gio-input').value = btn.textContent;
+    send();
+  }
+
+  return { toggle: toggle, toggleSound: toggleSound, send: send, askChip: askChip };
+})();
+</script>
+
+</body>
+</html>
