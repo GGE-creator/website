@@ -1640,8 +1640,13 @@ var GioChat = (function() {
     $('gio-input').focus();
   }
 
+  function askChip(btn) {
+    $('gio-input').value = btn.textContent;
+    send();
+  }
+
   // Expose to inline handlers
-  window.GioChat = { toggleSound: toggleSound, send: send, openChat: openChat, closeChat: closeChat };
+  window.GioChat = { toggle: toggle, toggleSound: toggleSound, send: send, askChip: askChip };
 })();
 </script>
 </body>
