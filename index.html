@@ -969,7 +969,7 @@ try {
 } catch(gameErr) { console.error('Game init error:', gameErr); }
 </script>
 <!-- ============================================================
-     ASK AI GIO â€” Chat Widget (Production Version)
+     ASK AI GIO  -- Chat Widget (Production Version)
      Drop this into your index.html before </body>
      
      REQUIRES: Vercel API proxy deployed at your domain
@@ -978,7 +978,7 @@ try {
 
 <style>
 /* ============================================================
-   ASK AI GIO â€” Widget Styles
+   ASK AI GIO  -- Widget Styles
    Inherits CSS variables from the main site
    ============================================================ */
 
@@ -1426,8 +1426,8 @@ try {
         </div>
       </div>
     </div>
-    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">ðŸ”Š</button>
-    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">âœ•</button>
+    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">&#x1F50A;</button>
+    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">&#x2715;</button>
   </div>
 
   <div class="gio-welcome" id="gio-welcome">
@@ -1501,7 +1501,7 @@ var GioChat = (function() {
   function toggleSound() {
     SOUND_ON = !SOUND_ON;
     var btn = $('gio-sound-btn');
-    btn.textContent = SOUND_ON ? 'ðŸ”Š' : 'ðŸ”‡';
+    btn.textContent = SOUND_ON ? '\ud83d\udd0a' : '\ud83d\udd07';
     btn.classList.toggle('gio-sound-active', SOUND_ON);
     if (!SOUND_ON && audio) {
       audio.pause(); audio = null;
@@ -1523,7 +1523,7 @@ var GioChat = (function() {
     m.className = 'gio-msg ' + (role === 'user' ? 'gio-msg-user' : 'gio-msg-ai');
     var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     m.innerHTML = '<div class="gio-bubble">' + escHtml(text) + '</div>' +
-                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' Â· ' + t + '</div>';
+                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' \u00b7 ' + t + '</div>';
     c.appendChild(m);
     c.scrollTop = c.scrollHeight;
     messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
@@ -1598,16 +1598,16 @@ var GioChat = (function() {
   function fallback(input) {
     var q = input.toLowerCase();
     if (q.includes('cbix') || q.includes('cbi'))
-      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank â€” but with the freedom to actually ship things.";
+      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank  -- but with the freedom to actually ship things.";
     if (q.includes('tokeniz') || q.includes('rwa'))
       return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs.";
     if (q.includes('nft') || q.includes('collect'))
-      return "I collect across chains â€” Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
+      return "I collect across chains  -- Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
     if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
-      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site â€” my team will get back to you quickly.";
+      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site  -- my team will get back to you quickly.";
     if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
-      return "I'm a closeted DeFi maxi in a banker's suit â€” that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
-    return "Great question! I'm AI Gio â€” an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
+      return "I'm a closeted DeFi maxi in a banker's suit  -- that's the honest truth. BTC and SOL maxi, terrible trader, great navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
+    return "Great question! I'm AI Gio  -- an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
   }
 
   // ---- Send ----
@@ -1641,7 +1641,7 @@ var GioChat = (function() {
       speak(resp);
     } catch (e) {
       hideTyping();
-      addMsg('ai', "Something went wrong â€” try again in a moment!");
+      addMsg('ai', "Something went wrong  -- try again in a moment!");
     }
     processing = false;
     $('gio-send').disabled = false;
@@ -1655,6 +1655,16 @@ var GioChat = (function() {
 
   // Expose to inline handlers
   window.GioChat = { toggle: toggle, toggleSound: toggleSound, send: send, askChip: askChip };
+
+  // Fallback: attach event listener directly (more reliable on mobile than onclick attribute)
+  var triggerEl = $('gio-chat-trigger');
+  if (triggerEl) {
+    triggerEl.addEventListener('click', toggle);
+    triggerEl.addEventListener('touchend', function(e) {
+      e.preventDefault();
+      toggle();
+    });
+  }
 })();
 </script>
 </body>
