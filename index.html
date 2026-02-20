@@ -1528,7 +1528,8 @@ body[data-mode="pro"] .gio-welcome-av-img.gio-av-pro { display: block; }
 
 <script>
 // ============================================================
-// ASK AI GIO — Core Logic v2 with Animated Avatar
+// ASK AI GIO — Core Logic v3
+// Streaming, auto-stop voice, greeting, analytics, lead capture
 // ============================================================
 var GioChat = (function() {
   'use strict';
@@ -1538,6 +1539,7 @@ var GioChat = (function() {
   var messages = [];
   var processing = false;
   var started = false;
+  var greeted = false;
   var audio = null;
   var audioCtx = null;
   var analyser = null;
@@ -1548,25 +1550,36 @@ var GioChat = (function() {
   function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
   // ============================================================
+  // ANALYTICS (fire-and-forget)
+  // ============================================================
+  function logEvent(event, topic, lead) {
+    try {
+      fetch(API_BASE + '/api/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: event, topic: topic || null, source: 'widget', lead: lead || null })
+      }).catch(function() {});
+    } catch (e) {}
+  }
+
+  // ============================================================
   // AVATAR RING RENDERER
-  // Draws a glowing ring around the avatar on a canvas
-  // Ring style changes based on state: idle, thinking, speaking
   // ============================================================
   var AvatarRing = (function() {
     var headerCanvas, headerCtx, welcomeCanvas, welcomeCtx;
     var animFrame = null;
-    var state = 'idle'; // idle | thinking | speaking
+    var state = 'idle';
     var tick = 0;
 
     function init() {
       headerCanvas = $('gio-avatar-canvas');
       welcomeCanvas = $('gio-welcome-canvas');
       if (headerCanvas) {
-        setupCanvas(headerCanvas, 50, 50); // 40 + 10 padding
+        setupCanvas(headerCanvas, 50, 50);
         headerCtx = headerCanvas.getContext('2d');
       }
       if (welcomeCanvas) {
-        setupCanvas(welcomeCanvas, 96, 96); // 80 + 16 padding
+        setupCanvas(welcomeCanvas, 96, 96);
         welcomeCtx = welcomeCanvas.getContext('2d');
       }
       loop();
@@ -1574,24 +1587,14 @@ var GioChat = (function() {
 
     function setupCanvas(c, w, h) {
       var dpr = window.devicePixelRatio || 1;
-      c.width = w * dpr;
-      c.height = h * dpr;
-      c.style.width = w + 'px';
-      c.style.height = h + 'px';
-      var ctx = c.getContext('2d');
-      ctx.scale(dpr, dpr);
+      c.width = w * dpr; c.height = h * dpr;
+      c.style.width = w + 'px'; c.style.height = h + 'px';
+      c.getContext('2d').scale(dpr, dpr);
     }
 
-    function isDark() {
-      return document.body.dataset.mode === 'perso';
-    }
+    function isDark() { return document.body.dataset.mode === 'perso'; }
+    function getColor() { return isDark() ? { r: 147, g: 51, b: 234 } : { r: 255, g: 107, b: 43 }; }
 
-    // Get accent color based on mode
-    function getColor() {
-      return isDark() ? { r: 147, g: 51, b: 234 } : { r: 255, g: 107, b: 43 }; // purple vs orange
-    }
-
-    // Get average audio level from analyser (0-1)
     function getAudioLevel() {
       if (!analyser || !freqData) return 0;
       analyser.getByteFrequencyData(freqData);
@@ -1603,126 +1606,70 @@ var GioChat = (function() {
     function drawRing(ctx, cx, cy, radius, lineWidth) {
       var col = getColor();
       tick++;
-
       if (state === 'idle') {
-        // Soft pulsing glow ring
         var pulse = 0.3 + Math.sin(tick * 0.03) * 0.15;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + pulse + ')';
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
-
-        // Outer glow
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
+        ctx.lineWidth = lineWidth; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
         ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + (pulse * 0.3) + ')';
-        ctx.lineWidth = lineWidth * 2;
-        ctx.stroke();
-
+        ctx.lineWidth = lineWidth * 2; ctx.stroke();
       } else if (state === 'thinking') {
-        // Rotating gradient sweep
         var angle = (tick * 0.04) % (Math.PI * 2);
-        var segments = 32;
-        for (var i = 0; i < segments; i++) {
-          var a1 = (i / segments) * Math.PI * 2;
-          var a2 = ((i + 1) / segments) * Math.PI * 2;
-          // Distance from sweep head
+        for (var i = 0; i < 32; i++) {
+          var a1 = (i / 32) * Math.PI * 2, a2 = ((i + 1) / 32) * Math.PI * 2;
           var dist = ((a1 - angle + Math.PI * 4) % (Math.PI * 2)) / (Math.PI * 2);
-          var alpha = Math.pow(1 - dist, 3) * 0.8;
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, a1, a2);
-          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + alpha + ')';
-          ctx.lineWidth = lineWidth;
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx, cy, radius, a1, a2);
+          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + Math.pow(1 - dist, 3) * 0.8 + ')';
+          ctx.lineWidth = lineWidth; ctx.stroke();
         }
-
-        // Pulsing inner ring
-        var ip = 0.15 + Math.sin(tick * 0.06) * 0.1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius - 2, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + ip + ')';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
       } else if (state === 'speaking') {
-        // Audio-reactive waveform ring
         var level = getAudioLevel();
-        var numBars = 48;
-        var baseRadius = radius - 2;
-
-        // Background glow proportional to volume
-        var glowAlpha = 0.1 + level * 0.25;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + glowAlpha + ')';
-        ctx.lineWidth = lineWidth * 3;
-        ctx.stroke();
-
-        // Draw individual bars radiating outward
-        for (var j = 0; j < numBars; j++) {
-          var barAngle = (j / numBars) * Math.PI * 2;
-
-          // Get frequency band for this bar
-          var barLevel = 0;
-          if (analyser && freqData) {
-            var freqIndex = Math.floor((j / numBars) * freqData.length);
-            barLevel = freqData[freqIndex] / 255;
-          } else {
-            // Fallback: simulate with sine waves
-            barLevel = 0.3 + Math.sin(tick * 0.08 + j * 0.4) * 0.3 + Math.sin(tick * 0.12 + j * 0.7) * 0.2;
-          }
-
-          var barHeight = 2 + barLevel * lineWidth * 3;
-          var x1 = cx + Math.cos(barAngle) * baseRadius;
-          var y1 = cy + Math.sin(barAngle) * baseRadius;
-          var x2 = cx + Math.cos(barAngle) * (baseRadius + barHeight);
-          var y2 = cy + Math.sin(barAngle) * (baseRadius + barHeight);
-
-          var barAlpha = 0.4 + barLevel * 0.6;
+        var baseR = radius - 2;
+        ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + (0.1 + level * 0.25) + ')';
+        ctx.lineWidth = lineWidth * 3; ctx.stroke();
+        for (var j = 0; j < 48; j++) {
+          var ba = (j / 48) * Math.PI * 2;
+          var bl = (analyser && freqData) ? freqData[Math.floor((j / 48) * freqData.length)] / 255
+            : 0.3 + Math.sin(tick * 0.08 + j * 0.4) * 0.3 + Math.sin(tick * 0.12 + j * 0.7) * 0.2;
+          var bh = 2 + bl * lineWidth * 3;
           ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + barAlpha + ')';
-          ctx.lineWidth = 1.5;
-          ctx.lineCap = 'round';
-          ctx.stroke();
+          ctx.moveTo(cx + Math.cos(ba) * baseR, cy + Math.sin(ba) * baseR);
+          ctx.lineTo(cx + Math.cos(ba) * (baseR + bh), cy + Math.sin(ba) * (baseR + bh));
+          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + (0.4 + bl * 0.6) + ')';
+          ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.stroke();
         }
       }
     }
 
     function loop() {
-      // Draw header avatar ring
       if (headerCtx && headerCanvas) {
         var hw = headerCanvas.width / (window.devicePixelRatio || 1);
-        var hh = headerCanvas.height / (window.devicePixelRatio || 1);
-        headerCtx.clearRect(0, 0, hw, hh);
-        drawRing(headerCtx, hw / 2, hh / 2, 18, 1.5);
+        headerCtx.clearRect(0, 0, hw, hw);
+        drawRing(headerCtx, hw / 2, hw / 2, 18, 1.5);
       }
-
-      // Draw welcome avatar ring (only if visible)
-      var welcomeEl = $('gio-welcome');
-      if (welcomeCtx && welcomeCanvas && welcomeEl && welcomeEl.style.display !== 'none') {
+      var wel = $('gio-welcome');
+      if (welcomeCtx && welcomeCanvas && wel && wel.style.display !== 'none') {
         var ww = welcomeCanvas.width / (window.devicePixelRatio || 1);
-        var wh = welcomeCanvas.height / (window.devicePixelRatio || 1);
-        welcomeCtx.clearRect(0, 0, ww, wh);
-        drawRing(welcomeCtx, ww / 2, wh / 2, 36, 2);
+        welcomeCtx.clearRect(0, 0, ww, ww);
+        drawRing(welcomeCtx, ww / 2, ww / 2, 36, 2);
       }
-
       animFrame = requestAnimationFrame(loop);
     }
 
-    function setState(s) {
-      state = s;
-      var wrap = $('gio-avatar-wrap');
-      if (wrap) wrap.dataset.state = s;
-    }
-
-    function getState() { return state; }
-
-    return { init: init, setState: setState, getState: getState };
+    function setState(s) { state = s; var w = $('gio-avatar-wrap'); if (w) w.dataset.state = s; }
+    return { init: init, setState: setState };
   })();
 
+  // ============================================================
+  // STOP SPEAKING
+  // ============================================================
+  function stopSpeaking() {
+    if (audio) { audio.pause(); audio.currentTime = 0; audio = null; audioSource = null; }
+    AvatarRing.setState('idle');
+    $('gio-status').textContent = 'Online';
+  }
 
   // ============================================================
   // TOGGLE WINDOW
@@ -1736,6 +1683,25 @@ var GioChat = (function() {
       });
       AvatarRing.init();
       $('gio-input').focus();
+      logEvent('widget_open');
+      // Greeting on first open
+      if (!greeted) {
+        greeted = true;
+        setTimeout(function() {
+          if (!started) {
+            $('gio-welcome').style.display = 'none';
+            $('gio-msgs').style.display = 'flex';
+            started = true;
+            var greetings = [
+              "Hey! I\u2019m AI Gio \u2014 an experimental prototype. Ask me about banking innovation, Web3, NFTs, or what it\u2019s like being a closeted DeFi maxi in a banker\u2019s suit. What\u2019s on your mind?",
+              "Yo! AI Gio here \u2014 a gimmicky AI prototype of the real Gio. I can talk tokenized assets, hip-hop, or why banking innovation is like Assassin\u2019s Creed \u2014 you\u2019re always fighting a broken system. What do you want to know?",
+              "What\u2019s good! I\u2019m AI Gio \u2014 ask me anything about CBIx, my NFT collection, or why I quote Machiavelli and Drake in the same sentence. Fire away."
+            ];
+            var greeting = greetings[Math.floor(Math.random() * greetings.length)];
+            addMsgRaw('ai', greeting);
+          }
+        }, 800);
+      }
     } else {
       w.classList.remove('gio-visible');
       setTimeout(function() { w.classList.remove('gio-open'); }, 300);
@@ -1743,30 +1709,20 @@ var GioChat = (function() {
   }
 
   // ============================================================
-  // SOUND TOGGLE
+  // SOUND
   // ============================================================
   function toggleSound() {
     SOUND_ON = !SOUND_ON;
     var btn = $('gio-sound-btn');
     btn.innerHTML = SOUND_ON ? '&#x1f50a;' : '&#x1f507;';
     btn.classList.toggle('gio-sound-active', SOUND_ON);
-    if (!SOUND_ON && audio) {
-      audio.pause(); audio = null;
-      AvatarRing.setState('idle');
-      $('gio-status').textContent = 'Online';
-    }
+    if (!SOUND_ON) stopSpeaking();
   }
 
   // ============================================================
   // ADD MESSAGE
   // ============================================================
-  function addMsg(role, text) {
-    if (!started) {
-      $('gio-welcome').style.display = 'none';
-      $('gio-msgs').style.display = 'flex';
-      $('gio-suggestions').style.display = 'none';
-      started = true;
-    }
+  function addMsgRaw(role, text) {
     var c = $('gio-msgs');
     var m = document.createElement('div');
     m.className = 'gio-msg ' + (role === 'user' ? 'gio-msg-user' : 'gio-msg-ai');
@@ -1775,7 +1731,37 @@ var GioChat = (function() {
                   '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' &middot; ' + t + '</div>';
     c.appendChild(m);
     c.scrollTop = c.scrollHeight;
+    return m;
+  }
+
+  function addMsg(role, text) {
+    if (!started) {
+      $('gio-welcome').style.display = 'none';
+      $('gio-msgs').style.display = 'flex';
+      $('gio-suggestions').style.display = 'none';
+      started = true;
+    }
+    var m = addMsgRaw(role, text);
     messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
+    return m;
+  }
+
+  // Create an empty AI message bubble for streaming into
+  function createStreamBubble() {
+    if (!started) {
+      $('gio-welcome').style.display = 'none';
+      $('gio-msgs').style.display = 'flex';
+      $('gio-suggestions').style.display = 'none';
+      started = true;
+    }
+    var c = $('gio-msgs');
+    var m = document.createElement('div');
+    m.className = 'gio-msg gio-msg-ai';
+    var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    m.innerHTML = '<div class="gio-bubble"></div><div class="gio-meta">AI Gio &middot; ' + t + '</div>';
+    c.appendChild(m);
+    c.scrollTop = c.scrollHeight;
+    return m.querySelector('.gio-bubble');
   }
 
   function showTyping() {
@@ -1783,12 +1769,10 @@ var GioChat = (function() {
     var d = document.createElement('div');
     d.className = 'gio-typing'; d.id = 'gio-typing';
     d.innerHTML = '<span></span><span></span><span></span>';
-    c.appendChild(d);
-    c.scrollTop = c.scrollHeight;
+    c.appendChild(d); c.scrollTop = c.scrollHeight;
     $('gio-status').textContent = 'Thinking...';
     AvatarRing.setState('thinking');
   }
-
   function hideTyping() {
     var t = $('gio-typing'); if (t) t.remove();
     $('gio-status').textContent = 'Online';
@@ -1796,8 +1780,54 @@ var GioChat = (function() {
   }
 
   // ============================================================
-  // CHAT API (via Vercel proxy)
+  // STREAMING CHAT API
   // ============================================================
+  async function callChatStream(bubble) {
+    try {
+      var res = await fetch(API_BASE + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages, stream: true })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = '';
+      var buffer = '';
+
+      while (true) {
+        var result = await reader.read();
+        if (result.done) break;
+        buffer += decoder.decode(result.value, { stream: true });
+
+        var lines = buffer.split('\n');
+        buffer = lines.pop();
+
+        for (var i = 0; i < lines.length; i++) {
+          var line = lines[i];
+          if (line.startsWith('data: ')) {
+            var data = line.slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              var parsed = JSON.parse(data);
+              if (parsed.text) {
+                fullText += parsed.text;
+                bubble.textContent = fullText;
+                $('gio-msgs').scrollTop = $('gio-msgs').scrollHeight;
+              }
+            } catch (e) {}
+          }
+        }
+      }
+      return fullText || null;
+    } catch (err) {
+      console.error('Stream error:', err);
+      return null;
+    }
+  }
+
+  // Non-streaming fallback
   async function callChat(text) {
     try {
       var res = await fetch(API_BASE + '/api/chat', {
@@ -1809,92 +1839,70 @@ var GioChat = (function() {
       var data = await res.json();
       return data.text || fallback(text);
     } catch (err) {
-      console.error('Chat error:', err);
       return fallback(text);
     }
   }
 
   // ============================================================
-  // TTS + WEB AUDIO API (audio-reactive avatar)
+  // TTS + WEB AUDIO
   // ============================================================
   async function speak(text) {
     if (!SOUND_ON) return;
     try {
       AvatarRing.setState('speaking');
       $('gio-status').textContent = 'Speaking...';
-
       var res = await fetch(API_BASE + '/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text })
+        body: JSON.stringify({ text: text.slice(0, 1000) })
       });
       if (!res.ok) throw new Error('TTS ' + res.status);
-
       var blob = await res.blob();
       var url = URL.createObjectURL(blob);
       audio = new Audio(url);
       audio.crossOrigin = 'anonymous';
-
-      // Connect to Web Audio API for frequency analysis
       try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          await audioCtx.resume();
-        }
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
         audioSource = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.75;
+        analyser.fftSize = 128; analyser.smoothingTimeConstant = 0.75;
         freqData = new Uint8Array(analyser.frequencyBinCount);
-        audioSource.connect(analyser);
-        analyser.connect(audioCtx.destination);
-      } catch (webAudioErr) {
-        // Web Audio API not available or already connected — fallback to simulated waveform
-        console.warn('Web Audio API unavailable, using simulated waveform:', webAudioErr);
-        analyser = null;
-        freqData = null;
-      }
-
-      audio.onended = function() {
-        AvatarRing.setState('idle');
-        $('gio-status').textContent = 'Online';
-        URL.revokeObjectURL(url);
-        audio = null;
-        audioSource = null;
-      };
-      audio.onerror = function() {
-        AvatarRing.setState('idle');
-        $('gio-status').textContent = 'Online';
-        audio = null;
-        audioSource = null;
-      };
-
+        audioSource.connect(analyser); analyser.connect(audioCtx.destination);
+      } catch (e) { analyser = null; freqData = null; }
+      audio.onended = function() { AvatarRing.setState('idle'); $('gio-status').textContent = 'Online'; URL.revokeObjectURL(url); audio = null; audioSource = null; };
+      audio.onerror = function() { AvatarRing.setState('idle'); $('gio-status').textContent = 'Online'; audio = null; audioSource = null; };
       audio.play();
     } catch (err) {
       console.error('TTS error:', err);
-      AvatarRing.setState('idle');
-      $('gio-status').textContent = 'Online';
+      AvatarRing.setState('idle'); $('gio-status').textContent = 'Online';
     }
   }
 
   // ============================================================
-  // FALLBACK RESPONSES
+  // FALLBACK
   // ============================================================
   function fallback(input) {
     var q = input.toLowerCase();
-    if (q.includes('cbix') || q.includes('cbi'))
-      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank \u2014 but with the freedom to actually ship things.";
-    if (q.includes('tokeniz') || q.includes('rwa'))
-      return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs, provided we fix liquidity issues and secondary trading. Tokenizing an illiquid asset doesnt make it liquid by defaukt.";
-    if (q.includes('nft') || q.includes('collect'))
-      return "I collect across chains \u2014 Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
-    if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
-      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site \u2014 my team will get back to you quickly.";
-    if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
-      return "I'm a closeted DeFi maxi in a banker's suit \u2014 that's the honest truth. BTC and SOL maxi, terrible trader, great culture navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
-    return "Great question! I'm AI Gio \u2014 an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
+    if (q.includes('cbix') || q.includes('cbi')) return "CBIx is CBI\u2019s independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think startup inside a bank \u2014 but with freedom to actually ship things.";
+    if (q.includes('tokeniz') || q.includes('rwa')) return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. Real-world assets on-chain for better liquidity, transparency, and accessibility. Very bullish on RWAs.";
+    if (q.includes('nft') || q.includes('collect')) return "I collect across chains \u2014 Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs.";
+    if (q.includes('keynote') || q.includes('speak') || q.includes('book')) return "I\u2019d love to chat about speaking opportunities! Want me to pass your details to Gio\u2019s team? Share your name, email, and a quick note about the event.";
+    if (q.includes('defi') || q.includes('crypto') || q.includes('web3')) return "I\u2019m a closeted DeFi maxi in a banker\u2019s suit \u2014 that\u2019s the honest truth. BTC and SOL maxi, terrible trader, great navigator.";
+    return "Great question! I\u2019m AI Gio \u2014 an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn.";
+  }
+
+  // ============================================================
+  // LEAD CAPTURE DETECTION
+  // ============================================================
+  function detectLead(text) {
+    var emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
+    if (!emailMatch) return null;
+    var name = null;
+    var nameMatch = text.match(/(?:name\s*(?:is|:)\s*)([A-Z][a-z]+(?: [A-Z][a-z]+)*)/i)
+      || text.match(/(?:I'm|I am)\s+([A-Z][a-z]+(?: [A-Z][a-z]+)*)/i);
+    if (nameMatch) name = nameMatch[1];
+    return { email: emailMatch[0], name: name, note: text.slice(0, 500) };
   }
 
   // ============================================================
@@ -1906,17 +1914,39 @@ var GioChat = (function() {
     var text = input.value.trim();
     if (!text) return;
     input.value = '';
+    stopSpeaking();
     processing = true;
     $('gio-send').disabled = true;
 
     addMsg('user', text);
+    logEvent('message_sent', text.slice(0, 100));
+
+    // Check for lead info in user message
+    var lead = detectLead(text);
+    if (lead) {
+      logEvent('lead_captured', 'keynote/advisory inquiry', lead);
+    }
+
     showTyping();
 
     try {
-      var resp = await callChat(text);
+      // Try streaming first
       hideTyping();
-      addMsg('ai', resp);
-      speak(resp);
+      var bubble = createStreamBubble();
+      messages.push({ role: 'assistant', content: '' }); // Placeholder
+      var resp = await callChatStream(bubble);
+
+      if (resp) {
+        messages[messages.length - 1].content = resp;
+        speak(resp);
+      } else {
+        // Fallback to non-streaming
+        messages.pop(); // Remove placeholder
+        var fbResp = await callChat(text);
+        bubble.textContent = fbResp;
+        messages.push({ role: 'assistant', content: fbResp });
+        speak(fbResp);
+      }
     } catch (e) {
       hideTyping();
       addMsg('ai', "Something went wrong \u2014 try again in a moment!");
@@ -1927,6 +1957,7 @@ var GioChat = (function() {
   }
 
   function askChip(btn) {
+    logEvent('chip_used', btn.textContent);
     $('gio-input').value = btn.textContent;
     send();
   }
