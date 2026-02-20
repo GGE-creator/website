@@ -3,15 +3,8 @@
 // Keeps ElevenLabs API key server-side, streams audio back to client
 
 export default async function handler(req, res) {
-  // CORS — allow main site and ask subdomain
-  const allowedOrigins = [
-    'https://giovannieverduin.com',
-    'https://ask.giovannieverduin.com'
-  ];
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'https://giovannieverduin.com');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
@@ -37,8 +30,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Text is required' });
     }
 
-    // Cap text length to control costs
-    const sanitizedText = text.slice(0, 1000);
+    // Cap text length — shorter chunks prevent voice drift
+    const sanitizedText = text.slice(0, 500);
 
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}/stream`,
@@ -52,9 +45,9 @@ export default async function handler(req, res) {
           text: sanitizedText,
           model_id: 'eleven_turbo_v2_5',
           voice_settings: {
-            stability: 0.35,
-            similarity_boost: 0.6,
-            style: 0.6,
+            stability: 0.7,
+            similarity_boost: 0.85,
+            style: 0.25,
             use_speaker_boost: true
           }
         })
