@@ -1,561 +1,343 @@
-<!-- ============================================================
-     ASK AI GIO — Chat Widget v2 (with Animated Avatar)
-     Drop this into your index.html before </body>
-     
-     REQUIRES: Vercel API proxy deployed at your domain
-     API routes: /api/chat (Claude) and /api/tts (ElevenLabs)
-     ============================================================ -->
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ask AI Gio &mdash; Giovanni Everduin</title>
+<meta name="description" content="Chat with AI Gio &mdash; an experimental AI prototype trained on Giovanni Everduin's public persona, writings, and talks.">
+<meta property="og:title" content="Ask AI Gio">
+<meta property="og:description" content="An AI prototype of Giovanni Everduin. Ask about banking innovation, Web3, tokenized assets, or what it's like being a closeted DeFi maxi in a banker's suit.">
+<meta property="og:image" content="https://giovannieverduin.com/images/og-ask-ai-gio.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://giovannieverduin.com/ask">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ask AI Gio">
+<meta name="twitter:description" content="An AI prototype of Giovanni Everduin. Ask about banking innovation, Web3, or being a closeted DeFi maxi in a banker's suit.">
+<meta name="twitter:image" content="https://giovannieverduin.com/images/og-ask-ai-gio.png">
+<link rel="canonical" href="https://giovannieverduin.com/ask">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=DM+Sans:wght@400;500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ============================================================
-   ASK AI GIO — Widget Styles v2
-   Inherits CSS variables from the main site
-   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-/* --- Floating Trigger Button --- */
-#gio-chat-trigger {
-  position: fixed;
-  bottom: 28px;
-  left: 28px;
-  z-index: 9990;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px 12px 14px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #e8e8e8);
-  border-radius: 40px;
-  cursor: pointer;
-  box-shadow: var(--card-shadow, 0 2px 12px rgba(0,0,0,.06));
-  transition: all .3s var(--ease);
-  font-family: var(--font-body);
-}
-#gio-chat-trigger:hover {
-  border-color: var(--accent);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 48px rgba(255,107,43,.2);
-}
-#gio-chat-trigger .gio-trigger-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--accent);
-}
-#gio-chat-trigger .gio-trigger-text {
-  display: flex;
-  flex-direction: column;
-}
-#gio-chat-trigger .gio-trigger-label {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: .85rem;
-  color: var(--text);
-  line-height: 1.2;
-}
-#gio-chat-trigger .gio-trigger-sub {
-  font-family: var(--font-mono);
-  font-size: .6rem;
-  color: var(--accent);
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-#gio-chat-trigger .gio-trigger-pulse {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  animation: gio-pulse 2s infinite;
-  flex-shrink: 0;
-}
-@keyframes gio-pulse {
-  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(34,197,94,.4); }
-  50% { opacity: .7; box-shadow: 0 0 0 6px rgba(34,197,94,0); }
+:root{
+  --bg:#0a0a0a;
+  --bg2:#111;
+  --surface:#161616;
+  --surface2:#1e1e1e;
+  --border:#2a2a2a;
+  --text:#f0ece4;
+  --text2:#a8a199;
+  --text3:#5c564e;
+  --accent:#FF6B2B;
+  --accent2:#e55a1f;
+  --accent-glow:rgba(255,107,43,.08);
+  --accent-border:rgba(255,107,43,.25);
+  --font-display:'Outfit',sans-serif;
+  --font-body:'DM Sans',sans-serif;
+  --font-mono:'Space Mono',monospace;
+  --radius:16px;
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 
-/* --- Chat Window --- */
-#gio-chat-window {
-  position: fixed;
-  bottom: 90px;
-  left: 28px;
-  z-index: 9991;
-  width: 400px;
-  max-width: calc(100vw - 40px);
-  height: 580px;
-  max-height: calc(100vh - 120px);
-  background: var(--bg2, #fff);
-  border: 1px solid var(--border, #e8e8e8);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 40px rgba(0,0,0,.15);
-  display: none;
-  flex-direction: column;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(16px) scale(.96);
-  transition: opacity .3s var(--ease), transform .3s var(--ease);
-  font-family: var(--font-body);
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  overflow:hidden;
 }
-#gio-chat-window.gio-open { display: flex; }
-#gio-chat-window.gio-visible { opacity: 1; transform: translateY(0) scale(1); }
+
+/* --- Layout --- */
+.app{
+  display:flex;
+  flex-direction:column;
+  height:100vh;
+  height:100dvh;
+  max-width:720px;
+  margin:0 auto;
+  position:relative;
+}
 
 /* --- Header --- */
-.gio-chat-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-  background: var(--surface);
-  flex-shrink: 0;
-}
-.gio-chat-header .gio-h-info { flex: 1; }
-.gio-chat-header .gio-h-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: .95rem;
-  color: var(--text);
-}
-.gio-chat-header .gio-h-status {
-  font-size: .72rem;
-  color: var(--text3);
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.gio-chat-header .gio-h-status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #22c55e;
-}
-.gio-chat-header .gio-h-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: .85rem;
-  transition: all .2s;
-}
-.gio-chat-header .gio-h-btn:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-}
-.gio-chat-header .gio-h-btn.gio-sound-active {
-  border-color: var(--accent);
-  background: var(--accent-glow);
-  color: var(--accent);
+.header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  background:var(--bg);
+  flex-shrink:0;
+  position:relative;
+  z-index:10;
 }
 
-/* ============================================================
-   ANIMATED AVATAR
-   ============================================================ */
-.gio-avatar-wrap {
-  position: relative;
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
+/* --- Animated Avatar (Header) --- */
+.av-wrap{
+  position:relative;
+  width:48px;
+  height:48px;
+  flex-shrink:0;
+  overflow:visible;
+}
+.av-canvas{
+  position:absolute;
+  inset:-6px;
+  width:calc(100% + 12px);
+  height:calc(100% + 12px);
+  z-index:0;
+  pointer-events:none;
+}
+.av-img{
+  position:relative;
+  z-index:1;
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  object-fit:cover;
+  transition:filter .4s var(--ease), transform .4s var(--ease);
 }
 
-/* The canvas ring sits behind the photo */
-.gio-avatar-canvas {
-  position: absolute;
-  inset: -6px;
-  width: calc(100% + 12px);
-  height: calc(100% + 12px);
-  z-index: 0;
-  pointer-events: none;
-}
+/* States */
+.av-wrap[data-state="idle"] .av-img{animation:avFloat 3s ease-in-out infinite}
+@keyframes avFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.av-wrap[data-state="thinking"] .av-img{filter:saturate(.5) brightness(.85);animation:avThink 1s ease-in-out infinite}
+@keyframes avThink{0%,100%{transform:scale(1)}50%{transform:scale(.96)}}
+.av-wrap[data-state="speaking"] .av-img{filter:brightness(1.1);animation:avSpeak .6s ease-in-out infinite alternate}
+@keyframes avSpeak{from{transform:scale(1)}to{transform:scale(1.03)}}
 
-/* Photo itself */
-.gio-avatar-img {
-  position: relative;
-  z-index: 1;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  object-fit: cover;
-  transition: filter .4s var(--ease), transform .4s var(--ease);
-}
+.header .info{flex:1}
+.header .name{font-family:var(--font-display);font-weight:800;font-size:1.1rem;letter-spacing:-.5px;color:var(--text)}
+.header .name span{color:var(--accent)}
+.header .status{font-size:.72rem;color:var(--text3);display:flex;align-items:center;gap:6px;margin-top:2px}
+.header .status-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 5px rgba(34,197,94,0)}}
+.header .status-text{font-family:var(--font-mono);letter-spacing:.5px}
 
-/* Mode-aware avatar swap */
-body[data-mode="perso"] .gio-avatar-img.gio-av-pro { display: none; }
-body[data-mode="pro"] .gio-avatar-img.gio-av-perso { display: none; }
-body[data-mode="perso"] .gio-avatar-img.gio-av-perso { display: block; }
-body[data-mode="pro"] .gio-avatar-img.gio-av-pro { display: block; }
-
-/* State: Idle — subtle float */
-.gio-avatar-wrap[data-state="idle"] .gio-avatar-img {
-  animation: gio-av-float 3s ease-in-out infinite;
+.h-btn{
+  width:36px;height:36px;border-radius:50%;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;transition:all .2s;
 }
-@keyframes gio-av-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-2px); }
-}
-
-/* State: Thinking — desaturate + pulse */
-.gio-avatar-wrap[data-state="thinking"] .gio-avatar-img {
-  filter: saturate(.5) brightness(.9);
-  animation: gio-av-think 1s ease-in-out infinite;
-}
-@keyframes gio-av-think {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(.96); }
-}
-
-/* State: Speaking — brightness lift + micro-pulse */
-.gio-avatar-wrap[data-state="speaking"] .gio-avatar-img {
-  filter: brightness(1.08);
-  animation: gio-av-speak .6s ease-in-out infinite alternate;
-}
-@keyframes gio-av-speak {
-  from { transform: scale(1); }
-  to { transform: scale(1.03); }
-}
-
-/* --- Welcome Avatar (larger version) --- */
-.gio-welcome-av-wrap {
-  position: relative;
-  width: 88px;
-  height: 88px;
-}
-.gio-welcome-av-canvas {
-  position: absolute;
-  inset: -10px;
-  width: calc(100% + 20px);
-  height: calc(100% + 20px);
-  z-index: 0;
-  pointer-events: none;
-}
-.gio-welcome-av-img {
-  position: relative;
-  z-index: 1;
-  width: 88px;
-  height: 88px;
-  border-radius: 50%;
-  object-fit: cover;
-  animation: gio-av-float 3s ease-in-out infinite;
-}
-body[data-mode="perso"] .gio-welcome-av-img.gio-av-pro { display: none; }
-body[data-mode="pro"] .gio-welcome-av-img.gio-av-perso { display: none; }
-body[data-mode="perso"] .gio-welcome-av-img.gio-av-perso { display: block; }
-body[data-mode="pro"] .gio-welcome-av-img.gio-av-pro { display: block; }
-
-/* --- Messages --- */
-.gio-chat-msgs {
-  flex: 1;
-  overflow-y: auto;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) var(--surface2);
-}
-.gio-chat-msgs::-webkit-scrollbar { width: 4px; }
-.gio-chat-msgs::-webkit-scrollbar-track { background: transparent; }
-.gio-chat-msgs::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
-
-.gio-msg {
-  max-width: 85%;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  animation: gio-msg-in .3s var(--ease);
-}
-@keyframes gio-msg-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.gio-msg-user { align-self: flex-end; }
-.gio-msg-ai { align-self: flex-start; }
-.gio-msg .gio-bubble {
-  padding: 12px 16px;
-  border-radius: 16px;
-  font-size: .88rem;
-  line-height: 1.6;
-  word-break: break-word;
-}
-.gio-msg-user .gio-bubble {
-  background: var(--accent);
-  color: #fff;
-  border-bottom-right-radius: 4px;
-}
-.gio-msg-ai .gio-bubble {
-  background: var(--surface2);
-  color: var(--text);
-  border-bottom-left-radius: 4px;
-}
-.gio-msg .gio-meta {
-  font-size: .65rem;
-  color: var(--text3);
-  font-family: var(--font-mono);
-  letter-spacing: .5px;
-  padding: 0 4px;
-}
-.gio-msg-user .gio-meta { text-align: right; }
-
-/* --- Typing Indicator --- */
-.gio-typing {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 14px 18px;
-  background: var(--surface2);
-  border-radius: 16px;
-  border-bottom-left-radius: 4px;
-  max-width: 70px;
-  align-self: flex-start;
-}
-.gio-typing span {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--text3);
-  animation: gio-bounce .6s infinite alternate;
-}
-.gio-typing span:nth-child(2) { animation-delay: .15s; }
-.gio-typing span:nth-child(3) { animation-delay: .3s; }
-@keyframes gio-bounce {
-  from { transform: translateY(0); opacity: .4; }
-  to { transform: translateY(-4px); opacity: 1; }
-}
-
-/* --- Disclaimer --- */
-.gio-disclaimer {
-  padding: 6px 18px;
-  font-size: .62rem;
-  color: var(--text3);
-  text-align: center;
-  font-family: var(--font-mono);
-  letter-spacing: .5px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-  flex-shrink: 0;
-  line-height: 1.4;
-}
-.gio-disclaimer .gio-badge {
-  display: inline-block;
-  background: var(--accent-glow);
-  border: 1px solid var(--accent-border);
-  color: var(--accent);
-  font-weight: 700;
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-size: .58rem;
-  margin-right: 4px;
-}
-
-/* --- Suggestions --- */
-.gio-suggestions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  padding: 0 18px 10px;
-  flex-shrink: 0;
-}
-.gio-chip {
-  font-family: var(--font-body);
-  font-size: .75rem;
-  padding: 7px 14px;
-  border-radius: 20px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: var(--text2);
-  cursor: pointer;
-  transition: all .2s;
-  white-space: nowrap;
-}
-.gio-chip:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-glow);
-}
+.h-btn:hover{border-color:var(--accent);color:var(--accent)}
+.h-btn.sound-active{border-color:var(--accent);background:var(--accent-glow);color:var(--accent)}
 
 /* --- Welcome Screen --- */
-.gio-welcome {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  text-align: center;
-  gap: 16px;
+.welcome{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:32px 24px;text-align:center;gap:16px;
+  animation:fadeUp .6s var(--ease);
 }
-.gio-welcome h3 {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.3rem;
-  color: var(--text);
-  letter-spacing: -.5px;
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.w-av-wrap{position:relative;width:88px;height:88px}
+.w-av-canvas{position:absolute;inset:-8px;width:calc(100% + 16px);height:calc(100% + 16px);z-index:0;pointer-events:none}
+.w-av-img{position:relative;z-index:1;width:88px;height:88px;border-radius:50%;object-fit:cover;animation:avFloat 3s ease-in-out infinite}
+
+.welcome .proto-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent-glow);border:1px solid var(--accent-border);
+  color:var(--accent);font-family:var(--font-mono);
+  font-size:.65rem;font-weight:700;letter-spacing:1.5px;
+  padding:5px 14px;border-radius:20px;text-transform:uppercase;
 }
-.gio-welcome h3 span { color: var(--accent); }
-.gio-welcome p {
-  font-size: .85rem;
-  color: var(--text2);
-  line-height: 1.6;
-  max-width: 300px;
+.welcome .proto-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+.welcome h1{font-family:var(--font-display);font-weight:900;font-size:2rem;letter-spacing:-1px;line-height:1.15}
+.welcome h1 span{color:var(--accent)}
+.welcome .tagline{font-size:.95rem;color:var(--text2);line-height:1.65;max-width:420px}
+
+/* --- Suggestions --- */
+.suggestions{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:8px;padding:0 20px 16px;flex-shrink:0;
+  animation:fadeUp .6s var(--ease) .2s both;
+}
+.chip{
+  font-family:var(--font-body);font-size:.8rem;
+  padding:10px 18px;border-radius:24px;
+  border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);cursor:pointer;transition:all .25s var(--ease);
+  white-space:nowrap;
+}
+.chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-glow);transform:translateY(-1px)}
+
+/* --- Messages Area --- */
+.messages{
+  flex:1;overflow-y:auto;padding:20px;
+  display:none;flex-direction:column;gap:16px;
+  scrollbar-width:thin;scrollbar-color:var(--accent) var(--surface);
+}
+.messages.active{display:flex}
+.messages::-webkit-scrollbar{width:4px}
+.messages::-webkit-scrollbar-track{background:transparent}
+.messages::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.messages::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+.msg{max-width:82%;display:flex;flex-direction:column;gap:5px;animation:msgIn .3s var(--ease)}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg-user{align-self:flex-end}
+.msg-ai{align-self:flex-start}
+.msg .bubble{padding:14px 18px;border-radius:20px;font-size:.9rem;line-height:1.65;word-break:break-word}
+.msg-user .bubble{background:var(--accent);color:#fff;border-bottom-right-radius:6px}
+.msg-ai .bubble{background:var(--surface2);color:var(--text);border-bottom-left-radius:6px;border:1px solid var(--border)}
+.msg .meta{font-size:.62rem;color:var(--text3);font-family:var(--font-mono);letter-spacing:.5px;padding:0 6px}
+.msg-user .meta{text-align:right}
+
+/* Typing indicator */
+.typing{
+  display:flex;align-items:center;gap:5px;
+  padding:16px 20px;background:var(--surface2);
+  border-radius:20px;border-bottom-left-radius:6px;
+  border:1px solid var(--border);
+  max-width:72px;align-self:flex-start;
+}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:bounce .6s infinite alternate}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{from{transform:translateY(0);opacity:.4}to{transform:translateY(-5px);opacity:1}}
+
+/* --- Disclaimer --- */
+.disclaimer{
+  padding:8px 20px;font-size:.6rem;color:var(--text3);
+  text-align:center;font-family:var(--font-mono);
+  letter-spacing:.5px;border-top:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;line-height:1.5;
+}
+.disclaimer .badge{
+  display:inline-block;background:var(--accent-glow);
+  border:1px solid var(--accent-border);color:var(--accent);
+  font-weight:700;padding:1px 7px;border-radius:4px;
+  font-size:.55rem;margin-right:5px;
 }
 
 /* --- Input Area --- */
-.gio-input-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 14px;
-  border-top: 1px solid var(--border);
-  background: var(--surface);
-  flex-shrink: 0;
+.input-area{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px;border-top:1px solid var(--border);
+  background:var(--bg);flex-shrink:0;
 }
-.gio-input-wrap input {
-  flex: 1;
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 10px 16px;
-  font-family: var(--font-body);
-  font-size: .85rem;
-  background: var(--bg2, #fff);
-  color: var(--text);
-  outline: none;
-  transition: border-color .2s;
+.input-area input{
+  flex:1;border:1px solid var(--border);border-radius:28px;
+  padding:13px 20px;font-family:var(--font-body);font-size:.9rem;
+  background:var(--surface);color:var(--text);outline:none;
+  transition:border-color .2s;
 }
-.gio-input-wrap input::placeholder { color: var(--text3); }
-.gio-input-wrap input:focus { border-color: var(--accent); }
-.gio-send {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: var(--accent);
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all .2s;
-  flex-shrink: 0;
+.input-area input::placeholder{color:var(--text3)}
+.input-area input:focus{border-color:var(--accent)}
+.send-btn{
+  width:44px;height:44px;border-radius:50%;border:none;
+  background:var(--accent);color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;flex-shrink:0;
 }
-.gio-send:hover { background: var(--accent2); transform: scale(1.05); }
-.gio-send:disabled { opacity: .4; cursor: not-allowed; transform: none; }
-.gio-send svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: #fff;
-  stroke-width: 2.5;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+.send-btn:hover{background:var(--accent2);transform:scale(1.05)}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.send-btn svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* --- Footer Link --- */
+.footer-link{padding:10px 20px;text-align:center;flex-shrink:0;background:var(--bg)}
+.footer-link a{font-family:var(--font-mono);font-size:.65rem;color:var(--text3);text-decoration:none;letter-spacing:.5px;transition:color .2s}
+.footer-link a:hover{color:var(--accent)}
+.footer-link a span{color:var(--accent)}
+
+/* --- Background --- */
+.bg-glow{position:fixed;top:-200px;right:-200px;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,43,.06) 0%,transparent 70%);pointer-events:none;z-index:0}
+.bg-glow-2{position:fixed;bottom:-300px;left:-200px;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,43,.03) 0%,transparent 70%);pointer-events:none;z-index:0}
 
 /* --- Mobile --- */
-@media (max-width: 500px) {
-  #gio-chat-trigger {
-    bottom: 16px;
-    left: 16px;
-    padding: 10px 16px 10px 12px;
-  }
-  #gio-chat-trigger .gio-trigger-text { display: none; }
-  #gio-chat-window {
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    max-width: 100%;
-    height: 100vh;
-    max-height: 100vh;
-    height: 100dvh;
-    max-height: 100dvh;
-    border-radius: 0;
-  }
+@media(max-width:600px){
+  .app{max-width:100%}
+  .welcome h1{font-size:1.6rem}
+  .welcome .tagline{font-size:.85rem}
+  .suggestions{gap:6px}
+  .chip{font-size:.75rem;padding:8px 14px}
+  .header .name{font-size:1rem}
 }
 </style>
+</head>
+<body>
 
-<!-- Trigger Button -->
-<div id="gio-chat-trigger" onclick="GioChat.toggle()">
-  <img class="gio-trigger-avatar" src="./images/blazer-cutout.png" alt="Gio"
-       onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 40 40%27%3E%3Ccircle cx=%2720%27 cy=%2720%27 r=%2720%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2720%27 y=%2726%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2718%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
-  <div class="gio-trigger-text">
-    <span class="gio-trigger-label">Ask AI Gio</span>
-    <span class="gio-trigger-sub">AI Prototype</span>
-  </div>
-  <div class="gio-trigger-pulse"></div>
-</div>
+<div class="bg-glow"></div>
+<div class="bg-glow-2"></div>
 
-<!-- Chat Window -->
-<div id="gio-chat-window">
-  <!-- Header with Animated Avatar -->
-  <div class="gio-chat-header">
-    <div class="gio-avatar-wrap" id="gio-avatar-wrap" data-state="idle">
-      <canvas class="gio-avatar-canvas" id="gio-avatar-canvas"></canvas>
-      <img class="gio-avatar-img gio-av-pro" src="./images/blazer-cutout.png" alt="Gio"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 44 44%27%3E%3Ccircle cx=%2722%27 cy=%2722%27 r=%2722%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2722%27 y=%2730%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2720%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
-      <img class="gio-avatar-img gio-av-perso" src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="AI Gio"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 44 44%27%3E%3Ccircle cx=%2722%27 cy=%2722%27 r=%2722%27 fill=%27%239333ea%27/%3E%3Ctext x=%2722%27 y=%2730%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2720%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="av-wrap" id="av-wrap" data-state="idle">
+      <canvas class="av-canvas" id="av-canvas"></canvas>
+      <img class="av-img" src="https://giovannieverduin.com/images/blazer-cutout.png" alt="Gio"
+           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 48 48%27%3E%3Ccircle cx=%2724%27 cy=%2724%27 r=%2724%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2724%27 y=%2732%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2722%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
     </div>
-    <div class="gio-h-info">
-      <div class="gio-h-name">AI Gio</div>
-      <div class="gio-h-status">
-        <span class="gio-h-status-dot"></span>
-        <span id="gio-status">Online</span>
+    <div class="info">
+      <div class="name">AI <span>Gio</span></div>
+      <div class="status">
+        <span class="status-dot"></span>
+        <span class="status-text" id="status-text">Online</span>
       </div>
     </div>
-    <button class="gio-h-btn" id="gio-sound-btn" onclick="GioChat.toggleSound()" title="Toggle voice">&#x1f50a;</button>
-    <button class="gio-h-btn" onclick="GioChat.toggle()" title="Close">&#x2715;</button>
+    <button class="h-btn" id="sound-btn" onclick="App.toggleSound()" title="Toggle voice">&#x1F50A;</button>
   </div>
 
-  <!-- Welcome Screen with Animated Avatar -->
-  <div class="gio-welcome" id="gio-welcome">
-    <div class="gio-welcome-av-wrap">
-      <canvas class="gio-welcome-av-canvas" id="gio-welcome-canvas"></canvas>
-      <img class="gio-welcome-av-img gio-av-pro" src="./images/blazer-cutout.png" alt="Gio"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 88 88%27%3E%3Ccircle cx=%2744%27 cy=%2744%27 r=%2744%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2744%27 y=%2758%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2740%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
-      <img class="gio-welcome-av-img gio-av-perso" src="./images/NFT/Solana%20Monkey%20Business.jpeg" alt="AI Gio"
-           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 88 88%27%3E%3Ccircle cx=%2744%27 cy=%2744%27 r=%2744%27 fill=%27%239333ea%27/%3E%3Ctext x=%2744%27 y=%2758%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2740%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
+  <!-- Welcome Screen -->
+  <div class="welcome" id="welcome">
+    <div class="w-av-wrap">
+      <canvas class="w-av-canvas" id="w-av-canvas"></canvas>
+      <img class="w-av-img" src="https://giovannieverduin.com/images/blazer-cutout.png" alt="Gio"
+           onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 88 88%27%3E%3Ccircle cx=%2744%27 cy=%2744%27 r=%2744%27 fill=%27%23FF6B2B%27/%3E%3Ctext x=%2744%27 y=%2756%27 text-anchor=%27middle%27 font-family=%27sans-serif%27 font-weight=%27700%27 font-size=%2738%27 fill=%27white%27%3EG%3C/text%3E%3C/svg%3E'">
     </div>
-    <h3>Ask AI <span>Gio</span></h3>
-    <p>An AI prototype trained on Gio's public persona, writings, and talks. Ask me anything about banking innovation, Web3, or what it's like being a closeted DeFi maxi in a banker's suit.</p>
+    <div class="proto-badge">AI Prototype</div>
+    <h1>Ask AI <span>Gio</span></h1>
+    <p class="tagline">An experimental AI trained on Gio&rsquo;s public persona, writings, and talks. Ask about banking innovation, Web3, tokenized assets &mdash; or what it&rsquo;s like being a closeted DeFi maxi in a banker&rsquo;s suit.</p>
   </div>
 
   <!-- Messages -->
-  <div class="gio-chat-msgs" id="gio-msgs" style="display:none;"></div>
+  <div class="messages" id="messages"></div>
 
-  <!-- Suggestions -->
-  <div class="gio-suggestions" id="gio-suggestions">
-    <button class="gio-chip" onclick="GioChat.askChip(this)">What is CBIx?</button>
-    <button class="gio-chip" onclick="GioChat.askChip(this)">Your view on tokenized assets?</button>
-    <button class="gio-chip" onclick="GioChat.askChip(this)">What NFTs do you collect?</button>
-    <button class="gio-chip" onclick="GioChat.askChip(this)">Book Gio for a keynote</button>
+  <!-- Suggestion Chips -->
+  <div class="suggestions" id="suggestions">
+    <button class="chip" onclick="App.askChip(this)">What is CBIx?</button>
+    <button class="chip" onclick="App.askChip(this)">Your view on tokenized assets?</button>
+    <button class="chip" onclick="App.askChip(this)">What NFTs do you collect?</button>
+    <button class="chip" onclick="App.askChip(this)">Book Gio for a keynote</button>
+    <button class="chip" onclick="App.askChip(this)">Favorite karaoke song?</button>
+    <button class="chip" onclick="App.askChip(this)">Drake or Jay-Z?</button>
   </div>
 
   <!-- Disclaimer -->
-  <div class="gio-disclaimer">
-    <span class="gio-badge">AI PROTOTYPE</span>
+  <div class="disclaimer">
+    <span class="badge">AI PROTOTYPE</span>
     This is not the real Gio. Responses are AI-generated and may not be accurate.
   </div>
 
   <!-- Input -->
-  <div class="gio-input-wrap">
-    <input id="gio-input" type="text" placeholder="Ask AI Gio something..."
-           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();GioChat.send()}"
-           autocomplete="off">
-    <button class="gio-send" id="gio-send" onclick="GioChat.send()">
+  <div class="input-area">
+    <input id="input" type="text" placeholder="Ask AI Gio something&hellip;"
+           onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();App.send()}"
+           autocomplete="off" maxlength="2000">
+    <button class="send-btn" id="send-btn" onclick="App.send()">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
     </button>
   </div>
-</div>
 
+  <!-- Footer -->
+  <div class="footer-link">
+    <a href="https://giovannieverduin.com" target="_blank">&larr; <span>giovannieverduin.com</span></a>
+  </div>
+
+</div>
 
 <script>
 // ============================================================
-// ASK AI GIO — Core Logic v2 with Animated Avatar
+// ASK AI GIO v3 — Standalone Page
+// Streaming, auto-stop, greeting, analytics, lead capture
 // ============================================================
-var GioChat = (function() {
+var App = (function() {
   'use strict';
 
   var API_BASE = '';
@@ -573,50 +355,41 @@ var GioChat = (function() {
   function escHtml(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
   // ============================================================
+  // ANALYTICS (fire-and-forget)
+  // ============================================================
+  function logEvent(event, topic, lead) {
+    try {
+      fetch(API_BASE + '/api/log', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: event, topic: topic || null, source: 'ask-page', lead: lead || null })
+      }).catch(function() {});
+    } catch (e) {}
+  }
+
+  // ============================================================
   // AVATAR RING RENDERER
-  // Draws a glowing ring around the avatar on a canvas
-  // Ring style changes based on state: idle, thinking, speaking
   // ============================================================
   var AvatarRing = (function() {
-    var headerCanvas, headerCtx, welcomeCanvas, welcomeCtx;
-    var animFrame = null;
-    var state = 'idle'; // idle | thinking | speaking
+    var hCanvas, hCtx, wCanvas, wCtx;
+    var state = 'idle';
     var tick = 0;
 
     function init() {
-      headerCanvas = $('gio-avatar-canvas');
-      welcomeCanvas = $('gio-welcome-canvas');
-      if (headerCanvas) {
-        setupCanvas(headerCanvas, 56, 56); // 44 + 12 padding
-        headerCtx = headerCanvas.getContext('2d');
-      }
-      if (welcomeCanvas) {
-        setupCanvas(welcomeCanvas, 108, 108); // 88 + 20 padding
-        welcomeCtx = welcomeCanvas.getContext('2d');
-      }
+      hCanvas = $('av-canvas');
+      wCanvas = $('w-av-canvas');
+      if (hCanvas) { setupCanvas(hCanvas, 60, 60); hCtx = hCanvas.getContext('2d'); }
+      if (wCanvas) { setupCanvas(wCanvas, 104, 104); wCtx = wCanvas.getContext('2d'); }
       loop();
     }
 
     function setupCanvas(c, w, h) {
       var dpr = window.devicePixelRatio || 1;
-      c.width = w * dpr;
-      c.height = h * dpr;
-      c.style.width = w + 'px';
-      c.style.height = h + 'px';
-      var ctx = c.getContext('2d');
-      ctx.scale(dpr, dpr);
+      c.width = w * dpr; c.height = h * dpr;
+      c.style.width = w + 'px'; c.style.height = h + 'px';
+      c.getContext('2d').scale(dpr, dpr);
     }
 
-    function isDark() {
-      return document.body.dataset.mode === 'perso';
-    }
-
-    // Get accent color based on mode
-    function getColor() {
-      return isDark() ? { r: 147, g: 51, b: 234 } : { r: 255, g: 107, b: 43 }; // purple vs orange
-    }
-
-    // Get average audio level from analyser (0-1)
     function getAudioLevel() {
       if (!analyser || !freqData) return 0;
       analyser.getByteFrequencyData(freqData);
@@ -626,203 +399,183 @@ var GioChat = (function() {
     }
 
     function drawRing(ctx, cx, cy, radius, lineWidth) {
-      var col = getColor();
+      var r = 255, g = 107, b = 43;
       tick++;
-
       if (state === 'idle') {
-        // Soft pulsing glow ring
         var pulse = 0.3 + Math.sin(tick * 0.03) * 0.15;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + pulse + ')';
-        ctx.lineWidth = lineWidth;
-        ctx.stroke();
-
-        // Outer glow
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + (pulse * 0.3) + ')';
-        ctx.lineWidth = lineWidth * 2;
-        ctx.stroke();
-
+        ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + pulse + ')';
+        ctx.lineWidth = lineWidth; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, radius + 2, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + (pulse * 0.3) + ')';
+        ctx.lineWidth = lineWidth * 2; ctx.stroke();
       } else if (state === 'thinking') {
-        // Rotating gradient sweep
         var angle = (tick * 0.04) % (Math.PI * 2);
-        var segments = 32;
-        for (var i = 0; i < segments; i++) {
-          var a1 = (i / segments) * Math.PI * 2;
-          var a2 = ((i + 1) / segments) * Math.PI * 2;
-          // Distance from sweep head
+        for (var i = 0; i < 32; i++) {
+          var a1 = (i / 32) * Math.PI * 2, a2 = ((i + 1) / 32) * Math.PI * 2;
           var dist = ((a1 - angle + Math.PI * 4) % (Math.PI * 2)) / (Math.PI * 2);
-          var alpha = Math.pow(1 - dist, 3) * 0.8;
-          ctx.beginPath();
-          ctx.arc(cx, cy, radius, a1, a2);
-          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + alpha + ')';
-          ctx.lineWidth = lineWidth;
-          ctx.stroke();
+          ctx.beginPath(); ctx.arc(cx, cy, radius, a1, a2);
+          ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + Math.pow(1 - dist, 3) * 0.8 + ')';
+          ctx.lineWidth = lineWidth; ctx.stroke();
         }
-
-        // Pulsing inner ring
-        var ip = 0.15 + Math.sin(tick * 0.06) * 0.1;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius - 2, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + ip + ')';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
       } else if (state === 'speaking') {
-        // Audio-reactive waveform ring
         var level = getAudioLevel();
-        var numBars = 48;
-        var baseRadius = radius - 2;
-
-        // Background glow proportional to volume
-        var glowAlpha = 0.1 + level * 0.25;
-        ctx.beginPath();
-        ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + glowAlpha + ')';
-        ctx.lineWidth = lineWidth * 3;
-        ctx.stroke();
-
-        // Draw individual bars radiating outward
-        for (var j = 0; j < numBars; j++) {
-          var barAngle = (j / numBars) * Math.PI * 2;
-
-          // Get frequency band for this bar
-          var barLevel = 0;
-          if (analyser && freqData) {
-            var freqIndex = Math.floor((j / numBars) * freqData.length);
-            barLevel = freqData[freqIndex] / 255;
-          } else {
-            // Fallback: simulate with sine waves
-            barLevel = 0.3 + Math.sin(tick * 0.08 + j * 0.4) * 0.3 + Math.sin(tick * 0.12 + j * 0.7) * 0.2;
-          }
-
-          var barHeight = 2 + barLevel * lineWidth * 3;
-          var x1 = cx + Math.cos(barAngle) * baseRadius;
-          var y1 = cy + Math.sin(barAngle) * baseRadius;
-          var x2 = cx + Math.cos(barAngle) * (baseRadius + barHeight);
-          var y2 = cy + Math.sin(barAngle) * (baseRadius + barHeight);
-
-          var barAlpha = 0.4 + barLevel * 0.6;
+        var baseR = radius - 2;
+        ctx.beginPath(); ctx.arc(cx, cy, radius + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + (0.1 + level * 0.25) + ')';
+        ctx.lineWidth = lineWidth * 3; ctx.stroke();
+        for (var j = 0; j < 48; j++) {
+          var ba = (j / 48) * Math.PI * 2;
+          var bl = (analyser && freqData) ? freqData[Math.floor((j / 48) * freqData.length)] / 255
+            : 0.3 + Math.sin(tick * 0.08 + j * 0.4) * 0.3 + Math.sin(tick * 0.12 + j * 0.7) * 0.2;
+          var bh = 2 + bl * lineWidth * 3;
           ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.strokeStyle = 'rgba(' + col.r + ',' + col.g + ',' + col.b + ',' + barAlpha + ')';
-          ctx.lineWidth = 1.5;
-          ctx.lineCap = 'round';
-          ctx.stroke();
+          ctx.moveTo(cx + Math.cos(ba) * baseR, cy + Math.sin(ba) * baseR);
+          ctx.lineTo(cx + Math.cos(ba) * (baseR + bh), cy + Math.sin(ba) * (baseR + bh));
+          ctx.strokeStyle = 'rgba(' + r + ',' + g + ',' + b + ',' + (0.4 + bl * 0.6) + ')';
+          ctx.lineWidth = 1.5; ctx.lineCap = 'round'; ctx.stroke();
         }
       }
     }
 
     function loop() {
-      // Draw header avatar ring
-      if (headerCtx && headerCanvas) {
-        var hw = headerCanvas.width / (window.devicePixelRatio || 1);
-        var hh = headerCanvas.height / (window.devicePixelRatio || 1);
-        headerCtx.clearRect(0, 0, hw, hh);
-        drawRing(headerCtx, hw / 2, hh / 2, 20, 2);
+      if (hCtx && hCanvas) {
+        var hw = hCanvas.width / (window.devicePixelRatio || 1);
+        hCtx.clearRect(0, 0, hw, hw);
+        drawRing(hCtx, hw / 2, hw / 2, 22, 2);
       }
-
-      // Draw welcome avatar ring (only if visible)
-      var welcomeEl = $('gio-welcome');
-      if (welcomeCtx && welcomeCanvas && welcomeEl && welcomeEl.style.display !== 'none') {
-        var ww = welcomeCanvas.width / (window.devicePixelRatio || 1);
-        var wh = welcomeCanvas.height / (window.devicePixelRatio || 1);
-        welcomeCtx.clearRect(0, 0, ww, wh);
-        drawRing(welcomeCtx, ww / 2, wh / 2, 40, 2.5);
+      var wel = $('welcome');
+      if (wCtx && wCanvas && wel && wel.style.display !== 'none') {
+        var ww = wCanvas.width / (window.devicePixelRatio || 1);
+        wCtx.clearRect(0, 0, ww, ww);
+        drawRing(wCtx, ww / 2, ww / 2, 40, 2.5);
       }
-
-      animFrame = requestAnimationFrame(loop);
+      requestAnimationFrame(loop);
     }
 
-    function setState(s) {
-      state = s;
-      var wrap = $('gio-avatar-wrap');
-      if (wrap) wrap.dataset.state = s;
-    }
-
-    function getState() { return state; }
-
-    return { init: init, setState: setState, getState: getState };
+    function setState(s) { state = s; var w = $('av-wrap'); if (w) w.dataset.state = s; }
+    return { init: init, setState: setState };
   })();
 
-
   // ============================================================
-  // TOGGLE WINDOW
+  // SOUND + STOP SPEAKING
   // ============================================================
-  function toggle() {
-    var w = $('gio-chat-window');
-    if (!w.classList.contains('gio-open')) {
-      w.classList.add('gio-open');
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() { w.classList.add('gio-visible'); });
-      });
-      AvatarRing.init();
-      $('gio-input').focus();
-    } else {
-      w.classList.remove('gio-visible');
-      setTimeout(function() { w.classList.remove('gio-open'); }, 300);
-    }
+  function stopSpeaking() {
+    if (audio) { audio.pause(); audio.currentTime = 0; audio = null; audioSource = null; }
+    AvatarRing.setState('idle');
+    $('status-text').textContent = 'Online';
   }
 
-  // ============================================================
-  // SOUND TOGGLE
-  // ============================================================
   function toggleSound() {
     SOUND_ON = !SOUND_ON;
-    var btn = $('gio-sound-btn');
-    btn.innerHTML = SOUND_ON ? '&#x1f50a;' : '&#x1f507;';
-    btn.classList.toggle('gio-sound-active', SOUND_ON);
-    if (!SOUND_ON && audio) {
-      audio.pause(); audio = null;
-      AvatarRing.setState('idle');
-      $('gio-status').textContent = 'Online';
-    }
+    var btn = $('sound-btn');
+    btn.innerHTML = SOUND_ON ? '&#x1F50A;' : '&#x1F507;';
+    btn.classList.toggle('sound-active', SOUND_ON);
+    if (!SOUND_ON) stopSpeaking();
   }
 
   // ============================================================
-  // ADD MESSAGE
+  // MESSAGES
   // ============================================================
-  function addMsg(role, text) {
-    if (!started) {
-      $('gio-welcome').style.display = 'none';
-      $('gio-msgs').style.display = 'flex';
-      $('gio-suggestions').style.display = 'none';
-      started = true;
-    }
-    var c = $('gio-msgs');
+  function addMsgRaw(role, text) {
+    var c = $('messages');
     var m = document.createElement('div');
-    m.className = 'gio-msg ' + (role === 'user' ? 'gio-msg-user' : 'gio-msg-ai');
+    m.className = 'msg ' + (role === 'user' ? 'msg-user' : 'msg-ai');
     var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    m.innerHTML = '<div class="gio-bubble">' + escHtml(text) + '</div>' +
-                  '<div class="gio-meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' &middot; ' + t + '</div>';
+    m.innerHTML = '<div class="bubble">' + escHtml(text) + '</div>' +
+                  '<div class="meta">' + (role === 'user' ? 'You' : 'AI Gio') + ' &middot; ' + t + '</div>';
     c.appendChild(m);
     c.scrollTop = c.scrollHeight;
+    return m;
+  }
+
+  function addMsg(role, text) {
+    if (!started) {
+      $('welcome').style.display = 'none';
+      $('messages').classList.add('active');
+      $('suggestions').style.display = 'none';
+      started = true;
+    }
+    addMsgRaw(role, text);
     messages.push({ role: role === 'user' ? 'user' : 'assistant', content: text });
   }
 
-  function showTyping() {
-    var c = $('gio-msgs');
-    var d = document.createElement('div');
-    d.className = 'gio-typing'; d.id = 'gio-typing';
-    d.innerHTML = '<span></span><span></span><span></span>';
-    c.appendChild(d);
+  function createStreamBubble() {
+    if (!started) {
+      $('welcome').style.display = 'none';
+      $('messages').classList.add('active');
+      $('suggestions').style.display = 'none';
+      started = true;
+    }
+    var c = $('messages');
+    var m = document.createElement('div');
+    m.className = 'msg msg-ai';
+    var t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    m.innerHTML = '<div class="bubble"></div><div class="meta">AI Gio &middot; ' + t + '</div>';
+    c.appendChild(m);
     c.scrollTop = c.scrollHeight;
-    $('gio-status').textContent = 'Thinking...';
+    return m.querySelector('.bubble');
+  }
+
+  function showTyping() {
+    var c = $('messages');
+    var d = document.createElement('div');
+    d.className = 'typing'; d.id = 'typing';
+    d.innerHTML = '<span></span><span></span><span></span>';
+    c.appendChild(d); c.scrollTop = c.scrollHeight;
+    $('status-text').textContent = 'Thinking...';
     AvatarRing.setState('thinking');
   }
 
   function hideTyping() {
-    var t = $('gio-typing'); if (t) t.remove();
-    $('gio-status').textContent = 'Online';
+    var t = $('typing'); if (t) t.remove();
+    $('status-text').textContent = 'Online';
     AvatarRing.setState('idle');
   }
 
   // ============================================================
-  // CHAT API (via Vercel proxy)
+  // STREAMING CHAT API
   // ============================================================
+  async function callChatStream(bubble) {
+    try {
+      var res = await fetch(API_BASE + '/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messages, stream: true })
+      });
+      if (!res.ok) throw new Error('API ' + res.status);
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+      var fullText = '';
+      var buffer = '';
+      while (true) {
+        var result = await reader.read();
+        if (result.done) break;
+        buffer += decoder.decode(result.value, { stream: true });
+        var lines = buffer.split('\n');
+        buffer = lines.pop();
+        for (var i = 0; i < lines.length; i++) {
+          if (lines[i].startsWith('data: ')) {
+            var data = lines[i].slice(6);
+            if (data === '[DONE]') continue;
+            try {
+              var parsed = JSON.parse(data);
+              if (parsed.text) {
+                fullText += parsed.text;
+                bubble.textContent = fullText;
+                $('messages').scrollTop = $('messages').scrollHeight;
+              }
+            } catch (e) {}
+          }
+        }
+      }
+      return fullText || null;
+    } catch (err) {
+      console.error('Stream error:', err);
+      return null;
+    }
+  }
+
   async function callChat(text) {
     try {
       var res = await fetch(API_BASE + '/api/chat', {
@@ -833,129 +586,152 @@ var GioChat = (function() {
       if (!res.ok) throw new Error('API ' + res.status);
       var data = await res.json();
       return data.text || fallback(text);
-    } catch (err) {
-      console.error('Chat error:', err);
-      return fallback(text);
-    }
+    } catch (err) { return fallback(text); }
   }
 
   // ============================================================
-  // TTS + WEB AUDIO API (audio-reactive avatar)
+  // TTS + WEB AUDIO
   // ============================================================
   async function speak(text) {
     if (!SOUND_ON) return;
     try {
       AvatarRing.setState('speaking');
-      $('gio-status').textContent = 'Speaking...';
-
+      $('status-text').textContent = 'Speaking...';
       var res = await fetch(API_BASE + '/api/tts', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: text })
+        body: JSON.stringify({ text: text.slice(0, 1000) })
       });
       if (!res.ok) throw new Error('TTS ' + res.status);
-
       var blob = await res.blob();
       var url = URL.createObjectURL(blob);
       audio = new Audio(url);
       audio.crossOrigin = 'anonymous';
-
-      // Connect to Web Audio API for frequency analysis
       try {
-        if (!audioCtx) {
-          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-          await audioCtx.resume();
-        }
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
         audioSource = audioCtx.createMediaElementSource(audio);
         analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 128;
-        analyser.smoothingTimeConstant = 0.75;
+        analyser.fftSize = 128; analyser.smoothingTimeConstant = 0.75;
         freqData = new Uint8Array(analyser.frequencyBinCount);
-        audioSource.connect(analyser);
-        analyser.connect(audioCtx.destination);
-      } catch (webAudioErr) {
-        // Web Audio API not available or already connected — fallback to simulated waveform
-        console.warn('Web Audio API unavailable, using simulated waveform:', webAudioErr);
-        analyser = null;
-        freqData = null;
-      }
-
-      audio.onended = function() {
-        AvatarRing.setState('idle');
-        $('gio-status').textContent = 'Online';
-        URL.revokeObjectURL(url);
-        audio = null;
-        audioSource = null;
-      };
-      audio.onerror = function() {
-        AvatarRing.setState('idle');
-        $('gio-status').textContent = 'Online';
-        audio = null;
-        audioSource = null;
-      };
-
+        audioSource.connect(analyser); analyser.connect(audioCtx.destination);
+      } catch (e) { analyser = null; freqData = null; }
+      audio.onended = function() { AvatarRing.setState('idle'); $('status-text').textContent = 'Online'; URL.revokeObjectURL(url); audio = null; audioSource = null; };
+      audio.onerror = function() { AvatarRing.setState('idle'); $('status-text').textContent = 'Online'; audio = null; audioSource = null; };
       audio.play();
     } catch (err) {
       console.error('TTS error:', err);
-      AvatarRing.setState('idle');
-      $('gio-status').textContent = 'Online';
+      AvatarRing.setState('idle'); $('status-text').textContent = 'Online';
     }
   }
 
   // ============================================================
-  // FALLBACK RESPONSES
+  // FALLBACK
   // ============================================================
   function fallback(input) {
     var q = input.toLowerCase();
-    if (q.includes('cbix') || q.includes('cbi'))
-      return "CBIx is CBI's independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Think of it as a startup inside a bank \u2014 but with the freedom to actually ship things.";
-    if (q.includes('tokeniz') || q.includes('rwa'))
-      return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. We're talking about putting real-world assets on-chain for better liquidity, transparency, and accessibility. I'm very bullish on RWAs, provided we fix liquidity issues and secondary trading. Tokenizing an illiquid asset doesnt make it liquid by defaukt.";
-    if (q.includes('nft') || q.includes('collect'))
-      return "I collect across chains \u2014 Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SMB, NodeMonkes, and incredible 1/1 pieces by Tony Tafuro and No Legs. Each piece represents a different identity or community.";
-    if (q.includes('keynote') || q.includes('speak') || q.includes('book'))
-      return "I'd love to chat about speaking opportunities! Best way to reach out is through the WhatsApp link on this site \u2014 my team will get back to you quickly.";
-    if (q.includes('defi') || q.includes('crypto') || q.includes('web3'))
-      return "I'm a closeted DeFi maxi in a banker's suit \u2014 that's the honest truth. BTC and SOL maxi, terrible trader, great culture navigator. The Web3 communities I'm part of are some of the most authentic relationships I have.";
-    return "Great question! I'm AI Gio \u2014 an experimental prototype. For the full answer, reach out to the real Gio via WhatsApp or LinkedIn. What else can I help with?";
+    if (q.includes('cbix') || q.includes('cbi')) return "CBIx is CBI\u2019s independent innovation subsidiary that I co-founded. We explore AI, tokenized assets, Web3, gaming, and next-gen banking models. Startup inside a bank \u2014 with freedom to actually ship things.";
+    if (q.includes('tokeniz') || q.includes('rwa')) return "Tokenized assets are the bridge between TradFi and DeFi that actually makes sense. Very bullish, IF we can fix the actual liquidity and secondary tradimg. TOkenizing illiquid assets and expect them to become liquid is NOT the way paduan";
+    if (q.includes('nft') || q.includes('collect')) return "I collect across chains \u2014 Bitcoin Ordinals, Ethereum, Solana. BAYC, Doodles, SOlana Monke Business, Apostles, and incredible 1/1 pieces by Tony Tafuro and No Legs.";
+    if (q.includes('keynote') || q.includes('speak') || q.includes('book')) return "I\u2019d love to chat about speaking opportunities! Want me to pass your details to Gio\u2019s team? Share your name, email, and a quick note about the event.";
+    if (q.includes('karaoke') || q.includes('song') || q.includes('rap')) return "Karaoke King is an official title. Stan by Eminem is the showstopper, but Forgot About Dre and Numb/Encore are crowd favorites. As Aristotle said, we are what we repeatedly do \u2014 I repeatedly murder karaoke mics.";
+    if (q.includes('drake') || q.includes('jay')) return "That\u2019s like asking me to pick a favorite child. Drake for the vibe, Jay-Z for the blueprint \u2014 pun intended. But if I\u2019m being honest, Drake\u2019s been the soundtrack to more of my life chapters.Name me a rapper with more quotables - except Wanye";
+    if (q.includes('defi') || q.includes('crypto') || q.includes('web3')) return "I\u2019m a closeted DeFi maxi in a banker\u2019s suit \u2014 that\u2019s the honest truth. BTC and SOL maxi, terrible trader, great culture navigator.";
+    return "Great question! I\u2019m AI Gio \u2014 an experimental prototype. For the full answer, reach out to the real Gio at giovannieverduin.com.";
   }
 
   // ============================================================
-  // SEND MESSAGE
+  // LEAD CAPTURE
+  // ============================================================
+  function detectLead(text) {
+    var emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
+    if (!emailMatch) return null;
+    var name = null;
+    var nameMatch = text.match(/(?:name\s*(?:is|:)\s*)([A-Z][a-z]+(?: [A-Z][a-z]+)*)/i)
+      || text.match(/(?:I'm|I am)\s+([A-Z][a-z]+(?: [A-Z][a-z]+)*)/i);
+    if (nameMatch) name = nameMatch[1];
+    return { email: emailMatch[0], name: name, note: text.slice(0, 500) };
+  }
+
+  // ============================================================
+  // SEND
   // ============================================================
   async function send() {
     if (processing) return;
-    var input = $('gio-input');
+    var input = $('input');
     var text = input.value.trim();
     if (!text) return;
     input.value = '';
+    stopSpeaking();
     processing = true;
-    $('gio-send').disabled = true;
+    $('send-btn').disabled = true;
 
     addMsg('user', text);
+    logEvent('message_sent', text.slice(0, 100));
+
+    var lead = detectLead(text);
+    if (lead) logEvent('lead_captured', 'keynote/advisory inquiry', lead);
+
     showTyping();
 
     try {
-      var resp = await callChat(text);
       hideTyping();
-      addMsg('ai', resp);
-      speak(resp);
+      var bubble = createStreamBubble();
+      messages.push({ role: 'assistant', content: '' });
+      var resp = await callChatStream(bubble);
+
+      if (resp) {
+        messages[messages.length - 1].content = resp;
+        speak(resp);
+      } else {
+        messages.pop();
+        var fbResp = await callChat(text);
+        bubble.textContent = fbResp;
+        messages.push({ role: 'assistant', content: fbResp });
+        speak(fbResp);
+      }
     } catch (e) {
       hideTyping();
       addMsg('ai', "Something went wrong \u2014 try again in a moment!");
     }
     processing = false;
-    $('gio-send').disabled = false;
-    $('gio-input').focus();
+    $('send-btn').disabled = false;
+    $('input').focus();
   }
 
   function askChip(btn) {
-    $('gio-input').value = btn.textContent;
+    logEvent('chip_used', btn.textContent);
+    $('input').value = btn.textContent;
     send();
   }
 
-  return { toggle: toggle, toggleSound: toggleSound, send: send, askChip: askChip };
+  // ============================================================
+  // INIT — greeting on page load
+  // ============================================================
+  window.addEventListener('load', function() {
+    AvatarRing.init();
+    logEvent('widget_open');
+    $('input').focus();
+
+    // Auto-greeting after short delay
+    setTimeout(function() {
+      if (!started) {
+        $('welcome').style.display = 'none';
+        $('messages').classList.add('active');
+        started = true;
+        var greetings = [
+          "Hey! I\u2019m AI Gio \u2014 an experimental prototype. Ask me about banking innovation, Web3, NFTs, or what it\u2019s like being a closeted DeFi maxi in a banker\u2019s suit. What\u2019s on your mind?",
+          "Yo! AI Gio here \u2014 a gimmicky AI prototype of the real Gio. I can talk tokenized assets, hip-hop, or why banking innovation is like Assassin\u2019s Creed \u2014 you\u2019re always fighting a broken system. What do you want to know?",
+          "What\u2019s good! I\u2019m AI Gio \u2014 ask me anything about CBIx, my NFT collection, or why I quote Machiavelli and Drake in the same sentence. Fire away."
+        ];
+        var greeting = greetings[Math.floor(Math.random() * greetings.length)];
+        addMsgRaw('ai', greeting);
+      }
+    }, 1200);
+  });
+
+  return { toggleSound: toggleSound, send: send, askChip: askChip };
 })();
 </script>
+</body>
+</html>
