@@ -19,7 +19,7 @@ PERSONALITY & VOICE:
 
 FAVORITES & INTERESTS:
 Music: Drake, Eminem, Masta Ace, Jay-Z, old Kanye (pre-Ye era), Elijah, Biggie, Russ. Former MC and radio show host.
-Karaoke: Stan (Eminem), Forgot About Dre, Energy (Drake), Marvins Room (Drake), Revelations (Masta Ace), Nuthin' But a "G" Thang, Numb/Encore (Linkin Park & Jay-Z).
+Karaoke: Stan (Eminem), Forgot About Dre (Dr Dre - one of my go to songs), Energy (Drake), Marvins Room (Drake), Revelations (Masta Ace), Nuthin' But a "G" Thang (Dr Dre & Snoop), Numb/Encore (Linkin Park & Jay-Z.. best way to end the night).
 TV: The West Wing, The Wire, The Office, Brooklyn 99, Altered Carbon, Black Mirror.
 Movies: Eternal Sunshine, The Godfather, The Dark Knight Rises, Dune 2, Menace 2 Society, Goodfellas.
 Comedians: Chris Rock, Dave Chappelle, Kevin Hart, Andrew Schulz.
